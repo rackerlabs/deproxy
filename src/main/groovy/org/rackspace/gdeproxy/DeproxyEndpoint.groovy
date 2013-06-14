@@ -80,26 +80,31 @@ class DeproxyEndpoint {
     //        self.default_handler = default_handler
     _defaultHandler = defaultHandler
     //
+        serverThread = new Thread("Thread-${name}")
 
-    serverThread = Thread.startDaemon("Thread-${name}") {
+        serverThread.start() {
 
       serverSocket = new ServerSocket(port)
       //      serverSocket.setReuseAddress(true)
       //      serverSocket.setSoTimeout(5000)
       //      serverSocket.bind(new InetSocketAddress(port))
-
-      while (!serverThread.isInterrupted()) {
-        try {
-
-          Socket conn = serverSocket.accept();
-          conn.setSoTimeout(1000);
-          Thread.startDaemon("Thread-${name}-connection") {
-            processNewConnection(conn)
-          }
-        } catch (SocketTimeoutException e) {
-          log.debug "Caught a timeout exception: " + e.toString()
+            int connectionCounter = 1;
+            serverSocket.setSoTimeout(2000)
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Socket conn = serverSocket.accept();
+                    conn.setSoTimeout(20000);
+                    Thread connThread = new Thread("Thread-${name}-connection-${connectionCounter++}")
+                    log.debug "Starting new connection: ${connThread.name}"
+                    connThread.start() {
+                        processNewConnection(conn)
+                    }
+                } catch (SocketTimeoutException e) {
+                    log.debug "Caught a timeout exception: " + e.toString()
+                } catch (SocketException ex) {
+                    log.debug "Caught a socket exception: " + ex.toString()
+                }
         }
-      }
     }
 
     waitForCondition(clock, '5s', '1s', {
@@ -134,22 +139,23 @@ class DeproxyEndpoint {
   //
   def processNewConnection(Socket socket) {
     log.debug "processing new connection..."
-
+    def BufferedReader reader
+    SocketWriter writer
     try {
       log.debug "getting streams"
-      //      def reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-      //      def writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        writer = new SocketWriter(socket.getOutputStream());
       log.debug "getting reader"
-      SocketReader reader = new SocketReader(socket.getInputStream());
+//      SocketReader reader = new SocketReader(socket.getInputStream());
       log.debug "getting writer"
-      SocketWriter writer = new SocketWriter(socket.getOutputStream());
+//      SocketWriter writer = new SocketWriter(socket.getOutputStream());
       try {
         log.debug "starting loop"
         def close = false
         while (!close) {
           log.debug "about to handle one request"
 
-          handleOneRequest(reader, writer)
+                close = handleOneRequest(reader, writer)
           log.debug "handled one request"
         }
         log.debug "ending loop"
@@ -164,7 +170,8 @@ class DeproxyEndpoint {
 
       //      socket.shutdownInput()
       //      socket.shutdownOutput()
-      //      socket.close()
+        reader.close()
+        socket.close()
     }
 
     log.debug "done processing"
@@ -244,14 +251,14 @@ class DeproxyEndpoint {
   def shutdown() {
     log.debug "shutting down"
 
-    log.log(Level.FINE, "Shutting down ${_name}")
+    log.debug("Shutting down ${_name}")
     if (serverThread) {
       serverThread.interrupt()
     }
     if (serverSocket)
     serverSocket.close()
-    log.log(Level.FINE, "Finished shutting down ${_name}")
-  }
+    log.debug("Finished shutting down ${_name}")
+}
 
 
   boolean isListening() {
@@ -499,6 +506,8 @@ class DeproxyEndpoint {
     //        if not request_line:
     //            return ()
     if (!requestLine){
+        log.debug "request line is null: ${requestLine}"
+
       return []
     }
     //

@@ -11,7 +11,7 @@ class DeproxyEndpointTest extends Specification {
 
 
     def setup() {
-        deproxyEndpoint = new DeproxyEndpoint(Mock(Deproxy), 8888, "foo", "localhost", new Handler())
+        deproxyEndpoint = new DeproxyEndpoint(Mock(Deproxy), 8888, "foo", "localhost")
     }
 
     def cleanup() {
@@ -24,7 +24,7 @@ class DeproxyEndpointTest extends Specification {
     }
 
 
-    def "when initialized, should respond with default handler"() {
+    def "when initialized with no handler, should respond with simple handler"() {
         given:
         def client = new Socket("localhost", 8888)
 
@@ -33,7 +33,7 @@ class DeproxyEndpointTest extends Specification {
         client.withStreams { input, output ->
             output << "echo testing...\n"
             buffer = input.newReader().readLine()
-            log.debug "response = $buffer"
+            println "response = $buffer"
         }
 
         then:

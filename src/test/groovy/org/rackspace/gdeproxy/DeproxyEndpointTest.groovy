@@ -1,6 +1,7 @@
 package org.rackspace.gdeproxy
 
 import org.linkedin.util.clock.SystemClock
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition
@@ -24,6 +25,7 @@ class DeproxyEndpointTest extends Specification {
     }
 
 
+    @Ignore
     def "when initialized with no handler, should respond with simple handler"() {
         given:
         def client = new Socket("localhost", 8888)

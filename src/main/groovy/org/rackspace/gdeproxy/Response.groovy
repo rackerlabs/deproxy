@@ -1,20 +1,16 @@
 package org.rackspace.gdeproxy
-
-import org.apache.http.Header
-
-
 //class Response:
 //    """A simple HTTP Response, with status code, status message, headers, and
 //body."""
 
 class Response {
 
-  def code
-  def message
-  def headers
-  def body
+    String code
+    String message
+    HeaderCollection headers
+    String body
 
-  //    def __init__(self, code, message=None, headers=None, body=None):
+    //    def __init__(self, code, message=None, headers=None, body=None):
   //        """
   //Parameters:
   //
@@ -51,7 +47,7 @@ class Response {
     //        if headers is None:
     //            headers = {}
     if (headers == null) {
-      headers = [:]
+      headers = HeaderCollection.newInstance()
     }
     //
     //        if body is None:

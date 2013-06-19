@@ -1,8 +1,7 @@
 package org.rackspace.gdeproxy
 
-import java.util.UUID
 import java.util.concurrent.locks.ReentrantLock
-import java.net.URI
+
 import groovy.util.logging.Log4j;
 import org.apache.log4j.Logger;
 
@@ -105,7 +104,7 @@ class Deproxy {
     } else if (headers instanceof HeaderCollection) {
       data = new HeaderCollection()
       for (Header header : headers){
-        data.add(header.Name, header.Value)
+        data.add(header.name, header.value)
       }
       headers = data
     }
@@ -238,9 +237,9 @@ class Deproxy {
     log.debug "Sending \"${requestLine}\""
 
     for (Header header : request.headers.getItems()) {
-      writer.write("${header.Name}: ${header.Value}");
+      writer.write("${header.name}: ${header.value}");
       writer.write("\r\n");
-      log.debug "Sending \"${header.Name}: ${header.Value}\""
+      log.debug "Sending \"${header.name}: ${header.value}\""
     }
 
     //        lines.append('\r\n')
@@ -311,7 +310,7 @@ class Deproxy {
     //        for k,v in response_headers.iteritems():
     //            logger.debug(' %s: %s', k, v)
     headers.each {
-      log.debug "  ${it.Name}: ${it.Value}"
+      log.debug "  ${it.name}: ${it.value}"
     }
 
     //
@@ -465,15 +464,18 @@ class Deproxy {
   static String readBody(reader, headers) {
     Logger log = Logger.getLogger(Deproxy.class.getName());
 
+      if (headers == null)
+          return reader
     //    if ('Transfer-Encoding' in headers and
     //            headers['Transfer-Encoding'] != 'identity'):
     //        # 2
     //        logger.debug('NotImplementedError - Transfer-Encoding != identity')
     //        raise NotImplementedError
     headers.findAll("Transfer-Encoding").each {
-      if (it.Value != "identity")
+      if (it.value != "identity")
       {
-        throw new UnsupportedOperationException("Non-identity transfer encoding")
+          log.error "Non-identity transfer encoding, not yet supported in GDeproxy.  Unable to read response body."
+          return null
       }
     }
     //    elif 'Content-Length' in headers:

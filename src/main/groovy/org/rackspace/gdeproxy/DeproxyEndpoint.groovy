@@ -1,21 +1,11 @@
-package org.rackspace.gdeproxy;
+package org.rackspace.gdeproxy
+import groovy.util.logging.Log4j
+import org.linkedin.util.clock.SystemClock
 
-import java.util.concurrent.locks.ReentrantLock;
-import groovy.util.logging.Log4j;
-import org.linkedin.util.clock.SystemClock;
+import java.text.SimpleDateFormat
+import java.util.concurrent.locks.ReentrantLock
 
-import java.util.logging.Level;
-
-import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition;
-
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.util.logging.Logger;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
-
+import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition
 /**
  * A class that acts as a mock HTTP server.
  */
@@ -128,6 +118,7 @@ class DeproxyEndpoint {
     log.debug "processing new connection..."
     def reader;
     def writer;
+
     try {
       log.debug "getting reader"
       //SocketReader reader = new SocketReader(new CountingInputStream(socket.getInputStream()));
@@ -589,7 +580,7 @@ class DeproxyEndpoint {
     //        for k, v in headers.iteritems():
     //            logger.debug(' {0}: "{1}"'.format(k, v))
     headers.each {
-      log.debug "  ${it.Name}: ${it.Value}"
+      log.debug "  ${it.name}: ${it.value}"
     }
     //
     //        persistent_connection = False
@@ -687,7 +678,7 @@ class DeproxyEndpoint {
     //        for name, value in response.headers.iteritems():
     //            wfile.write("%s: %s\r\n" % (name, value))
     response.headers.each {
-      writer.write("${it.Name}: ${it.Value}")
+      writer.write("${it.name}: ${it.value}")
       writer.write("\r\n")
     }
     //        wfile.write("\r\n")

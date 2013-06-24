@@ -19,33 +19,19 @@ class Handlers {
     static def echoHandler(request) {
         return new Response(200, 'OK', request.headers, request.body)
     }
+
+    // Handler creator
+    // Returns a closure (handler) that waits for the given amount of time
+    // before forawrding the request to another handler
+    static def Delay(int timeout, nextHandler=Handlers.&simpleHandler) {
+        return { Request request ->
+            Thread.sleep(timeout);
+            return nextHandler(request);
+        }
+    }
 }
 
-//  def delay(timeout, next_handler=simple_handler):
-//    """
-//Factory function.
-//Returns a handler that delays the request for the specified number of
-//seconds, forwards it to the next handler function, and returns that
-//handler function's Response.
-//
-//Parameters:
-//
-//timeout - The amount of time, in seconds, to delay before passing the
-//request on to the next handler.
-//next_handler - The next handler to process the request after the delay.
-//Defaults to ``simple_handler``.
-//"""
-//    def delayer(request):
-//        logger.debug('delaying for %i seconds' % timeout)
-//        time.sleep(timeout)
-//        return next_handler(request)
-//
-//    delayer.__doc__ = ('Delay for %s seconds, then forward the Request to the '
-//                       'next handler' % str(timeout))
-//
-//    return delayer
-//
-//
+
 //def route(scheme, host, deproxy):
 //    """
 //Factory function.

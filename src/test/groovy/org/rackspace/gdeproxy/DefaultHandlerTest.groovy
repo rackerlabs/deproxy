@@ -4,11 +4,13 @@
  */
 
 package org.rackspace.gdeproxy
+import groovy.util.logging.Log4j
+import org.junit.After
+import org.junit.Before
+import org.junit.Ignore
+import org.junit.Test
 
-import org.junit.*;
-import static org.junit.Assert.*;
-import groovy.util.logging.Log4j;
-import org.apache.log4j.Level;
+import static org.junit.Assert.assertEquals;
 
 
 @Log4j
@@ -33,6 +35,7 @@ public class DefaultHandlerTest {
     log.debug "setUp done"
   }
 
+    @Ignore
   @Test
   public void TestDefaultHandler(){
     log.debug "making request"

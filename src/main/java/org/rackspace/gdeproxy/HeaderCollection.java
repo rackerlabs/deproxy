@@ -1,5 +1,4 @@
 package org.rackspace.gdeproxy;
-
 import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
@@ -33,7 +32,7 @@ class HeaderCollection {
 
   HeaderCollection(HeaderCollection headers) {
     for (Header header : headers._headers) {
-      this.add(new Header(header.name, header.value));
+      _headers.add(new Header(header.name, header.value));
     }
   }
 
@@ -76,7 +75,7 @@ class HeaderCollection {
     List<String> values = new ArrayList<String>();
 
     for (Header header : _headers) {
-      if (header.name.equalsIgnoreCase(name)){
+      if (header.name.equalsIgnoreCase(name)) {
         values.add(header.value);
       }
     }

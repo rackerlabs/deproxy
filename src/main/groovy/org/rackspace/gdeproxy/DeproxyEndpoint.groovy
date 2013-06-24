@@ -148,7 +148,7 @@ class DeproxyEndpoint {
       //socket.shutdownInput()
       //socket.shutdownOutput()
       //reader.close()
-      //socket.close()
+      socket.close()
     }
 
     log.debug "done processing"

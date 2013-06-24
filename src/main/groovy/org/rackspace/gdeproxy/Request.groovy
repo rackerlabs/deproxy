@@ -10,7 +10,7 @@ class Request {
     HeaderCollection headers
     String body
 
-    public Request(method, path, headers = HeaderCollection.newInstance(), body = null) {
+    public Request(method, path, headers = [:], body = null) {
         //    def __init__(self, method, path, headers=None, body=None):
         //        """
         //Parameters:
@@ -29,7 +29,7 @@ class Request {
     }
 
     String toString() {
-    sprintf('Request(method=%s, path=%s, headers=%s, body=%s)', method, path, headers, body);
+        sprintf('Request(method=%s, path=%s, headers=%s, body=%s)', method, path, headers, body);
     }
 
 }

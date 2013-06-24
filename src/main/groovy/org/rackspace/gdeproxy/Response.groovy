@@ -47,7 +47,7 @@ class Response {
     //        if headers is None:
     //            headers = {}
     if (headers == null) {
-      headers = HeaderCollection.newInstance()
+      headers = [:]
     }
     //
     //        if body is None:

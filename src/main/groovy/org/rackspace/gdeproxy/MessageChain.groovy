@@ -48,10 +48,8 @@ class MessageChain {
             this.orphanedHandlings.add(handling)
         }
     }
-
     String toString() {
-        // TODO: include handler_function ???
-        sprintf('MessageChain(sent_request=%s, handlings=%s, received_response=%s, orphaned_handlings=%s)',
-                sentRequest, handlings, receivedResponse, orphanedHandlings)
+        sprintf('MessageChain(default_handler= %s sent_request=%s, handlings=%s, received_response=%s, orphaned_handlings=%s)',
+                defaultHandler, sentRequest, handlings, receivedResponse, orphanedHandlings)
     }
 }

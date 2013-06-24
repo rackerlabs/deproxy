@@ -83,10 +83,10 @@ class DefaultRequestHeadersTest {
   @Test
   void testExplicitOff() {
     def mc = _deproxy.makeRequest(url: _url, addDefaultHeaders: false);
-    assertFalse(mc.sentRequest.headers.contains("Host"));
-    assertFalse(mc.sentRequest.headers.contains("Accept"));
-    assertFalse(mc.sentRequest.headers.contains("Accept-Encoding"));
-    assertFalse(mc.sentRequest.headers.contains("User-Agent"));
+    assertFalse("host header exists", mc.sentRequest.headers.contains("Host"));
+    assertFalse("accept header exists", mc.sentRequest.headers.contains("Accept"));
+    assertFalse("accept encoding exists", mc.sentRequest.headers.contains("Accept-Encoding"));
+    assertFalse("user agent exists", mc.sentRequest.headers.contains("User-Agent"));
   }
   
   @After

@@ -435,7 +435,7 @@ class DeproxyEndpoint {
       if (messageChain) {
         messageChain.addHandling(handling)
       } else {
-        deproxy.addOrphanedHandling(handling)
+        _deproxy.addOrphanedHandling(handling)
       }
       //
       //            self.send_response(wfile, resp)

@@ -118,27 +118,27 @@ class DeproxyEndpoint {
     log.debug "processing new connection..."
     def reader;
     def writer;
+    OutputStream outStream;
 
     try {
       log.debug "getting reader"
       //SocketReader reader = new SocketReader(new CountingInputStream(socket.getInputStream()));
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       log.debug "getting writer"
-      //SocketWriter writer = new SocketWriter(new CountingOutputStream(socket.getOutputStream()));
-      writer = new PrintWriter(socket.getOutputStream(), true);
+      outStream = socket.getOutputStream();
       try {
         log.debug "starting loop"
         def close = false
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(reader, writer)
+          close = handleOneRequest(reader, outStream)
           log.debug "handled one request"
         }
         log.debug "ending loop"
       } catch (RuntimeException e) {
         log.error("there was an error", e)
-        sendResponse(writer,
+        sendResponse(outStream,
           new Response(500, "Internal Server Error", null,
                 "The server encountered an unexpected condition which prevented it from fulfilling the request."))
       }
@@ -258,7 +258,7 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(reader, writer) {
+  def handleOneRequest(reader, outStream) {
     //        logger.debug('')
     //        close_connection = True
     log.debug "Begin handleOneRequest"
@@ -268,7 +268,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
       log.debug "calling parseRequest"
-      def ret = parseRequest(reader, writer)
+      def ret = parseRequest(reader, outStream)
       //            logger.debug('returned from parse_request')
       log.debug "returned from parseRequest"
       //            if not ret:
@@ -439,7 +439,7 @@ class DeproxyEndpoint {
       }
       //
       //            self.send_response(wfile, resp)
-      sendResponse(writer, response)
+      sendResponse(outStream, response)
       //
       //            wfile.flush()
       //
@@ -472,7 +472,7 @@ class DeproxyEndpoint {
   }
 
   //    def parse_request(self, rfile, wfile):
-  def parseRequest(reader, writer) {
+  def parseRequest(reader, outStream) {
     //        logger.debug('reading request line')
     log.debug "reading request line"
     //        request_line = rfile.readline(65537)
@@ -516,7 +516,7 @@ class DeproxyEndpoint {
       //                                "Bad request version (%r)" % version)
       //                return ()
       if (!version.startsWith("HTTP/")) {
-        sendResponse(writer, new Response(400, null, null, "Bad request version \"${version}\""))
+        sendResponse(outStream, new Response(400, null, null, "Bad request version \"${version}\""))
         return []
       }
       //            try:
@@ -553,7 +553,7 @@ class DeproxyEndpoint {
       //                            self.default_request_version,
       //                            "Bad request syntax (%r)" % request_line)
       //            return ()
-      sendResponse(writer, new Response(400))
+      sendResponse(outStream, new Response(400))
       return []
     }
     //
@@ -569,7 +569,7 @@ class DeproxyEndpoint {
       version != "HTTP/1.0" &&
       version != "HTTP/0.9") {
 
-      sendResponse(writer, new Response(505, null, null, "Invalid HTTP Version \"${version}\"}"))
+      sendResponse(outStream, new Response(505, null, null, "Invalid HTTP Version \"${version}\"}"))
       return []
     }
     //
@@ -655,7 +655,10 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(writer, response) {
+  def sendResponse(outStream, response) {
+
+    def writer = new PrintWriter(outStream, true);
+
     //        """
     //Send the given Response over the socket. Add Server and Date headers
     //if not already present.

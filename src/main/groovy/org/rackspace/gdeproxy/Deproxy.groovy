@@ -1,11 +1,5 @@
 package org.rackspace.gdeproxy
 
-import org.apache.http.HttpResponse
-import org.apache.http.client.HttpClient
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.protocol.RequestContent
-import org.apache.http.util.EntityUtils
-
 import java.util.concurrent.locks.ReentrantLock
 
 import groovy.util.logging.Log4j;
@@ -16,9 +10,6 @@ import org.apache.log4j.Logger;
  */
 @Log4j
 class Deproxy {
-  //class Deproxy:
-  //    """The main class."""
-  //
 
   public static final String REQUEST_ID_HEADER_NAME = "Deproxy-Request-ID";
   def _messageChainsLock = new ReentrantLock()
@@ -26,6 +17,7 @@ class Deproxy {
   def _endpointLock = new ReentrantLock()
   def _endpoints = []
   def _defaultHandler = null
+    def _default_client_connector = new BareClientConnector();
 
   public static final String VERSION = "0.9";
   public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
@@ -139,7 +131,7 @@ class Deproxy {
     def uri = new URI(url)
     def host = uri.host
     def port = uri.port
-    def scheme = uri.scheme
+    boolean https = (uri.scheme == 'https');
     def path = uri.path
     //
     //        logger.debug('request_body: "{0}"'.format(request_body))
@@ -181,7 +173,7 @@ class Deproxy {
     //
     //        response = self.send_request(scheme, host, request)
     log.debug "calling sendRequest"
-    def response = sendRequest(request, scheme, host, port)
+    def response = this._default_client_connector.sendRequest(request, https, host, port)
     log.debug "back from sendRequest"
     //
     //        self.remove_message_chain(request_id)
@@ -198,172 +190,6 @@ class Deproxy {
 
     return messageChain
   }
-
-    def sendRequest(Request request, scheme, host, port=null) {
-        sendRequest2(request, scheme, host, port);
-    }
-
-  //    def send_request(self, scheme, host, request):
-  def sendRequest1(Request request, scheme, host, port=null) {
-    //        """Send the given request to the host and return the Response."""
-    //        logger.debug('sending request (scheme="%s", host="%s")' %
-    //                     (scheme, host))
-    log.debug "sending request: scheme=${scheme}, host=${host}, port=${port}"
-    if (port == null || port == "") {
-      if (scheme == "https") {
-        port = 443
-      }
-      else {
-        port = 80
-      }
-    }
-    //        hostname = hostparts[0]
-    //        hostip = socket.gethostbyname(hostname)
-    def hostIP = InetAddress.getByName(host)
-    //
-    //        request_line = '%s %s HTTP/1.1\r\n' % (request.method, request.path)
-    def requestLine = String.format("%s %s HTTP/1.1", request.method, request.path ?: "/")
-    //        lines = [request_line]
-    //
-    //        for name, value in request.headers.iteritems():
-    //            lines.append('%s: %s\r\n' % (name, value))
-    log.debug "creating socket: host=${host}, port=${port}"
-
-    Socket s;
-    //        if scheme == 'https':
-    if (scheme == "https") {
-      //            s = self.create_ssl_connection(address)
-      s = SSLSocketFactory.getDefault().createSocket(host, port)
-      //        else:
-    } else {
-      //            s = socket.create_connection(address)
-      s = new Socket(host, port)
-    }
-
-    //    def writer = new SocketWriter(new CountingOutputStream(s.getOutputStream()))
-    def writer = new PrintWriter(s.getOutputStream(), true);
-
-    writer.write(requestLine);
-    writer.write("\r\n");
-    log.debug "Sending \"${requestLine}\""
-
-    for (Header header : request.headers.getItems()) {
-      writer.write("${header.name}: ${header.value}");
-      writer.write("\r\n");
-      log.debug "Sending \"${header.name}: ${header.value}\""
-    }
-
-    //        lines.append('\r\n')
-    writer.write("");
-    writer.write("\r\n");
-    log.debug "Sending \"\""
-
-    //        if request.body is not None and len(request.body) > 0:
-    if (request.body != null & request.body != "") {
-      //            lines.append(request.body)
-      writer.write(request.body);
-      log.debug "Sending body, length = ${request.body.length()}"
-
-    }
-    else {
-      log.debug("No body to send");
-    }
-
-    //
-    //        #for line in lines:
-    //        # logger.debug(' ' + line)
-    //
-    //        logger.debug('Creating connection (hostname="%s", port="%s")' %
-    //                     (hostname, str(port)))
-    //
-    //        address = (hostname, port)
-
-    //
-    //        s.send(''.join(lines))
-    log.debug "flush()"
-    writer.flush();
-
-    //
-    //        rfile = s.makefile('rb', -1)
-    log.debug "creating socket reader"
-    //    def reader = new SocketReader(new CountingInputStream(s.getInputStream()))
-    def reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-    //
-    //        logger.debug('Reading response line')
-    log.debug "reading response line"
-    //        response_line = rfile.readline(65537)
-    String responseLine = reader.readLine()
-    //        if (len(response_line) > 65536):
-    //            raise ValueError
-    //        response_line = response_line.rstrip('\r\n')
-    //        logger.debug('Response line is ok: %s' % response_line)
-    log.debug "response line is ok: ${responseLine}"
-    //
-    //        words = response_line.split()
-    def words = responseLine.split("\\s+", 3)
-    if (words.size() != 3)
-    {
-      throw new RuntimeException()
-    }
-    //
-    //        proto = words[0]
-    //        code = words[1]
-    //        message = ' '.join(words[2:])
-    def proto = words[0]
-    def code = words[1]
-    def message = words[2]
-    //
-    //        logger.debug('Reading headers')
-    log.debug "reading headers"
-    //        response_headers = HeaderCollection.from_stream(rfile)
-    def headers = HeaderCollection.fromReader(reader)
-    //        logger.debug('Headers ok')
-    //        for k,v in response_headers.iteritems():
-    //            logger.debug(' %s: %s', k, v)
-    headers.each {
-      log.debug "  ${it.name}: ${it.value}"
-    }
-
-    //
-    //        logger.debug('Reading body')
-    //        body = read_body_from_stream(rfile, response_headers)
-    log.debug "reading body"
-    def body = readBody(reader, headers)
-    //
-    //        logger.debug('Creating Response object')
-    //        response = Response(code, message, response_headers, body)
-    log.debug "creating response object"
-    def response = new Response(code, message, headers, body)
-    //
-    //        logger.debug('Returning Response object')
-    //        return response
-    //
-    log.debug "returning response object"
-    return response
-  }
-
-    def sendRequest2(Request request, scheme, host, port=null) {
-
-        HttpClient client = new DefaultHttpClient();
-        client.removeRequestInterceptorByClass(RequestContent.class)
-        def request2 = new DeproxyHttpRequest(request, scheme as String, host as String, port);
-        HttpResponse response2 = client.execute(request2);
-
-        def body;
-        if (response2.entity.contentType != null &&
-            response2.entity.contentType.value.toLowerCase().startsWith("text/")) {
-
-            body = EntityUtils.toString(response2.getEntity());
-        } else {
-            body = EntityUtils.toByteArray(response2.getEntity());
-        }
-
-        Response response = new Response(response2.statusLine.statusCode.toString(),
-                                         response2.statusLine.reasonPhrase,
-                                         response2.getAllHeaders().collect { new Header(it.getName(), it.getValue()) },
-                                         body);
-        return response;
-    }
 
   //    def add_endpoint(self, port, name=None, hostname=None,
   //                     default_handler=None):

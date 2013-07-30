@@ -17,27 +17,21 @@ class Deproxy {
   def _endpointLock = new ReentrantLock()
   def _endpoints = []
   def _defaultHandler = null
-    def _default_client_connector = new BareClientConnector();
+    def _defaultClientConnector = new BareClientConnector();
 
   public static final String VERSION = "0.9";
   public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
 
-  Deproxy(defaultHandler = null) {
+    Deproxy(defaultHandler=null, defaultClientConnector=null) {
 
-    //    def __init__(self, default_handler=None):
-    //        """
-    //Params:
-    //default_handler - An optional handler function to use for requests, if
-    //not specified elsewhere
-    //"""
-    //        self._message_chains_lock = threading.Lock()
-    //        self._message_chains = dict()
-    //        self._endpoint_lock = threading.Lock()
-    //        self._endpoints = []
-    //        self.default_handler = default_handler
-    _defaultHandler = defaultHandler
-    //
-  }
+        _defaultHandler = defaultHandler;
+
+        if (defaultClientConnector == null &&
+            _defaultClientConnector == null) {
+
+            _defaultClientConnector = new BareClientConnector();
+        }
+    }
 
   public MessageChain makeRequest(Map params) {
     return makeRequest(

@@ -65,7 +65,7 @@ class BodiesTest {
     //            return deproxy.Response(code=200, message='OK', headers=None,
     //                                    body=body)
     def handler = { request ->
-      return new Response(200, "OK", [:], body);
+      return new Response(200, "OK", ['Content-type': 'text/plain'], body);
     }
     //        mc = self.deproxy.make_request(url=self.url,
     //                                       default_handler=custom_handler)

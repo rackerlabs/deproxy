@@ -1,5 +1,11 @@
 package org.rackspace.gdeproxy
 
+import org.apache.http.HttpResponse
+import org.apache.http.client.HttpClient
+import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.protocol.RequestContent
+import org.apache.http.util.EntityUtils
+
 import java.util.concurrent.locks.ReentrantLock
 
 import groovy.util.logging.Log4j;
@@ -193,8 +199,12 @@ class Deproxy {
     return messageChain
   }
 
+    def sendRequest(Request request, scheme, host, port=null) {
+        sendRequest2(request, scheme, host, port);
+    }
+
   //    def send_request(self, scheme, host, request):
-  def sendRequest(Request request, scheme, host, port=null) {
+  def sendRequest1(Request request, scheme, host, port=null) {
     //        """Send the given request to the host and return the Response."""
     //        logger.debug('sending request (scheme="%s", host="%s")' %
     //                     (scheme, host))
@@ -331,6 +341,29 @@ class Deproxy {
     log.debug "returning response object"
     return response
   }
+
+    def sendRequest2(Request request, scheme, host, port=null) {
+
+        HttpClient client = new DefaultHttpClient();
+        client.removeRequestInterceptorByClass(RequestContent.class)
+        def request2 = new DeproxyHttpRequest(request, scheme as String, host as String, port);
+        HttpResponse response2 = client.execute(request2);
+
+        def body;
+        if (response2.entity.contentType != null &&
+            response2.entity.contentType.value.toLowerCase().startsWith("text/")) {
+
+            body = EntityUtils.toString(response2.getEntity());
+        } else {
+            body = EntityUtils.toByteArray(response2.getEntity());
+        }
+
+        Response response = new Response(response2.statusLine.statusCode.toString(),
+                                         response2.statusLine.reasonPhrase,
+                                         response2.getAllHeaders().collect { new Header(it.getName(), it.getValue()) },
+                                         body);
+        return response;
+    }
 
   //    def add_endpoint(self, port, name=None, hostname=None,
   //                     default_handler=None):

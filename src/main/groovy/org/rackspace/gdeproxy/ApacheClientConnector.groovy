@@ -18,7 +18,7 @@ import org.apache.http.util.EntityUtils
 @Log4j
 class ApacheClientConnector implements ClientConnector {
     @Override
-    Response sendRequest(Request request, boolean https, host, port) {
+    Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
 
         HttpClient client = new DefaultHttpClient();
         client.removeRequestInterceptorByClass(RequestContent.class)

@@ -15,7 +15,7 @@ import javax.net.ssl.SSLSocketFactory
 class BareClientConnector implements ClientConnector {
 
     @Override
-    Response sendRequest(Request request, boolean https, host, port) {
+    Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
         """Send the given request to the host and return the Response."""
         log.debug "sending request: https=${https}, host=${host}, port=${port}"
 

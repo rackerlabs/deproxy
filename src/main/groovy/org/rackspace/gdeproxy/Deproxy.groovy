@@ -168,12 +168,14 @@ class Deproxy {
       }
       //
     }
-    //        request = Request(method, path, headers, request_body)
-    def request = new Request(method, path, headers, requestBody)
-    //
-    //        response = self.send_request(scheme, host, request)
+
+    Request request = new Request(method, path, headers, requestBody)
+
+    RequestParams requestParams = new RequestParams()
+    requestParams.sendDefaultRequestHeaders = addDefaultHeaders;
+
     log.debug "calling sendRequest"
-    def response = this._default_client_connector.sendRequest(request, https, host, port)
+    Response response = this._default_client_connector.sendRequest(request, https, host, port, requestParams)
     log.debug "back from sendRequest"
     //
     //        self.remove_message_chain(request_id)

@@ -42,7 +42,8 @@ class Deproxy {
       params?.defaultHandler,
       params?.handlers,
       (params?.addDefaultHeaders ? true : false),
-      params?.chunked ?: false
+      (params?.chunked ? true : false),
+      params?.clientConnector?: null
     );
   }
   public MessageChain makeRequest(
@@ -53,7 +54,8 @@ class Deproxy {
     defaultHandler=null,
     handlers=null,
     addDefaultHeaders=true,
-    boolean chunked=false) {
+    boolean chunked=false,
+    ClientConnector clientConnector=null) {
     //    def make_request(self, url, method='GET', headers=None, request_body='',
     //                     default_handler=None, handlers=None,
     //                     add_default_headers=True):
@@ -77,6 +79,10 @@ class Deproxy {
     //and 'User-Agent' headers will be added to the list of headers sent,
     //if not already specified in the ``headers`` parameter above.
     //Otherwise, those headers are not added. Defaults to True.
+      //
+      // chunked
+      // clientConnector
+      //
     //"""
     //        logger.debug('')
 
@@ -103,6 +109,11 @@ class Deproxy {
       }
       headers = data
     }
+
+      if (!clientConnector) {
+          clientConnector = this._defaultClientConnector;
+      }
+
     //
     //        request_id = str(uuid.uuid4())
     def requestId =  UUID.randomUUID().toString()
@@ -172,7 +183,7 @@ class Deproxy {
     requestParams.sendDefaultRequestHeaders = addDefaultHeaders;
 
     log.debug "calling sendRequest"
-    Response response = this._default_client_connector.sendRequest(request, https, host, port, requestParams)
+    Response response = clientConnector.sendRequest(request, https, host, port, requestParams)
     log.debug "back from sendRequest"
     //
     //        self.remove_message_chain(request_id)

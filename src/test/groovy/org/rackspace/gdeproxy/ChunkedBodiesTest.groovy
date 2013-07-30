@@ -38,7 +38,8 @@ public class ChunkedBodyTest {
         def chunkedBody = "${length}\r\n${body}\r\n0\r\n\r\n";
 
         def mc = this.deproxy.makeRequest(url: this.url, method: "POST", 
-                                          requestBody: body, chunked: true);
+                                          requestBody: body, chunked: true,
+                                          clientConnector: new ApacheClientConnector());
 
         assertTrue(mc.sentRequest.headers.contains("Transfer-Encoding"));
         assertEquals("chunked", mc.sentRequest.headers.getFirstValue("Transfer-Encoding"));

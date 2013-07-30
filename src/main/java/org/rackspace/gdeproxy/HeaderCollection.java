@@ -30,6 +30,12 @@ class HeaderCollection {
     }
   }
 
+    HeaderCollection(List<Header> list) {
+        for (Header header : list) {
+            _headers.add(header);
+        }
+    }
+
   HeaderCollection(HeaderCollection headers) {
     for (Header header : headers._headers) {
       _headers.add(new Header(header.name, header.value));

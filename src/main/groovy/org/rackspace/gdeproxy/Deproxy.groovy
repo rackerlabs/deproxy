@@ -47,7 +47,8 @@ class Deproxy {
       params?.requestBody ?: "",
       params?.defaultHandler,
       params?.handlers,
-      params?.addDefaultHeaders ?: true
+      params?.addDefaultHeaders ?: true,
+      params?.chunked ?: false
     );
   }
   public MessageChain makeRequest(
@@ -57,7 +58,8 @@ class Deproxy {
     String requestBody="",
     defaultHandler=null,
     handlers=null,
-    addDefaultHeaders=true) {
+    addDefaultHeaders=true,
+    boolean chunked=false) {
     //    def make_request(self, url, method='GET', headers=None, request_body='',
     //                     default_handler=None, handlers=None,
     //                     add_default_headers=True):
@@ -172,6 +174,7 @@ class Deproxy {
     Request request = new Request(method, path, headers, requestBody)
 
     RequestParams requestParams = new RequestParams()
+    requestParams.usedChunkedTransferEncoding = chunked;
     requestParams.sendDefaultRequestHeaders = addDefaultHeaders;
 
     log.debug "calling sendRequest"

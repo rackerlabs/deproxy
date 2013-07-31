@@ -140,40 +140,33 @@ class Deproxy {
     def port = uri.port
     boolean https = (uri.scheme == 'https');
     def path = uri.path
-    //
-    //        logger.debug('request_body: "{0}"'.format(request_body))
+
     log.debug "request body: ${requestBody}"
 
-    //        if len(request_body) > 0:
-    if (requestBody && requestBody.length() > 0) {
-      //            headers.add('Content-Length', len(request_body))
-      headers.add("Content-Length", requestBody.length())
-    }
-    //
-    //        if add_default_headers:
-    if (addDefaultHeaders){
-      //            if 'Host' not in headers:
-      //                headers.add('Host', host)
+
+    if (addDefaultHeaders) {
+
+        if (requestBody &&
+            requestBody.length() > 0 &&
+            !chunked &&
+            !headers.contains("Content-Length")) {
+
+            headers.add("Content-Length", requestBody.length())
+        }
+
       if (!headers.contains("Host")){
         headers.add("Host", host)
       }
-      //            if 'Accept' not in headers:
-      //                headers.add('Accept', '*/*')
       if (!headers.contains("Accept")){
         headers.add("Accept", "*/*")
       }
-      //            if 'Accept-Encoding' not in headers:
-      //                headers.add('Accept-Encoding',
-      //                            'identity, deflate, compress, gzip')
       if (!headers.contains("Accept-Encoding")){
         headers.add("Accept-Encoding", "identity")
       }
-      //            if 'User-Agent' not in headers:
-      //                headers.add('User-Agent', version_string)
       if (!headers.contains("User-Agent")){
         headers.add("User-Agent", VERSION_STRING)
       }
-      //
+
     }
 
     Request request = new Request(method, path, headers, requestBody)

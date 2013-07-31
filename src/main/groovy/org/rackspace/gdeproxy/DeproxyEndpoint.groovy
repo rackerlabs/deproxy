@@ -123,8 +123,6 @@ class DeproxyEndpoint {
 
     try {
       log.debug "getting reader"
-      //SocketReader reader = new SocketReader(new CountingInputStream(socket.getInputStream()));
-      reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       log.debug "getting writer"
       inStream = socket.getInputStream()
       outStream = socket.getOutputStream();
@@ -134,7 +132,7 @@ class DeproxyEndpoint {
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(reader, inStream, outStream)
+          close = handleOneRequest(inStream, outStream)
           log.debug "handled one request"
         }
         log.debug "ending loop"
@@ -260,7 +258,7 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(reader, InputStream inStream, OutputStream outStream) {
+  def handleOneRequest(InputStream inStream, OutputStream outStream) {
     //        logger.debug('')
     //        close_connection = True
     log.debug "Begin handleOneRequest"
@@ -270,7 +268,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
       log.debug "calling parseRequest"
-      def ret = parseRequest(reader, inStream, outStream)
+      def ret = parseRequest(inStream, outStream)
       //            logger.debug('returned from parse_request')
       log.debug "returned from parseRequest"
       //            if not ret:
@@ -474,10 +472,11 @@ class DeproxyEndpoint {
   }
 
   //    def parse_request(self, rfile, wfile):
-  def parseRequest(reader, InputStream inStream, OutputStream outStream) {
-    //        logger.debug('reading request line')
+  def parseRequest(InputStream inStream, OutputStream outStream) {
+
+    def reader = new BufferedReader(new InputStreamReader(inStream));
+
     log.debug "reading request line"
-    //        request_line = rfile.readline(65537)
     def requestLine = reader.readLine()
     //        if len(request_line) > 65536:
     //            self.send_error(wfile, 414, None, self.default_request_version)

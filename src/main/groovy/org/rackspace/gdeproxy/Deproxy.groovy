@@ -41,7 +41,7 @@ class Deproxy {
       params?.requestBody ?: "",
       params?.defaultHandler,
       params?.handlers,
-      (params?.addDefaultHeaders ? true : false),
+      (params?.addDefaultHeaders == null ? true : params?.addDefaultHeaders),
       (params?.chunked ? true : false),
       params?.clientConnector?: null
     );

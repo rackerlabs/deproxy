@@ -50,7 +50,7 @@ class Deproxy {
     String url,
     String method="GET",
     headers=null,
-    String requestBody="",
+    requestBody="",
     defaultHandler=null,
     handlers=null,
     addDefaultHeaders=true,
@@ -147,11 +147,21 @@ class Deproxy {
     if (addDefaultHeaders) {
 
         if (requestBody &&
-            requestBody.length() > 0 &&
             !chunked &&
             !headers.contains("Content-Length")) {
 
-            headers.add("Content-Length", requestBody.length())
+            def length
+            if (requestBody instanceof String) {
+                length = requestBody.length()
+            } else if (requestBody instanceof byte[]) {
+                length = requestBody.length
+            } else {
+                throw new UnsupportedOperationException("Unknown data type in requestBody")
+            }
+
+            if (length > 0) {
+                headers.add("Content-Length", length)
+            }
         }
 
       if (!headers.contains("Host")){
@@ -324,7 +334,7 @@ class Deproxy {
 
   //
   //def read_body_from_stream(stream, headers):
-  static String readBody(reader, headers) {
+  static def readBody(reader, headers) {
   
       if (headers == null)
           return null

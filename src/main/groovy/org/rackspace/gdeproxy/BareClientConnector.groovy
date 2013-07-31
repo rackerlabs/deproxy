@@ -35,7 +35,8 @@ class BareClientConnector implements ClientConnector {
             s = new Socket(host, port)
         }
 
-        def writer = new PrintWriter(s.getOutputStream(), true);
+        def outStream = s.getOutputStream();
+        def writer = new PrintWriter(outStream, true);
 
         writer.write(requestLine);
         writer.write("\r\n");
@@ -49,17 +50,27 @@ class BareClientConnector implements ClientConnector {
 
         writer.write("");
         writer.write("\r\n");
-        log.debug "Sending \"\""
 
-        if (request.body != null & request.body != "") {
-            writer.write(request.body);
-            log.debug "Sending body, length = ${request.body.length()}"
-        }
-        else {
+        writer.flush();
+
+        if (request.body == null ||
+                request.body == "" ||
+                request.body == [] as byte[]) {
+
             log.debug("No body to send");
+
+        } else if (request.body instanceof String) {
+            log.debug "Sending string body, length = ${request.body.length()}"
+            writer.write(request.body)
+            writer.flush();
+        } else if (request.body instanceof byte[]) {
+            log.debug "Sending binary body, length = ${request.body.length}"
+            outStream.write(request.body)
+            outStream.flush()
+        } else {
+            throw new UnsupportedOperationException("Unknown data type in request body")
         }
 
-        log.debug "flush()"
         writer.flush();
 
         log.debug "creating socket reader"

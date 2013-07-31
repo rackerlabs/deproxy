@@ -28,7 +28,7 @@ class BinaryBodiesTest {
     }
 
     @Test
-    void testRequestBinaryBody() {
+    void testBinaryRequestBody() {
         byte[] body = (-128 .. 127) as byte[]
 
         def mc = this.deproxy.makeRequest(url: this.url,
@@ -42,7 +42,7 @@ class BinaryBodiesTest {
     }
 
     @Test
-    void testResponseBinaryBody() {
+    void testBinaryResponseBody() {
         byte[] body = (-128 .. 127) as byte[]
 
         def handler = { request ->

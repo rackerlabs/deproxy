@@ -74,7 +74,8 @@ class BareClientConnector implements ClientConnector {
         writer.flush();
 
         log.debug "creating socket reader"
-        def reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        InputStream inStream = s.getInputStream();
+        def reader = new BufferedReader(new InputStreamReader(inStream));
 
         log.debug "reading response line"
         String responseLine = reader.readLine()
@@ -97,7 +98,7 @@ class BareClientConnector implements ClientConnector {
         }
 
         log.debug "reading body"
-        def body = Deproxy.readBody(reader, headers)
+        def body = Deproxy.readBody(inStream, headers)
 
         log.debug "creating response object"
         def response = new Response(code, message, headers, body)

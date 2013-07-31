@@ -332,10 +332,10 @@ class Deproxy {
     }
   }
 
-  //
-  //def read_body_from_stream(stream, headers):
-  static def readBody(reader, headers) {
-  
+  static def readBody(InputStream inStream, headers) {
+
+      def reader = new BufferedReader(new InputStreamReader(inStream));
+
       if (headers == null)
           return null
           

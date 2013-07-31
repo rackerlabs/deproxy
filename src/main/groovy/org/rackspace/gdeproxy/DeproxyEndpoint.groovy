@@ -119,12 +119,14 @@ class DeproxyEndpoint {
     def reader;
     def writer;
     OutputStream outStream;
+    InputStream inStream;
 
     try {
       log.debug "getting reader"
       //SocketReader reader = new SocketReader(new CountingInputStream(socket.getInputStream()));
       reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       log.debug "getting writer"
+      inStream = socket.getInputStream()
       outStream = socket.getOutputStream();
       try {
         log.debug "starting loop"
@@ -132,7 +134,7 @@ class DeproxyEndpoint {
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(reader, outStream)
+          close = handleOneRequest(reader, inStream, outStream)
           log.debug "handled one request"
         }
         log.debug "ending loop"
@@ -258,7 +260,7 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(reader, outStream) {
+  def handleOneRequest(reader, InputStream inStream, OutputStream outStream) {
     //        logger.debug('')
     //        close_connection = True
     log.debug "Begin handleOneRequest"
@@ -268,7 +270,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
       log.debug "calling parseRequest"
-      def ret = parseRequest(reader, outStream)
+      def ret = parseRequest(reader, inStream, outStream)
       //            logger.debug('returned from parse_request')
       log.debug "returned from parseRequest"
       //            if not ret:
@@ -472,7 +474,7 @@ class DeproxyEndpoint {
   }
 
   //    def parse_request(self, rfile, wfile):
-  def parseRequest(reader, outStream) {
+  def parseRequest(reader, InputStream inStream, OutputStream outStream) {
     //        logger.debug('reading request line')
     log.debug "reading request line"
     //        request_line = rfile.readline(65537)

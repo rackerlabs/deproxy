@@ -31,7 +31,10 @@ class BinaryBodiesTest {
     void testRequestBinaryBody() {
         byte[] body = (-128 .. 127) as byte[]
 
-        def mc = this.deproxy.makeRequest(url: this.url, method: "POST", requestBody: body);
+        def mc = this.deproxy.makeRequest(url: this.url,
+                    method: "POST",
+                    headers: [ 'Content-type': 'application/octet-stream'],
+                    requestBody: body);
 
         assertEquals(1, mc.handlings.size());
         assertArrayEquals(body, mc.sentRequest.body);
@@ -43,7 +46,7 @@ class BinaryBodiesTest {
         byte[] body = (-128 .. 127) as byte[]
 
         def handler = { request ->
-            return new Response(200, "OK", ['Content-type': 'text/plain'], body);
+            return new Response(200, "OK", ['Content-type': 'application/octet-stream'], body);
         }
 
         def mc = this.deproxy.makeRequest(url: this.url, defaultHandler: handler);

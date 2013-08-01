@@ -80,7 +80,7 @@ class BareClientConnector implements ClientConnector {
         def reader = new InputStreamReader(inStream);
 
         log.debug "reading response line"
-        String responseLine = Deproxy.readLine(reader)
+        String responseLine = LineReader.readLine(reader)
         log.debug "response line is ok: ${responseLine}"
 
         def words = responseLine.split("\\s+", 3)

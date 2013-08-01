@@ -374,7 +374,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling handler')
       //            resp = handler(incoming_request)
       log.debug "calling handler"
-      def response = handler(request)
+      Response response = handler(request)
       //            logger.debug('returned from handler')
       log.debug "returned from handler"
       //
@@ -398,7 +398,15 @@ class DeproxyEndpoint {
       //                    'Content-Length' not in resp.headers):
       //                resp.headers.add('Content-Length', len(resp.body))
       if (response.body && !response.headers.contains("Content-Length")) {
-        response.headers.add("Content-Length", response.body.length())
+          def length
+          if (response.body instanceof String) {
+            length = response.body.length()
+          } else if (response.body instanceof byte[]) {
+              length = response.body.length
+          } else {
+              throw new UnsupportedOperationException("Unknown data type in request body")
+          }
+          response.headers.add("Content-Length", length)
       }
       //
       //            if add_default_headers:
@@ -603,7 +611,8 @@ class DeproxyEndpoint {
     //        body = read_body_from_stream(rfile, headers)
     log.debug "reading the body"
     def body = Deproxy.readBody(inStream, headers)
-    log.debug("Done reading body, length ${body?.length()}");
+    String length = (body instanceof byte[] ? body.length : body.toString().length()).toString();
+    log.debug("Done reading body, length ${length}");
     //
     //        logger.debug('returning')
     //        return (Request(method, path, headers, body), persistent_connection)
@@ -656,7 +665,7 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(outStream, response) {
+  def sendResponse(OutputStream outStream, Response response) {
 
     def writer = new PrintWriter(outStream, true);
 
@@ -687,16 +696,33 @@ class DeproxyEndpoint {
     }
     //        wfile.write("\r\n")
     writer.write("\r\n")
-    //
-    //        if response.body is not None and len(response.body) > 0:
-    //            logger.debug('Send the response body, len: %s',
-    //                         len(response.body))
-    //            wfile.write(response.body)
-    if (response.body != null && response.body.length() > 0) {
-      writer.write(response.body)
-    }
-    //
+
     writer.flush()
+    outStream.flush()
+
+    if (response.body != null) {
+      if (response.body instanceof String) {
+          log.debug("sending string body, length ${response.body.length()}")
+          log.debug(response.body)
+          if (response.body.length() > 0) {
+              writer.write(response.body)
+              writer.flush()
+          }
+      } else if (response.body instanceof byte[]) {
+          log.debug("sending binary body, length ${response.body.length}")
+          log.debug(response.body.toString())
+          if (response.body.length > 0) {
+              outStream.write(response.body)
+              outStream.flush()
+          }
+      } else {
+          throw new UnsupportedOperationException("Unknown data type in request body")
+      }
+    }
+
+      log.debug("finished sending response")
+      writer.flush()
+      outStream.flush()
   }
 
   //    def date_time_string(self, timestamp=None):

@@ -1,5 +1,9 @@
 package org.rackspace.gdeproxy
 
+import java.nio.ByteBuffer
+import java.nio.charset.CharacterCodingException
+import java.nio.charset.Charset
+import java.nio.charset.CodingErrorAction
 import java.util.concurrent.locks.ReentrantLock
 
 import groovy.util.logging.Log4j;
@@ -332,17 +336,44 @@ class Deproxy {
     }
   }
 
+    // utility method to be used by all parts of the system for reading from
+    // sockets. this way, there's a consistent implementation and consistent
+    // policy for end-of-line
+    static String readLine(Reader reader) {
+        int value = reader.read()
+        if (value < 0) {
+            return null
+        }
+
+        StringBuilder sb = new StringBuilder()
+
+        // naive definition of line termination
+        // just consider \n, not \r or \r\n
+        while (value >= 0 && value != '\n') {
+            char ch = (char)value
+            if (ch != '\r') {
+                sb.append(ch)
+            }
+            value = reader.read()
+        }
+
+        return sb.toString()
+    }
+
   static def readBody(InputStream inStream, headers) {
 
-      def reader = new BufferedReader(new InputStreamReader(inStream));
+//      def reader = new InputStreamReader(inStream);
 
       if (headers == null)
           return null
-          
+
     Logger log = Logger.getLogger(Deproxy.class.getName());
 
       if (headers == null)
-          return reader
+          return null
+
+    byte[] bindata
+
     //    if ('Transfer-Encoding' in headers and
     //            headers['Transfer-Encoding'] != 'identity'):
     //        # 2
@@ -362,13 +393,26 @@ class Deproxy {
     if (headers.contains("Content-Length")) {
       int length = headers.getFirstValue("Content-Length").toInteger();
       log.debug("Headers contain Content-Length: ${length}")
-      //TODO: this is reading characters, but according to the spec, Content-Length is a count of octets.
-      char[] data = new char[length]
-      int count = reader.read(data, 0, length)
-      if (count != length) {
-        // TODO: what does the spec say should happen in this case?
-      }
-      return new String(data)
+
+        if (length > 0) {
+            bindata = new byte[length]
+            int i;
+            def count = 0
+            log.debug("  starting to read body")
+            for (i = 0; i < length; i++) {
+                int ii = inStream.read()
+                log.debug("   [${i}] = ${ii}")
+                byte bb = (byte)ii
+                bindata[i] = bb
+                count++;
+            }
+//            def count = inStream.read(bindata);
+
+            if (count != length) {
+                // end of stream or some error
+                // TODO: what does the spec say should happen in this case?
+            }
+        }
     }
     //    elif False:
     //        # multipart/byteranges ?
@@ -379,7 +423,30 @@ class Deproxy {
     //        # there is no body
     //        body = None
     //    return body
-    log.debug("Returning null");
-    return null
+
+        if (bindata == null) {
+          log.debug("Returning null");
+          return null;
+        }
+
+        if (!headers.contains("Content-type") ||
+            headers.getFirstValue("Content-type")?.toLowerCase()?.startsWith("text/")) {
+
+            String chardata = null
+
+            try {
+                def decoder = Charset.forName("US-ASCII").newDecoder()
+                decoder.onMalformedInput(CodingErrorAction.REPORT)
+                decoder.onUnmappableCharacter(CodingErrorAction.REPORT)
+                chardata = decoder.decode(ByteBuffer.wrap(bindata)).toString()
+            } catch (Exception e) {
+            }
+
+            if (chardata != null) {
+                return chardata
+            }
+        }
+
+        return bindata
   }
 }

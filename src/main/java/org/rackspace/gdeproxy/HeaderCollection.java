@@ -4,6 +4,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -137,20 +138,21 @@ class HeaderCollection {
     return defaultValue;
   }
 
-  public static HeaderCollection fromReader(BufferedReader reader) throws IOException {
+  @SuppressWarnings("deprecation")
+  public static HeaderCollection fromReader(Reader reader) throws IOException {
 
     HeaderCollection headers = new HeaderCollection();
-    String line = reader.readLine();
+    String line = Deproxy.readLine(reader);
     while (line != null && !line.equals("") && !line.equals("\r\n")) {
       String[] parts = line.split(":", 2);
       String name = parts[0];
       String value = (parts.length > 1 ? parts[1] : "");
       name = name.trim();
-      line = reader.readLine();
+      line = Deproxy.readLine(reader);
       while (line.startsWith(" ") || line.startsWith("\t")) {
         // Continuation lines - see RFC 2616, section 4.2
         value += " " + line;
-        line = reader.readLine();
+        line = Deproxy.readLine(reader);
       }
       headers.add(name, value.trim());
     }

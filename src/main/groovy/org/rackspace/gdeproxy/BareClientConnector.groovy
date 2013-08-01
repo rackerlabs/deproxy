@@ -58,7 +58,7 @@ class BareClientConnector implements ClientConnector {
 
         log.debug "creating socket reader"
         InputStream inStream = s.getInputStream();
-        def reader = new InputStreamReader(inStream);
+        def reader = new UnbufferedStreamReader(inStream);
 
         log.debug "reading response line"
         String responseLine = LineReader.readLine(reader)
@@ -74,15 +74,7 @@ class BareClientConnector implements ClientConnector {
         def code = words[1]
         def message = words[2]
 
-        log.debug "reading headers"
-        def headers = HeaderCollection.fromReader(reader)
-        if (headers.size() > 0) {
-            headers.each {
-                log.debug "  ${it.name}: ${it.value}"
-            }
-        } else {
-            log.debug "no headers received"
-        }
+        HeaderCollection headers = HeaderReader.readHeaders(inStream)
 
         log.debug "reading body"
         def body = BodyReader.readBody(inStream, headers)
@@ -93,5 +85,6 @@ class BareClientConnector implements ClientConnector {
         log.debug "returning response object"
         return response
     }
+
 
 }

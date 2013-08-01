@@ -10,7 +10,7 @@ class LineReader {
     // utility method to be used by all parts of the system for reading from
     // sockets. this way, there's a consistent implementation and consistent
     // policy for end-of-line
-    static String readLine(Reader reader) {
+    static String readLine(Readable reader) {
         int value = reader.read()
         if (value < 0) {
             return null
@@ -29,5 +29,9 @@ class LineReader {
         }
 
         return sb.toString()
+    }
+
+    static String readLine(InputStream inStream) {
+        return readLine(new UnbufferedStreamReader(inStream))
     }
 }

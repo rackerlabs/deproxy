@@ -482,15 +482,9 @@ class DeproxyEndpoint {
   //    def parse_request(self, rfile, wfile):
   def parseRequest(InputStream inStream, OutputStream outStream) {
 
-    def reader = new BufferedReader(new InputStreamReader(inStream));
-
     log.debug "reading request line"
-    def requestLine = reader.readLine()
-    //        if len(request_line) > 65536:
-    //            self.send_error(wfile, 414, None, self.default_request_version)
-    //            return ()
-    //        if not request_line:
-    //            return ()
+    def requestLine = LineReader.readLine(inStream)
+
     if (!requestLine){
       log.debug "request line is null: ${requestLine}"
 
@@ -581,23 +575,9 @@ class DeproxyEndpoint {
       sendResponse(outStream, new Response(505, null, null, "Invalid HTTP Version \"${version}\"}"))
       return []
     }
-    //
-    //        logger.debug('parsing headers')
-    log.debug "parsing headers"
-    //        headers = HeaderCollection.from_stream(rfile)
-    def headers = HeaderCollection.fromReader(reader)
-    //        for k, v in headers.iteritems():
-    //            logger.debug(' {0}: "{1}"'.format(k, v))
-    headers.each {
-      log.debug "  ${it.name}: ${it.value}"
-    }
-    //
-    //        persistent_connection = False
-    //        if (version == 'HTTP/1.1' and
-    //                'Connection' in headers and
-    //                headers['Connection'] != 'close'):
-    //            persistent_connection = True
-    //
+
+    HeaderCollection headers = HeaderReader.readHeaders(inStream)
+
     def persistentConnection = false
     if (version == "HTTP/1.1") {
       persistentConnection = true

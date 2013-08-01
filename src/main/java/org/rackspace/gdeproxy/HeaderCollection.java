@@ -3,6 +3,7 @@ import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,8 +138,9 @@ class HeaderCollection {
     return defaultValue;
   }
 
-  @SuppressWarnings("deprecation")
-  public static HeaderCollection fromReader(Reader reader) throws IOException {
+  public static HeaderCollection fromStream(InputStream inStream) throws IOException {
+
+    UnbufferedStreamReader reader = new UnbufferedStreamReader(inStream);
 
     HeaderCollection headers = new HeaderCollection();
     String line = LineReader.readLine(reader);

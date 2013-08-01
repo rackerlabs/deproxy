@@ -21,7 +21,7 @@ class Deproxy {
   def _endpointLock = new ReentrantLock()
   def _endpoints = []
   def _defaultHandler = null
-    def _defaultClientConnector = new BareClientConnector();
+    def _defaultClientConnector = new DefaultClientConnector()
 
   public static final String VERSION = "0.9";
   public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
@@ -146,42 +146,6 @@ class Deproxy {
     def path = uri.path
 
     log.debug "request body: ${requestBody}"
-
-
-    if (addDefaultHeaders) {
-
-        if (requestBody &&
-            !chunked &&
-            !headers.contains("Content-Length")) {
-
-            def length
-            if (requestBody instanceof String) {
-                length = requestBody.length()
-            } else if (requestBody instanceof byte[]) {
-                length = requestBody.length
-            } else {
-                throw new UnsupportedOperationException("Unknown data type in requestBody")
-            }
-
-            if (length > 0) {
-                headers.add("Content-Length", length)
-            }
-        }
-
-      if (!headers.contains("Host")){
-        headers.add("Host", host)
-      }
-      if (!headers.contains("Accept")){
-        headers.add("Accept", "*/*")
-      }
-      if (!headers.contains("Accept-Encoding")){
-        headers.add("Accept-Encoding", "identity")
-      }
-      if (!headers.contains("User-Agent")){
-        headers.add("User-Agent", VERSION_STRING)
-      }
-
-    }
 
     Request request = new Request(method, path, headers, requestBody)
 

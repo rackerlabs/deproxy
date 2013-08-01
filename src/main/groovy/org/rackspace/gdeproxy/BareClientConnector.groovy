@@ -56,13 +56,11 @@ class BareClientConnector implements ClientConnector {
 
         BodyWriter.writeBody(request.body, outStream)
 
-        log.debug "creating socket reader"
         InputStream inStream = s.getInputStream();
-        def reader = new UnbufferedStreamReader(inStream);
 
         log.debug "reading response line"
-        String responseLine = LineReader.readLine(reader)
-        log.debug "response line is ok: ${responseLine}"
+        String responseLine = LineReader.readLine(inStream)
+        log.debug "response read: ${responseLine}"
 
         def words = responseLine.split("\\s+", 3)
         if (words.size() != 3)

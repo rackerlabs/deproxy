@@ -42,14 +42,9 @@ class BareClientConnector implements ClientConnector {
         writer.write("\r\n");
         log.debug "Sending \"${requestLine}\""
 
-        for (Header header : request.headers.getItems()) {
-            writer.write("${header.name}: ${header.value}");
-            writer.write("\r\n");
-            log.debug "Sending \"${header.name}: ${header.value}\""
-        }
+        writer.flush();
 
-        writer.write("");
-        writer.write("\r\n");
+        HeaderWriter.writeHeaders(outStream, request.headers)
 
         writer.flush();
         outStream.flush();

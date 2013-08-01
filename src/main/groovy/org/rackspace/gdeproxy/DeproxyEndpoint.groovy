@@ -667,17 +667,10 @@ class DeproxyEndpoint {
     //                    (response.code, message))
     writer.write("HTTP/1.1 ${response.code} ${response.message}")
     writer.write("\r\n")
-    //
-    //        for name, value in response.headers.iteritems():
-    //            wfile.write("%s: %s\r\n" % (name, value))
-    response.headers.each {
-      writer.write("${it.name}: ${it.value}")
-      writer.write("\r\n")
-    }
-    //        wfile.write("\r\n")
-    writer.write("\r\n")
 
     writer.flush()
+
+    HeaderWriter.writeHeaders(outStream, response.headers)
 
     BodyWriter.writeBody(response.body, outStream)
 

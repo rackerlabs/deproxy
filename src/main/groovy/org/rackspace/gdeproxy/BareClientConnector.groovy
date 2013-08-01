@@ -104,7 +104,7 @@ class BareClientConnector implements ClientConnector {
         }
 
         log.debug "reading body"
-        def body = Deproxy.readBody(inStream, headers)
+        def body = BodyReader.readBody(inStream, headers)
 
         log.debug "creating response object"
         def response = new Response(code, message, headers, body)

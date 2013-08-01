@@ -610,7 +610,7 @@ class DeproxyEndpoint {
     //        logger.debug('reading body')
     //        body = read_body_from_stream(rfile, headers)
     log.debug "reading the body"
-    def body = Deproxy.readBody(inStream, headers)
+    def body = BodyReader.readBody(inStream, headers)
     String length = (body instanceof byte[] ? body.length : body.toString().length()).toString();
     log.debug("Done reading body, length ${length}");
     //

@@ -14,8 +14,6 @@ import java.nio.charset.CodingErrorAction
 class BodyReader {
     static def readBody(InputStream inStream, headers) {
 
-//      def reader = new InputStreamReader(inStream);
-
         if (headers == null)
             return null
 

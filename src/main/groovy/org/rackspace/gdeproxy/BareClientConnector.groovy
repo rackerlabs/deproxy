@@ -54,26 +54,7 @@ class BareClientConnector implements ClientConnector {
         writer.flush();
         outStream.flush();
 
-        if (request.body == null ||
-                request.body == "" ||
-                request.body == [] as byte[]) {
-
-            log.debug("No body to send");
-
-        } else if (request.body instanceof String) {
-            log.debug "Sending string body, length = ${request.body.length()}"
-            def count = writer.write(request.body)
-            writer.flush();
-        } else if (request.body instanceof byte[]) {
-            log.debug "Sending binary body, length = ${request.body.length}"
-            def count = outStream.write(request.body)
-            outStream.flush()
-        } else {
-            throw new UnsupportedOperationException("Unknown data type in request body")
-        }
-
-        writer.flush();
-        outStream.flush();
+        BodyWriter.writeBody(request.body, outStream)
 
         log.debug "creating socket reader"
         InputStream inStream = s.getInputStream();
@@ -112,4 +93,5 @@ class BareClientConnector implements ClientConnector {
         log.debug "returning response object"
         return response
     }
+
 }

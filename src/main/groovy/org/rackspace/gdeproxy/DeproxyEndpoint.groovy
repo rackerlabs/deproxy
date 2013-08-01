@@ -698,31 +698,10 @@ class DeproxyEndpoint {
     writer.write("\r\n")
 
     writer.flush()
-    outStream.flush()
 
-    if (response.body != null) {
-      if (response.body instanceof String) {
-          log.debug("sending string body, length ${response.body.length()}")
-          log.debug(response.body)
-          if (response.body.length() > 0) {
-              writer.write(response.body)
-              writer.flush()
-          }
-      } else if (response.body instanceof byte[]) {
-          log.debug("sending binary body, length ${response.body.length}")
-          log.debug(response.body.toString())
-          if (response.body.length > 0) {
-              outStream.write(response.body)
-              outStream.flush()
-          }
-      } else {
-          throw new UnsupportedOperationException("Unknown data type in request body")
-      }
-    }
+    BodyWriter.writeBody(response.body, outStream)
 
-      log.debug("finished sending response")
-      writer.flush()
-      outStream.flush()
+    log.debug("finished sending response")
   }
 
   //    def date_time_string(self, timestamp=None):

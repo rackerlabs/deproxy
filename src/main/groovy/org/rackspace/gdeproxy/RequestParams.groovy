@@ -6,6 +6,6 @@ package org.rackspace.gdeproxy
  */
 
 class RequestParams {
-    boolean usedChunkedTransferEncoding = false;
+//    boolean usedChunkedTransferEncoding = false;
     boolean sendDefaultRequestHeaders = true;
 }

@@ -13,7 +13,7 @@ class DefaultClientConnector extends BareClientConnector {
         if (params.sendDefaultRequestHeaders) {
 
             if (request.body &&
-                    !params.usedChunkedTransferEncoding &&
+//                    !params.usedChunkedTransferEncoding &&
                     !request.headers.contains("Content-Length")) {
 
                 def length

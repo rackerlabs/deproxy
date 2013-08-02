@@ -26,6 +26,7 @@ public class ChunkedBodyTest {
         this.endpoint = this.deproxy.addEndpoint(this.port);
     }
 
+    @Ignore
     @Test
     void testChunkedRequestBody() {
 
@@ -49,7 +50,8 @@ public class ChunkedBodyTest {
         assertEquals("chunked", mc.handlings[0].request.headers.getFirstValue("Transfer-Encoding"));
         assertEquals(body, mc.handlings[0].request.body);
     }
-    
+
+    @Ignore
     @Test
     void testChunkedResponseBody() {
         def body = """ This is another body

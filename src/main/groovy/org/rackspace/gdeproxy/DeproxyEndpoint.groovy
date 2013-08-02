@@ -1,5 +1,5 @@
 package org.rackspace.gdeproxy
-import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
 import org.linkedin.util.clock.SystemClock
 
 import java.text.SimpleDateFormat
@@ -11,14 +11,10 @@ import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForC
  */
 
 //class DeproxyEndpoint:
-@Log4j
 class DeproxyEndpoint {
-  //
-  //    """A class that acts as a mock HTTP server."""
-  //
+  Logger log = Logger.getLogger(DeproxyEndpoint.class.getName());
 
-  //    _conn_number = 1
-  int connectionNumber = 1;
+    int connectionNumber = 1;
   //    _conn_number_lock = threading.Lock()
   def connectionNumberLock = new ReentrantLock();
 
@@ -77,10 +73,10 @@ class DeproxyEndpoint {
     serverThread = new Thread("Thread-${name}")
 
     //    serverThread = Thread.startDaemon("Thread-${name}") {
-    serverSocket = new ServerSocket(port)
-    //      serverSocket.setReuseAddress(true)
-    //      serverSocket.setSoTimeout(5000)
-    //      serverSocket.bind(new InetSocketAddress(port))
+    serverSocket = new ServerSocket()
+          serverSocket.setReuseAddress(true)
+//          serverSocket.setSoTimeout(5000)
+          serverSocket.bind(new InetSocketAddress(port), 100)
     serverThread = new DeproxyEndpointListenerThread(this, serverSocket, "Thread-${name}");
     serverThread.start();
 
@@ -148,7 +144,13 @@ class DeproxyEndpoint {
       //socket.shutdownInput()
       //socket.shutdownOutput()
       //reader.close()
-      socket.close()
+        try {
+            reader.close()
+            writer.close()
+            socket.close()
+        } catch (Exception e) {
+            log.error("error when closing the socket!")
+        }
     }
 
     log.debug "done processing"

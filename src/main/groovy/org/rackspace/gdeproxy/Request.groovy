@@ -7,10 +7,11 @@ class Request {
 
     String method
     String path
+    String rawPathQueryFragment
     HeaderCollection headers
     String body
 
-    public Request(method, path, headers = [:], body = null) {
+    public Request(method, path, headers = [:], body = null, rawPathQueryFragment = null) {
         //    def __init__(self, method, path, headers=None, body=None):
         //        """
         //Parameters:
@@ -24,12 +25,14 @@ class Request {
         //"""
         this.method = method.toString()
         this.path = path.toString()
+        this.rawPathQueryFragment =  (rawPathQueryFragment ? rawPathQueryFragment.toString() : "")
         this.headers = new HeaderCollection(headers)
         this.body = (body ? body.toString() : "")
     }
 
     String toString() {
-        sprintf('Request(method=%s, path=%s, headers=%s, body=%s)', method, path, headers, body);
+        sprintf('Request(method=%s, path=%s, rawPathQueryFragment=%s, headers=%s, body=%s)',
+                method, path, rawPathQueryFragment, headers, body);
     }
 
 }

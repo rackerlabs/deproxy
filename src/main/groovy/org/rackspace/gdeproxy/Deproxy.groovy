@@ -132,18 +132,14 @@ class Deproxy {
     def messageChain = new MessageChain(defaultHandler, handlers)
     //        self.add_message_chain(request_id, message_chain)
     addMessageChain(requestId, messageChain)
-    //
-    //        urlparts = list(urlparse.urlsplit(url, 'http'))
-    //        scheme = urlparts[0]
-    //        host = urlparts[1]
-    //        urlparts[0] = ''
-    //        urlparts[1] = ''
-    //        path = urlparse.urlunsplit(urlparts)
+
+
     def uri = new URI(url)
     def host = uri.host
     def port = uri.port
     boolean https = (uri.scheme == 'https');
-    def path = uri.path
+    def path = uri.rawPath + "?" + uri.rawQuery
+
 
     log.debug "request body: ${requestBody}"
 

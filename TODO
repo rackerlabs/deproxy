@@ -34,4 +34,7 @@ option on route to be transparent or not (see http rfc) ?
 server-side https
 test https
 test route https
-
+extensive tests for uri's paths and query parameters
+    consider illegal chars
+    consider non-ascii chars
+    consider escaping

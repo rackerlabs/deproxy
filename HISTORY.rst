@@ -12,7 +12,7 @@ History
   control over how connections are made and requests are sent.
 - Added support for binary message bodies.
 
-0.9 (2013-??-??)
+0.9 (2013-06-19)
 ++++++++++++++++
 
 - Port to Groovy.

@@ -8,24 +8,35 @@ class Request {
     String method
     String path
     HeaderCollection headers
-    String body
+    def body
 
-    public Request(method, path, headers = [:], body = null) {
-        //    def __init__(self, method, path, headers=None, body=None):
-        //        """
-        //Parameters:
-        //
-        //method - The HTTP method to use, such as 'GET', 'POST', or 'PUT'.
-        //path - The relative path of the resource requested.
-        //headers - An optional collection of name/value pairs, either a mapping
-        //object like ``dict``, or a HeaderCollection. Defaults to an empty
-        //collection.
-        //body - An optional request body. Defaults to the empty string.
-        //"""
+    public Request(method, path, headers=[:], body=null) {
+        """Parameters:
+
+        method - The HTTP method to use, such as 'GET', 'POST', or 'PUT'.
+
+        path - The relative path of the resource requested.
+
+        headers - An optional collection of name/value pairs, either a mapping
+            object like ``['name': 'value']``, or a HeaderCollection.
+            Defaults to an empty map.
+
+        body - An optional request body. Defaults to the empty string. Both
+            strings and byte arrays are acceptable. All other types are
+            toString'd.
+        """
+
+        if (body == null) {
+            body = ""
+        } else if (!(body instanceof byte[]) &&
+                   !(body instanceof String)) {
+            body = body.toString()
+        }
+
         this.method = method.toString()
         this.path = path.toString()
         this.headers = new HeaderCollection(headers)
-        this.body = (body ? body.toString() : "")
+        this.body = body
     }
 
     String toString() {

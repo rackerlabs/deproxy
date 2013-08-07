@@ -118,27 +118,27 @@ class DeproxyEndpoint {
     log.debug "processing new connection..."
     def reader;
     def writer;
+    OutputStream outStream;
+    InputStream inStream;
 
     try {
       log.debug "getting reader"
-      //SocketReader reader = new SocketReader(new CountingInputStream(socket.getInputStream()));
-      reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       log.debug "getting writer"
-      //SocketWriter writer = new SocketWriter(new CountingOutputStream(socket.getOutputStream()));
-      writer = new PrintWriter(socket.getOutputStream(), true);
+      inStream = socket.getInputStream()
+      outStream = socket.getOutputStream();
       try {
         log.debug "starting loop"
         def close = false
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(reader, writer)
+          close = handleOneRequest(inStream, outStream)
           log.debug "handled one request"
         }
         log.debug "ending loop"
       } catch (RuntimeException e) {
         log.error("there was an error", e)
-        sendResponse(writer,
+        sendResponse(outStream,
           new Response(500, "Internal Server Error", null,
                 "The server encountered an unexpected condition which prevented it from fulfilling the request."))
       }
@@ -258,7 +258,7 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(reader, writer) {
+  def handleOneRequest(InputStream inStream, OutputStream outStream) {
     //        logger.debug('')
     //        close_connection = True
     log.debug "Begin handleOneRequest"
@@ -268,7 +268,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
       log.debug "calling parseRequest"
-      def ret = parseRequest(reader, writer)
+      def ret = parseRequest(inStream, outStream)
       //            logger.debug('returned from parse_request')
       log.debug "returned from parseRequest"
       //            if not ret:
@@ -374,7 +374,7 @@ class DeproxyEndpoint {
       //            logger.debug('calling handler')
       //            resp = handler(incoming_request)
       log.debug "calling handler"
-      def response = handler(request)
+      Response response = handler(request)
       //            logger.debug('returned from handler')
       log.debug "returned from handler"
       //
@@ -398,7 +398,15 @@ class DeproxyEndpoint {
       //                    'Content-Length' not in resp.headers):
       //                resp.headers.add('Content-Length', len(resp.body))
       if (response.body && !response.headers.contains("Content-Length")) {
-        response.headers.add("Content-Length", response.body.length())
+          def length
+          if (response.body instanceof String) {
+            length = response.body.length()
+          } else if (response.body instanceof byte[]) {
+              length = response.body.length
+          } else {
+              throw new UnsupportedOperationException("Unknown data type in request body")
+          }
+          response.headers.add("Content-Length", length)
       }
       //
       //            if add_default_headers:
@@ -439,7 +447,7 @@ class DeproxyEndpoint {
       }
       //
       //            self.send_response(wfile, resp)
-      sendResponse(writer, response)
+      sendResponse(outStream, response)
       //
       //            wfile.flush()
       //
@@ -472,16 +480,11 @@ class DeproxyEndpoint {
   }
 
   //    def parse_request(self, rfile, wfile):
-  def parseRequest(reader, writer) {
-    //        logger.debug('reading request line')
+  def parseRequest(InputStream inStream, OutputStream outStream) {
+
     log.debug "reading request line"
-    //        request_line = rfile.readline(65537)
-    def requestLine = reader.readLine()
-    //        if len(request_line) > 65536:
-    //            self.send_error(wfile, 414, None, self.default_request_version)
-    //            return ()
-    //        if not request_line:
-    //            return ()
+    def requestLine = LineReader.readLine(inStream)
+
     if (!requestLine){
       log.debug "request line is null: ${requestLine}"
 
@@ -516,7 +519,7 @@ class DeproxyEndpoint {
       //                                "Bad request version (%r)" % version)
       //                return ()
       if (!version.startsWith("HTTP/")) {
-        sendResponse(writer, new Response(400, null, null, "Bad request version \"${version}\""))
+        sendResponse(outStream, new Response(400, null, null, "Bad request version \"${version}\""))
         return []
       }
       //            try:
@@ -553,7 +556,7 @@ class DeproxyEndpoint {
       //                            self.default_request_version,
       //                            "Bad request syntax (%r)" % request_line)
       //            return ()
-      sendResponse(writer, new Response(400))
+      sendResponse(outStream, new Response(400))
       return []
     }
     //
@@ -569,26 +572,12 @@ class DeproxyEndpoint {
       version != "HTTP/1.0" &&
       version != "HTTP/0.9") {
 
-      sendResponse(writer, new Response(505, null, null, "Invalid HTTP Version \"${version}\"}"))
+      sendResponse(outStream, new Response(505, null, null, "Invalid HTTP Version \"${version}\"}"))
       return []
     }
-    //
-    //        logger.debug('parsing headers')
-    log.debug "parsing headers"
-    //        headers = HeaderCollection.from_stream(rfile)
-    def headers = HeaderCollection.fromReader(reader)
-    //        for k, v in headers.iteritems():
-    //            logger.debug(' {0}: "{1}"'.format(k, v))
-    headers.each {
-      log.debug "  ${it.name}: ${it.value}"
-    }
-    //
-    //        persistent_connection = False
-    //        if (version == 'HTTP/1.1' and
-    //                'Connection' in headers and
-    //                headers['Connection'] != 'close'):
-    //            persistent_connection = True
-    //
+
+    HeaderCollection headers = HeaderReader.readHeaders(inStream)
+
     def persistentConnection = false
     if (version == "HTTP/1.1") {
       persistentConnection = true
@@ -601,8 +590,9 @@ class DeproxyEndpoint {
     //        logger.debug('reading body')
     //        body = read_body_from_stream(rfile, headers)
     log.debug "reading the body"
-    def body = Deproxy.readBody(reader, headers)
-    log.debug("Done reading body, length ${body?.length()}");
+    def body = BodyReader.readBody(inStream, headers)
+    String length = (body instanceof byte[] ? body.length : body.toString().length()).toString();
+    log.debug("Done reading body, length ${length}");
     //
     //        logger.debug('returning')
     //        return (Request(method, path, headers, body), persistent_connection)
@@ -655,7 +645,10 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(writer, response) {
+  def sendResponse(OutputStream outStream, Response response) {
+
+    def writer = new PrintWriter(outStream, true);
+
     //        """
     //Send the given Response over the socket. Add Server and Date headers
     //if not already present.
@@ -674,25 +667,14 @@ class DeproxyEndpoint {
     //                    (response.code, message))
     writer.write("HTTP/1.1 ${response.code} ${response.message}")
     writer.write("\r\n")
-    //
-    //        for name, value in response.headers.iteritems():
-    //            wfile.write("%s: %s\r\n" % (name, value))
-    response.headers.each {
-      writer.write("${it.name}: ${it.value}")
-      writer.write("\r\n")
-    }
-    //        wfile.write("\r\n")
-    writer.write("\r\n")
-    //
-    //        if response.body is not None and len(response.body) > 0:
-    //            logger.debug('Send the response body, len: %s',
-    //                         len(response.body))
-    //            wfile.write(response.body)
-    if (response.body != null && response.body.length() > 0) {
-      writer.write(response.body)
-    }
-    //
+
     writer.flush()
+
+    HeaderWriter.writeHeaders(outStream, response.headers)
+
+    BodyWriter.writeBody(response.body, outStream)
+
+    log.debug("finished sending response")
   }
 
   //    def date_time_string(self, timestamp=None):

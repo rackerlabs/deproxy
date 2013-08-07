@@ -79,7 +79,6 @@ class DefaultRequestHeadersTest {
   //        self.assertNotIn('User-Agent', mc.sent_request.headers)
   //
   //
-  @Ignore
   @Test
   void testExplicitOff() {
     def mc = _deproxy.makeRequest(url: _url, addDefaultHeaders: false);

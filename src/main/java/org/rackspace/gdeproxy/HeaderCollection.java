@@ -2,8 +2,9 @@ package org.rackspace.gdeproxy;
 import groovy.lang.Closure;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,12 @@ class HeaderCollection {
       _headers.add(new Header(entry.getKey().toString(), entry.getValue().toString()));
     }
   }
+
+    HeaderCollection(List<Header> list) {
+        for (Header header : list) {
+            _headers.add(header);
+        }
+    }
 
   HeaderCollection(HeaderCollection headers) {
     for (Header header : headers._headers) {
@@ -131,20 +138,22 @@ class HeaderCollection {
     return defaultValue;
   }
 
-  public static HeaderCollection fromReader(BufferedReader reader) throws IOException {
+  public static HeaderCollection fromStream(InputStream inStream) throws IOException {
+
+    UnbufferedStreamReader reader = new UnbufferedStreamReader(inStream);
 
     HeaderCollection headers = new HeaderCollection();
-    String line = reader.readLine();
+    String line = LineReader.readLine(reader);
     while (line != null && !line.equals("") && !line.equals("\r\n")) {
       String[] parts = line.split(":", 2);
       String name = parts[0];
       String value = (parts.length > 1 ? parts[1] : "");
       name = name.trim();
-      line = reader.readLine();
+      line = LineReader.readLine(reader);
       while (line.startsWith(" ") || line.startsWith("\t")) {
         // Continuation lines - see RFC 2616, section 4.2
         value += " " + line;
-        line = reader.readLine();
+        line = LineReader.readLine(reader);
       }
       headers.add(name, value.trim());
     }

@@ -138,7 +138,11 @@ class Deproxy {
     def host = uri.host
     def port = uri.port
     boolean https = (uri.scheme == 'https');
-    def path = uri.rawPath + "?" + uri.rawQuery
+    URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
+    def path = uri2.relativize(uri).toString()
+    if (!path.startsWith("/")) {
+        path = "/" + path
+    }
 
 
     log.debug "request body: ${requestBody}"

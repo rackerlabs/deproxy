@@ -16,7 +16,7 @@ public class PortFinder {
   def _basePort = 10000
   def _currentPort = null
 
-  def getNextOpenPort(start=null) {
+  def getNextOpenPort(start=null, int sleepTime=100) {
 
     if (start != null) {
       _currentPort = start
@@ -41,7 +41,7 @@ public class PortFinder {
         throw e
       }
 
-      Thread.sleep(1000)
+      Thread.sleep(sleepTime)
       log.debug "Connected"
 
       _currentPort++

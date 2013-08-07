@@ -2,6 +2,10 @@ Clean up code
     remove python in comments
     re-indent everything to 4-space indentation granularity
 
+update docs
+
+update HISTORY.rst
+
 chunked body reading
     will require a more expansive model of the request/response and the behavior of the connector(s)
 compression

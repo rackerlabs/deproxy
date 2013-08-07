@@ -3,7 +3,21 @@
 History
 -------
 
-0.8 (in progress)
+0.10 (2013-08-07)
++++++++++++++++++
+
+- Made the PortFinder class public. Useful for dynamically getting port
+  numbers in tests.
+- Created the ClientConnector concept, which allows more fine-grained
+  control over how connections are made and requests are sent.
+- Added support for binary message bodies.
+
+0.9 (2013-??-??)
+++++++++++++++++
+
+- Port to Groovy.
+
+0.8 (2013-06-05)
 ++++++++++++++++
 
 - Rough preliminary support for using ssl for requests.

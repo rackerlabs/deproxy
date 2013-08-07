@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
+@Deprecated
 class SocketWriter extends OutputStreamWriter {
 
   public SocketWriter(OutputStream out) {

@@ -13,8 +13,8 @@ class MessageChain {
     Response receivedResponse
     def defaultHandler
     def handlers = [:]
-    def handlings = []
-    def orphanedHandlings = []
+    List<Handling> handlings = []
+    List<Handling> orphanedHandlings = []
     def _lock = new Object()
 
     //    def __init__(self, default_handler, handlers):

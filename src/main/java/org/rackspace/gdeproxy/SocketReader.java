@@ -12,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
+@Deprecated
 public class SocketReader extends InputStreamReader {
 
   InputStream __stream;

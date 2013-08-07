@@ -1,13 +1,25 @@
+Clean up code
+    remove python in comments
+    re-indent everything to 4-space indentation granularity
+
+update docs
+
+update HISTORY.rst
+
+chunked body reading
+    will require a more expansive model of the request/response and the behavior of the connector(s)
+compression
+    ditto
+
+
+no particular order:
+
 super-easy assertions on message chains, handlings, requests, and responses - for use by importers
 extract classes for handling http version 0.9, 1.0, and 1.1
     extract client connector -> Conforming vs. Bare
     extract server connector -> Conforming vs. Bare
 add endpoint parameter to handler functions, so we know who handled the request ?
     no use-case for this yet
-
-chunked body reading
-binary body
-compression
 
 clean endpoint failure, e.g. if address already in use
     shouldn't get added to _endpoints list

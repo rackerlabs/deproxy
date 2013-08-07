@@ -3,6 +3,8 @@ Clean up code
     re-indent everything to 4-space indentation granularity
 
 update docs
+    code samples are still in python; they need to be converted to groovy
+    new functionality has been added, needs to be documented
 
 update HISTORY.rst
 
@@ -17,6 +19,7 @@ no particular order:
 super-easy assertions on message chains, handlings, requests, and responses - for use by importers
 extract classes for handling http version 0.9, 1.0, and 1.1
     extract client connector -> Conforming vs. Bare
+        create a new client connector or update an existing one to be fully complient with RFC 2616
     extract server connector -> Conforming vs. Bare
 add endpoint parameter to handler functions, so we know who handled the request ?
     no use-case for this yet

@@ -21,6 +21,8 @@ extract classes for handling http version 0.9, 1.0, and 1.1
     extract client connector -> Conforming vs. Bare
         create a new client connector or update an existing one to be fully complient with RFC 2616
     extract server connector -> Conforming vs. Bare
+        HandlerContext
+        2-parameter handlers
 add endpoint parameter to handler functions, so we know who handled the request ?
     no use-case for this yet
 
@@ -38,3 +40,6 @@ extensive tests for uri's paths and query parameters
     consider illegal chars
     consider non-ascii chars
     consider escaping
+
+better logging
+    option whether or not to log request/response bodies - off by default

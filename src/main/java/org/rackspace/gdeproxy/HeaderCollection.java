@@ -77,6 +77,19 @@ class HeaderCollection {
     _headers.add(header);
   }
 
+    public int getCountByName(String name) {
+
+        int count = 0;
+
+        for (Header header : _headers) {
+            if (header.name.equalsIgnoreCase(name)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
   public List<String> findAll(String name) {
 
     List<String> values = new ArrayList<String>();

@@ -118,6 +118,21 @@ class HeaderCollectionTest {
         assertEquals("Value", this.headers['NAME'])
         assertEquals("Value", this.headers['nAmE'])
     }
+
+    @Test
+    void testGetCountByName() {
+
+        this.headers.add('A', 'qwerty')
+        this.headers.add('B', 'asdf')
+        this.headers.add('C', 'zxcv')
+        this.headers.add('A', 'uiop')
+        this.headers.add('A', 'jkl;')
+
+        assertEquals(3, this.headers.getCountByName('A'))
+        assertEquals(3, this.headers.getCountByName('a'))
+        assertEquals(1, this.headers.getCountByName('B'))
+        assertEquals(1, this.headers.getCountByName('C'))
+    }
 }
 
 

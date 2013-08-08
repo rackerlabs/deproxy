@@ -35,6 +35,8 @@ class DeproxyShutdownTest {
 
     deproxy.shutdown()
 
+      sleep(1000)
+
     try {
 
       def e3 = deproxy.addEndpoint(port1)

@@ -12,21 +12,27 @@ class DefaultClientConnector extends BareClientConnector {
 
         if (params.sendDefaultRequestHeaders) {
 
-            if (request.body &&
-//                    !params.usedChunkedTransferEncoding &&
-                    !request.headers.contains("Content-Length")) {
+            if (request.body) {
 
                 def length
+                String contentType
                 if (request.body instanceof String) {
                     length = request.body.length()
+                    contentType = "text/plain"
                 } else if (request.body instanceof byte[]) {
                     length = request.body.length
+                    contentType = "application/octet-stream"
                 } else {
                     throw new UnsupportedOperationException("Unknown data type in requestBody")
                 }
 
                 if (length > 0) {
-                    request.headers.add("Content-Length", length)
+                    if (!request.headers.contains("Content-Length")) {
+                        request.headers.add("Content-Length", length)
+                    }
+                    if (!request.headers.contains("Content-Type")) {
+                        request.headers.add("Content-Type", contentType)
+                    }
                 }
             }
 

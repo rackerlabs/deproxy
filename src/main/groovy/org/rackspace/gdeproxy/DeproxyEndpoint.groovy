@@ -408,26 +408,43 @@ class DeproxyEndpoint {
           }
           response.headers.add("Content-Length", length)
       }
-      //
-      //            if add_default_headers:
-      //                if 'Server' not in resp.headers:
-      //                    resp.headers['Server'] = version_string
-      //                if 'Date' not in resp.headers:
-      //                    resp.headers['Date'] = self.date_time_string()
-      //            else:
-      //                logger.debug('Don\'t add default response headers.')
-      if (addDefaultHeaders){
-        if (!response.headers.contains("Server")) {
-          response.headers.add("Server", Deproxy.VERSION_STRING)
-        }
-        if (!response.headers.contains("Date")) {
-          response.headers.add("Date", datetimeString())
-        }
+
+        if (addDefaultHeaders) {
+
+            if (!response.headers.contains("Server")) {
+                response.headers.add("Server", Deproxy.VERSION_STRING)
+            }
+            if (!response.headers.contains("Date")) {
+                response.headers.add("Date", datetimeString())
+            }
+
+            if (response.body) {
+
+                def length
+                String contentType
+                if (response.body instanceof String) {
+                    length = response.body.length()
+                    contentType = "text/plain"
+                } else if (response.body instanceof byte[]) {
+                    length = response.body.length
+                    contentType = "application/octet-stream"
+                } else {
+                    throw new UnsupportedOperationException("Unknown data type in requestBody")
+                }
+
+                if (length > 0) {
+                    if (!response.headers.contains("Content-Length")) {
+                        response.headers.add("Content-Length", length)
+                    }
+                    if (!response.headers.contains("Content-Type")) {
+                        response.headers.add("Content-Type", contentType)
+                    }
+                }
+            }
+
+
       }
-      //
-      //            found = resp.headers.get(request_id_header_name)
-      //            if not found and request_id is not None:
-      //                resp.headers[request_id_header_name] = request_id
+
       if (requestId && !response.headers.contains(Deproxy.REQUEST_ID_HEADER_NAME)) {
         response.headers.add(Deproxy.REQUEST_ID_HEADER_NAME, requestId)
       }

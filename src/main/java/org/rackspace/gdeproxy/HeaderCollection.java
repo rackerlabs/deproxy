@@ -77,6 +77,19 @@ class HeaderCollection {
     _headers.add(header);
   }
 
+    public int getCountByName(String name) {
+
+        int count = 0;
+
+        for (Header header : _headers) {
+            if (header.name.equalsIgnoreCase(name)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
   public List<String> findAll(String name) {
 
     List<String> values = new ArrayList<String>();
@@ -124,6 +137,10 @@ class HeaderCollection {
   public Header[] getItems() {
     return _headers.toArray(new Header[0]);
   }
+
+    public String getAt(String name) {
+        return getFirstValue(name);
+    }
 
   public String getFirstValue(String name) {
     return getFirstValue(name, null);

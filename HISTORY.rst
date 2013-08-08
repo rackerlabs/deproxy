@@ -3,9 +3,15 @@
 History
 -------
 
-0.11 (in progress)
+0.11 (2013-08-08)
 ++++++++++++++++++
 
+- Fixed query parameters in Request path.
+- Delay handler creator.
+- Better inferring of binary/string data based on content-type.
+- Content-Type is now a default added header on requests and responses with
+  bodies.
+- Made PortFinder faster by decreasing sleep time.
 
 
 0.10 (2013-08-07)

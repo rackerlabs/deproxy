@@ -2,6 +2,7 @@ package org.rackspace.gdeproxy
 
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -54,6 +55,78 @@ class BinaryBodiesTest {
         assertEquals(1, mc.handlings.size());
         assertArrayEquals(body, mc.handlings[0].response.body);
         assertArrayEquals(body, mc.receivedResponse.body);
+    }
+
+    @Test
+    void testDefaultRequestHeadersForBinaryBody() {
+        byte[] body = (-128 .. 127) as byte[]
+
+        def mc = this.deproxy.makeRequest(url: this.url, method: "POST",
+                requestBody: body);
+
+        assertArrayEquals(body, mc.sentRequest.body);
+        assertEquals(1, mc.sentRequest.headers.getCountByName("Content-Type"))
+        assertEquals("application/octet-stream", mc.sentRequest.headers["Content-Type"])
+        assertEquals(1, mc.handlings.size());
+        assertArrayEquals(body, mc.handlings[0].request.body);
+        assertEquals(1, mc.handlings[0].request.headers.getCountByName("Content-Type"))
+        assertEquals("application/octet-stream", mc.handlings[0].request.headers["Content-Type"])
+    }
+
+    @Test
+    void testNoDefaultRequestHeadersForBinaryBody() {
+        byte[] body = (-128 .. 127) as byte[]
+
+        def mc = this.deproxy.makeRequest(url: this.url, method: "POST",
+                requestBody: body,
+                addDefaultHeaders: false);
+
+        assertArrayEquals(body, mc.sentRequest.body);
+        assertEquals(0, mc.sentRequest.headers.getCountByName("Content-Type"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals("", mc.handlings[0].request.body); // because there's no Content-Length header, it doesn't read the body
+        assertEquals(0, mc.handlings[0].request.headers.getCountByName("Content-Type"))
+    }
+
+    @Test
+    void testDefaultResponseHeadersForBinaryBody() {
+        byte[] body = (-128 .. 127) as byte[]
+
+        def handler = { request ->
+            return new Response(200, "OK", null, body);
+        }
+
+        def mc = this.deproxy.makeRequest(url: this.url,
+                                          defaultHandler: handler);
+
+        assertArrayEquals(body, mc.receivedResponse.body);
+        assertEquals(1, mc.receivedResponse.headers.getCountByName("Content-Type"))
+        assertEquals("application/octet-stream", mc.receivedResponse.headers["Content-Type"])
+        assertEquals(1, mc.handlings.size());
+        assertArrayEquals(body, mc.handlings[0].response.body);
+        assertEquals(1, mc.handlings[0].response.headers.getCountByName("Content-Type"))
+        assertEquals("application/octet-stream", mc.handlings[0].response.headers["Content-Type"])
+    }
+
+    // this one doesn't work correctly, because we don't have a reliable way
+    // to turn of default response headers
+    @Ignore
+    @Test
+    void testNoDefaultResponseHeadersForBinaryBody() {
+        byte[] body = (-128 .. 127) as byte[]
+
+        def handler = { request ->
+            return [ new Response(200, "OK", null, body), false ];
+        }
+
+        def mc = this.deproxy.makeRequest(url: this.url,
+                                          defaultHandler: handler);
+
+        assertEquals("", mc.receivedResponse.body);
+        assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Type"))
+        assertEquals(1, mc.handlings.size());
+        assertArrayEquals(body, mc.handlings[0].response.body); // because there's no Content-Length header, it doesn't read the body
+        assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Type"))
     }
 
     @After

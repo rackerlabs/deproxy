@@ -79,16 +79,90 @@ class BodiesTest {
     //
   }
 
-  //    @unittest.expectedFailure
-  //    def test_request_body_chunked(self):
-  //        self.fail()
-  //
-  //    @unittest.expectedFailure
-  //    def test_response_body_chunked(self):
-  //        self.fail()
-  //
+    @Test
+    void testDefaultRequestHeadersForTextBody() {
+        def body = """ This is another body
 
-  //    def tearDown(self):
+        This is the next paragraph.
+        """
+
+        def mc = this.deproxy.makeRequest(url: this.url, method: "POST",
+                                          requestBody: body);
+
+        assertEquals(body, mc.sentRequest.body);
+        assertEquals(1, mc.sentRequest.headers.getCountByName("Content-Type"))
+        assertEquals("text/plain", mc.sentRequest.headers["Content-Type"])
+        assertEquals(1, mc.handlings.size());
+        assertEquals(body, mc.handlings[0].request.body);
+        assertEquals(1, mc.handlings[0].request.headers.getCountByName("Content-Type"))
+        assertEquals("text/plain", mc.handlings[0].request.headers["Content-Type"])
+    }
+
+    @Test
+    void testNoDefaultRequestHeadersForTextBody() {
+        def body = """ This is another body
+
+        This is the next paragraph.
+        """
+
+        def mc = this.deproxy.makeRequest(url: this.url, method: "POST",
+                                          requestBody: body,
+                                          addDefaultHeaders: false);
+
+        assertEquals(body, mc.sentRequest.body);
+        assertEquals(0, mc.sentRequest.headers.getCountByName("Content-Type"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals("", mc.handlings[0].request.body); // because there's no Content-Length header, it doesn't read the body
+        assertEquals(0, mc.handlings[0].request.headers.getCountByName("Content-Type"))
+    }
+
+    @Test
+    void testDefaultResponseHeadersForBinaryBody() {
+        def body = """ This is another body
+
+        This is the next paragraph.
+        """
+
+        def handler = { request ->
+            return new Response(200, "OK", null, body);
+        }
+
+        def mc = this.deproxy.makeRequest(url: this.url,
+                defaultHandler: handler);
+
+        assertEquals(body, mc.receivedResponse.body);
+        assertEquals(1, mc.receivedResponse.headers.getCountByName("Content-Type"))
+        assertEquals("text/plain", mc.receivedResponse.headers["Content-Type"])
+        assertEquals(1, mc.handlings.size());
+        assertEquals(body, mc.handlings[0].response.body);
+        assertEquals(1, mc.handlings[0].response.headers.getCountByName("Content-Type"))
+        assertEquals("text/plain", mc.handlings[0].response.headers["Content-Type"])
+    }
+
+    // this one doesn't work correctly, because we don't have a reliable way
+    // to turn of default response headers
+    @Ignore
+    @Test
+    void testNoDefaultResponseHeadersForBinaryBody() {
+        def body = """ This is another body
+
+        This is the next paragraph.
+        """
+
+        def handler = { request ->
+            return [ new Response(200, "OK", null, body), false ];
+        }
+
+        def mc = this.deproxy.makeRequest(url: this.url,
+                defaultHandler: handler);
+
+        assertEquals("", mc.receivedResponse.body);
+        assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Type"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals(body, mc.handlings[0].response.body); // because there's no Content-Length header, it doesn't read the body
+        assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Type"))
+    }
+
   @After
   void tearDown() {
     //        self.deproxy.shutdown_all_endpoints()
@@ -96,5 +170,6 @@ class BodiesTest {
       this.deproxy.shutdown();
     }
   }
-  //
+
+
 }

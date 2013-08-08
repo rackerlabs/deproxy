@@ -79,9 +79,38 @@ class BodyReader {
             return null;
         }
 
-        if (!headers.contains("Content-type") ||
-                headers.getFirstValue("Content-type")?.toLowerCase()?.startsWith("text/")) {
+        // TODO: switch this to true, and always try to read chardata unless
+        // it's a known binary content type
+        boolean tryCharData = false
 
+        if (!headers.contains("Content-type")) {
+            tryCharData = true;
+        } else {
+            String contentType = headers["Content-Type"]?.toLowerCase()
+
+            // use startsWith in order to ignore any charset or other
+            // parameters on the header value
+            if (contentType?.startsWith("text/") ||
+                    contentType?.startsWith("application/atom+xml") ||
+                    contentType?.startsWith("application/ecmascript") ||
+                    contentType?.startsWith("application/json") ||
+                    contentType?.startsWith("application/javascript") ||
+                    contentType?.startsWith("application/rdf+xml") ||
+                    contentType?.startsWith("application/rss+xml") ||
+                    contentType?.startsWith("application/soap+xml") ||
+                    contentType?.startsWith("application/xhtml+xml") ||
+                    contentType?.startsWith("application/xml") ||
+                    contentType?.startsWith("application/xml-dtd") ||
+                    contentType?.startsWith("application/xop+xml") ||
+                    contentType?.startsWith("image/svg+xml") ||
+                    contentType?.startsWith("message/http") ||
+                    contentType?.startsWith("message/imdn+xml")) {
+
+                tryCharData = true
+            }
+        }
+
+        if (tryCharData) {
             String chardata = null
 
             try {

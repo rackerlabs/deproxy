@@ -125,6 +125,10 @@ class HeaderCollection {
     return _headers.toArray(new Header[0]);
   }
 
+    public String getAt(String name) {
+        return getFirstValue(name);
+    }
+
   public String getFirstValue(String name) {
     return getFirstValue(name, null);
   }

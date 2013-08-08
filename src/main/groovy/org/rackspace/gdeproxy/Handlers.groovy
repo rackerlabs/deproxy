@@ -22,7 +22,8 @@ class Handlers {
 
     // Handler creator
     // Returns a closure (handler) that waits for the given amount of time
-    // before forawrding the request to another handler
+    // before forawrding the request to another handler.
+    // Note: timeout is in milliseconds
     static def Delay(int timeout, nextHandler=Handlers.&simpleHandler) {
         return { Request request ->
             Thread.sleep(timeout);

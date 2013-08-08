@@ -5,46 +5,75 @@
 
 package org.rackspace.gdeproxy
 
+import org.junit.*
+
+import static org.junit.Assert.*
+
 /**
  *
  * @author richard-sartor
  */
 class OrphanedHandlingsTest {
 
+    Deproxy deproxy
+    DeproxyEndpoint endpoint
+
+    // this just acts as another HTTP client to make requests with
+    Deproxy otherClient
+
+    @Before
+    void setup() {
+        this.deproxy = new Deproxy()
+        PortFinder pf = new PortFinder()
+        this.endpoint = this.deproxy.addEndpoint(pf.getNextOpenPort())
+        this.otherClient = new Deproxy()
+    }
+
+    @Test
+    void testOrphanedHandlings() {
+
+        def handler = Handlers.Delay(2000)
+
+        MessageChain mc
+        def t = Thread.start {
+            mc = this.deproxy.makeRequest(url: "http://localhost:${this.endpoint._port}/",
+                                          defaultHandler: handler)
+        }
+
+        // the first request will take a few seconds to finish. during that
+        // time, we'll make another request to the same endpoint from another
+        // client. because it won't have a record of the Deproxy-Request-ID,
+        // the other client's request will be orphaned from the perspective
+        // of the first deproxy.
+
+        MessageChain otherClientMc
+        otherClientMc = this.otherClient.makeRequest(
+                "http://localhost:${this.endpoint._port}/")
+
+        t.join()
+
+        assertEquals(1, mc.orphanedHandlings.size())
+        assertEquals(1, mc.handlings.size())
+        assertEquals(1, mc.orphanedHandlings[0].request.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
+        assertEquals(0, otherClientMc.handlings.size())
+        assertEquals(0, otherClientMc.orphanedHandlings.size())
+        assertEquals(1, otherClientMc.sentRequest.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
+        assertEquals(mc.orphanedHandlings[0].request.headers[Deproxy.REQUEST_ID_HEADER_NAME],
+                     otherClientMc.sentRequest.headers[Deproxy.REQUEST_ID_HEADER_NAME])
+    }
+
+    @After
+    void cleanup() {
+
+        if (this.deproxy) {
+            this.deproxy.shutdown()
+        }
+
+        if (this.otherClient) {
+            this.otherClient.shutdown()
+        }
+    }
+
 }
 
 
-//class TestOrphanedHandlings(unittest.TestCase):
-//    def setUp(self):
-//        self.deproxy_port = get_next_deproxy_port()
-//        self.deproxy = deproxy.Deproxy()
-//        self.end_point = self.deproxy.add_endpoint(self.deproxy_port)
-//        self.other_client = deproxy.Deproxy()
-//
-//    def tearDown(self):
-//        self.deproxy.shutdown_all_endpoints()
-//
-//    def test_orphaned_handling(self):
-//        delayed_handler = deproxy.delay(2, deproxy.simple_handler)
-//        self.long_running_mc = None
-//
-//        class Helper:
-//            mc = None
-//
-//        helper = Helper()
-//
-//        def other_thread():
-//            mc = self.deproxy.make_request('http://localhost:%i/' %
-//                                           self.deproxy_port,
-//                                           default_handler=delayed_handler)
-//            helper.mc = mc
-//
-//        t = threading.Thread(target=other_thread)
-//        t.daemon = True
-//        t.start()
-//        self.other_client.make_request('http://localhost:%i/' %
-//                                       self.deproxy_port)
-//        t.join()
-//        self.assertEqual(len(helper.mc.orphaned_handlings), 1)
-//
-//

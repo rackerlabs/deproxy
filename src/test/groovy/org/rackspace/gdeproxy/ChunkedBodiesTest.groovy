@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author izrik
  */
 @Log4j
-public class ChunkedBodyTest {
+public class ChunkedBodiesTest {
 	
     Deproxy deproxy;
     int port;

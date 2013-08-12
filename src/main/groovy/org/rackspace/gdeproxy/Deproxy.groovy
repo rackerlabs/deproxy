@@ -23,8 +23,20 @@ class Deproxy {
   def _defaultHandler = null
     def _defaultClientConnector = new DefaultClientConnector()
 
-  public static final String VERSION = "0.9";
+  public static final String VERSION = getVersion()
   public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
+    private static String getVersion() {
+        def res = Deproxy.class.getResourceAsStream("version.txt")
+        def bytes = []
+        while (true) {
+            def b = res.read()
+            if (b < 0) break
+
+            bytes += (byte)b
+        }
+
+        return new String(bytes as byte[], "UTF-8")
+    }
 
     Deproxy(defaultHandler=null, defaultClientConnector=null) {
 

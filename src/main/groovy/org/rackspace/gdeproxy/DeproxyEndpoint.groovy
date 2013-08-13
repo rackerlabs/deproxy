@@ -323,11 +323,10 @@ class DeproxyEndpoint {
 
   //    def handle_one_request(self, rfile, wfile):
   def handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
-    //        logger.debug('')
-    //        close_connection = True
+
     log.debug "Begin handleOneRequest"
-    def closeConnection = true
-    //        try:
+    def closeConnection = false
+
     try {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
@@ -365,12 +364,6 @@ class DeproxyEndpoint {
         closeConnection = true
       }
 
-      // persistent connection are not yet supported. close the connection, no
-      // matter what the headers say.
-      //            close_connection = True
-      closeConnection = true
-      //
-      //            message_chain = None
       def messageChain = null
       //            request_id = incoming_request.headers.get(request_id_header_name)
       def requestId = request.headers.getFirstValue(Deproxy.REQUEST_ID_HEADER_NAME)

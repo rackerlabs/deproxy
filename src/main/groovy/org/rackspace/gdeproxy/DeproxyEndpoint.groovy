@@ -196,7 +196,7 @@ class DeproxyEndpoint {
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(inStream, outStream)
+          close = handleOneRequest(inStream, outStream, connectionName)
           log.debug "handled one request"
         }
         log.debug "ending loop"
@@ -322,7 +322,7 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(InputStream inStream, OutputStream outStream) {
+  def handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
     //        logger.debug('')
     //        close_connection = True
     log.debug "Begin handleOneRequest"

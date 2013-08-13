@@ -21,7 +21,7 @@ class Deproxy {
   def _endpointLock = new ReentrantLock()
   def _endpoints = []
   def _defaultHandler = null
-    def _defaultClientConnector = new DefaultClientConnector()
+    def _defaultClientConnector
 
   public static final String VERSION = getVersion()
   public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
@@ -40,13 +40,12 @@ class Deproxy {
 
     Deproxy(defaultHandler=null, defaultClientConnector=null) {
 
-        _defaultHandler = defaultHandler;
-
-        if (defaultClientConnector == null &&
-            _defaultClientConnector == null) {
-
-            _defaultClientConnector = new BareClientConnector();
+        if (defaultClientConnector == null) {
+            defaultClientConnector = new DefaultClientConnector()
         }
+
+        _defaultHandler = defaultHandler;
+        _defaultClientConnector = defaultClientConnector
     }
 
   public MessageChain makeRequest(Map params) {

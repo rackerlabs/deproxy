@@ -17,11 +17,17 @@ import org.apache.http.util.EntityUtils
 
 @Log4j
 class ApacheClientConnector implements ClientConnector {
+
+    HttpClient client
+
+    public ApacheClientConnector() {
+        client = new DefaultHttpClient();
+        client.removeRequestInterceptorByClass(RequestContent.class)
+    }
+
     @Override
     Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
 
-        HttpClient client = new DefaultHttpClient();
-        client.removeRequestInterceptorByClass(RequestContent.class)
         def scheme = (https ? 'https' : 'http');
         def request2 = new DeproxyHttpRequest(request, scheme as String, host as String, port);
         HttpResponse response2 = client.execute(request2);

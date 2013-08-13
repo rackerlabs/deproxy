@@ -364,7 +364,7 @@ class DeproxyEndpoint {
         closeConnection = true
       }
 
-      def messageChain = null
+      MessageChain messageChain = null
       //            request_id = incoming_request.headers.get(request_id_header_name)
       def requestId = request.headers.getFirstValue(Deproxy.REQUEST_ID_HEADER_NAME)
       if (requestId) {
@@ -379,30 +379,16 @@ class DeproxyEndpoint {
         //                logger.debug('The request does not have a request id')
         log.debug "the request does not have a request id"
       }
-      //
-      //            # Handler resolution:
-      //            # 1. Check the handlers mapping specified to ``make_request``
-      //            # a. By reference
-      //            # b. By name
-      //            # 2. Check the default_handler specified to ``make_request``
-      //            # 3. Check the default for this endpoint
-      //            # 4. Check the default for the parent Deproxy
-      //            # 5. Fallback to simple_handler
-      //            if (message_chain and message_chain.handlers is not None and
-      //                    self in message_chain.handlers):
-      //                handler = message_chain.handlers[self]
-      //            elif (message_chain and message_chain.handlers is not None and
-      //                  self.name in message_chain.handlers):
-      //                handler = message_chain.handlers[self.name]
-      //            elif message_chain and message_chain.default_handler is not None:
-      //                handler = message_chain.default_handler
-      //            elif self.default_handler is not None:
-      //                handler = self.default_handler
-      //            elif self.deproxy.default_handler is not None:
-      //                handler = self.deproxy.default_handler
-      //            else:
-      //                # last resort
-      //                handler = simple_handler
+
+        // Handler resolution:
+        // 1. Check the handlers mapping specified to ``make_request``
+        // a. By reference
+        // b. By name
+        // 2. Check the default_handler specified to ``make_request``
+        // 3. Check the default for this endpoint
+        // 4. Check the default for the parent Deproxy
+        // 5. Fallback to simple_handler
+
       def handler
       if (messageChain &&
         messageChain.handlers &&
@@ -427,12 +413,10 @@ class DeproxyEndpoint {
         handler = Handlers.&simpleHandler
 
       }
-      //
-      //            logger.debug('calling handler')
-      //            resp = handler(incoming_request)
+
       log.debug "calling handler"
       Response response = handler(request)
-      //            logger.debug('returned from handler')
+
       log.debug "returned from handler"
       //
       //            add_default_headers = True

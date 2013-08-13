@@ -4,24 +4,15 @@ import org.apache.log4j.Logger
 import org.linkedin.util.clock.SystemClock
 
 import java.text.SimpleDateFormat
-import java.util.concurrent.locks.ReentrantLock
 
 import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition
+
 /**
  * A class that acts as a mock HTTP server.
  */
 
-//class DeproxyEndpoint:
 @Log4j
 class DeproxyEndpoint {
-  //
-  //    """A class that acts as a mock HTTP server."""
-  //
-
-  //    _conn_number = 1
-  int connectionNumber = 1;
-  //    _conn_number_lock = threading.Lock()
-  def connectionNumberLock = new ReentrantLock();
 
   Deproxy _deproxy;
   String _name;

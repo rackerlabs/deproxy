@@ -1,26 +1,18 @@
 package org.rackspace.gdeproxy
 import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
 import org.linkedin.util.clock.SystemClock
 
 import java.text.SimpleDateFormat
-import java.util.concurrent.locks.ReentrantLock
 
 import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition
+
 /**
  * A class that acts as a mock HTTP server.
  */
 
-//class DeproxyEndpoint:
 @Log4j
 class DeproxyEndpoint {
-  //
-  //    """A class that acts as a mock HTTP server."""
-  //
-
-  //    _conn_number = 1
-  int connectionNumber = 1;
-  //    _conn_number_lock = threading.Lock()
-  def connectionNumberLock = new ReentrantLock();
 
   Deproxy _deproxy;
   String _name;
@@ -89,6 +81,78 @@ class DeproxyEndpoint {
       })
   }
 
+    public class DeproxyEndpointListenerThread extends Thread {
+
+        DeproxyEndpoint _parent;
+        ServerSocket _socket;
+        Logger log = Logger.getLogger(DeproxyEndpointListenerThread.class.getName());
+
+        public DeproxyEndpointListenerThread(DeproxyEndpoint parent, ServerSocket socket, String name) {
+            super(name);
+
+            _parent = parent;
+            _socket = socket;
+        }
+
+        @Override
+        public void run() {
+
+            while (!_socket.isClosed()) {
+                try {
+                    _socket.setSoTimeout(1000);
+
+                    Socket socket;
+                    try {
+                        socket = _socket.accept();
+                    } catch (SocketException e) {
+                        if (_socket.isClosed()) {
+                            break;
+                        } else {
+                            throw e;
+                        }
+                    }
+
+                    log.debug("Accepted a new connection");
+                    //socket.setSoTimeout(1000);
+                    log.debug("Creating the handler thread");
+                    String connectionName = UUID.randomUUID().toString()
+                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(_parent, socket, connectionName, this.getName() + "-connection-" + connectionName.toString());
+                    log.debug("Starting the handler thread");
+                    handlerThread.start();
+                    log.debug("Handler thread started");
+
+                } catch (SocketTimeoutException ste) {
+                    // do nothing
+                } catch (IOException ex) {
+                    log.error(null, ex);
+                }
+            }
+        }
+    }
+
+    public class DeproxyEndpointHandlerThread extends Thread {
+
+        Logger log = Logger.getLogger(DeproxyEndpointHandlerThread.class.getName());
+
+        DeproxyEndpoint _parent;
+        Socket _socket;
+        String connectionName
+
+        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String connectionName, String threadName) {
+            super(threadName);
+
+            _parent = parent;
+            _socket = socket;
+            this.connectionName = connectionName
+        }
+
+        @Override
+        public void run() {
+            log.debug("Processing new connection");
+            _parent.processNewConnection(_socket, connectionName);
+            log.debug("Connection processed");
+        }
+    }
 
   //    def process_new_connection(self, request, client_address):
   //        logger.debug('received request from %s' % str(client_address))
@@ -114,7 +178,7 @@ class DeproxyEndpoint {
   //        finally:
   //            self.shutdown_request(request)
   //
-  def processNewConnection(Socket socket) {
+  def processNewConnection(Socket socket, String connectionName) {
     log.debug "processing new connection..."
     def reader;
     def writer;
@@ -132,7 +196,7 @@ class DeproxyEndpoint {
         while (!close) {
           log.debug "about to handle one request"
 
-          close = handleOneRequest(inStream, outStream)
+          close = handleOneRequest(inStream, outStream, connectionName)
           log.debug "handled one request"
         }
         log.debug "ending loop"
@@ -258,12 +322,11 @@ class DeproxyEndpoint {
   //
 
   //    def handle_one_request(self, rfile, wfile):
-  def handleOneRequest(InputStream inStream, OutputStream outStream) {
-    //        logger.debug('')
-    //        close_connection = True
+  def handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
+
     log.debug "Begin handleOneRequest"
-    def closeConnection = true
-    //        try:
+    def closeConnection = false
+
     try {
       //            logger.debug('calling parse_request')
       //            ret = self.parse_request(rfile, wfile)
@@ -301,13 +364,7 @@ class DeproxyEndpoint {
         closeConnection = true
       }
 
-      // persistent connection are not yet supported. close the connection, no
-      // matter what the headers say.
-      //            close_connection = True
-      closeConnection = true
-      //
-      //            message_chain = None
-      def messageChain = null
+      MessageChain messageChain = null
       //            request_id = incoming_request.headers.get(request_id_header_name)
       def requestId = request.headers.getFirstValue(Deproxy.REQUEST_ID_HEADER_NAME)
       if (requestId) {
@@ -322,30 +379,16 @@ class DeproxyEndpoint {
         //                logger.debug('The request does not have a request id')
         log.debug "the request does not have a request id"
       }
-      //
-      //            # Handler resolution:
-      //            # 1. Check the handlers mapping specified to ``make_request``
-      //            # a. By reference
-      //            # b. By name
-      //            # 2. Check the default_handler specified to ``make_request``
-      //            # 3. Check the default for this endpoint
-      //            # 4. Check the default for the parent Deproxy
-      //            # 5. Fallback to simple_handler
-      //            if (message_chain and message_chain.handlers is not None and
-      //                    self in message_chain.handlers):
-      //                handler = message_chain.handlers[self]
-      //            elif (message_chain and message_chain.handlers is not None and
-      //                  self.name in message_chain.handlers):
-      //                handler = message_chain.handlers[self.name]
-      //            elif message_chain and message_chain.default_handler is not None:
-      //                handler = message_chain.default_handler
-      //            elif self.default_handler is not None:
-      //                handler = self.default_handler
-      //            elif self.deproxy.default_handler is not None:
-      //                handler = self.deproxy.default_handler
-      //            else:
-      //                # last resort
-      //                handler = simple_handler
+
+        // Handler resolution:
+        // 1. Check the handlers mapping specified to ``make_request``
+        // a. By reference
+        // b. By name
+        // 2. Check the default_handler specified to ``make_request``
+        // 3. Check the default for this endpoint
+        // 4. Check the default for the parent Deproxy
+        // 5. Fallback to simple_handler
+
       def handler
       if (messageChain &&
         messageChain.handlers &&
@@ -370,12 +413,10 @@ class DeproxyEndpoint {
         handler = Handlers.&simpleHandler
 
       }
-      //
-      //            logger.debug('calling handler')
-      //            resp = handler(incoming_request)
+
       log.debug "calling handler"
       Response response = handler(request)
-      //            logger.debug('returned from handler')
+
       log.debug "returned from handler"
       //
       //            add_default_headers = True
@@ -442,7 +483,11 @@ class DeproxyEndpoint {
                 }
             }
 
+            if (!response.headers.contains("Content-Length") &&
+                !response.headers.contains("Transfer-Encoding")) {
 
+                response.headers.add("Content-Length", 0)
+            }
       }
 
       if (requestId && !response.headers.contains(Deproxy.REQUEST_ID_HEADER_NAME)) {
@@ -456,7 +501,7 @@ class DeproxyEndpoint {
       //                message_chain.add_handling(h)
       //            else:
       //                self.deproxy.add_orphaned_handling(h)
-      def handling = new Handling(this, request, response)
+      def handling = new Handling(this, request, response, connectionName)
       if (messageChain) {
         messageChain.addHandling(handling)
       } else {

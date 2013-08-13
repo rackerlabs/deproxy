@@ -506,7 +506,11 @@ class DeproxyEndpoint {
                 }
             }
 
+            if (!response.headers.contains("Content-Length") &&
+                !response.headers.contains("Transfer-Encoding")) {
 
+                response.headers.add("Content-Length", 0)
+            }
       }
 
       if (requestId && !response.headers.contains(Deproxy.REQUEST_ID_HEADER_NAME)) {

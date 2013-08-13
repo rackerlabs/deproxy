@@ -158,7 +158,7 @@ class DeproxyEndpoint {
         @Override
         public void run() {
             log.debug("Processing new connection");
-            _parent.processNewConnection(_socket);
+            _parent.processNewConnection(_socket, connectionName);
             log.debug("Connection processed");
         }
     }
@@ -187,7 +187,7 @@ class DeproxyEndpoint {
   //        finally:
   //            self.shutdown_request(request)
   //
-  def processNewConnection(Socket socket) {
+  def processNewConnection(Socket socket, String connectionName) {
     log.debug "processing new connection..."
     def reader;
     def writer;

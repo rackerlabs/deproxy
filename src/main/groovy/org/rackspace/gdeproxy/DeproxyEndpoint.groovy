@@ -106,7 +106,6 @@ class DeproxyEndpoint {
         @Override
         public void run() {
 
-            Integer connection = 0;
             while (!_socket.isClosed()) {
                 try {
                     _socket.setSoTimeout(1000);
@@ -125,11 +124,11 @@ class DeproxyEndpoint {
                     log.debug("Accepted a new connection");
                     //conn.setSoTimeout(1000);
                     log.debug("Creating the handler thread");
-                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(_parent, conn, this.getName() + "-connection-" + connection.toString());
+                    String connectionName = UUID.randomUUID().toString()
+                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(_parent, conn, connectionName, this.getName() + "-connection-" + connectionName.toString());
                     log.debug("Starting the handler thread");
                     handlerThread.start();
                     log.debug("Handler thread started");
-                    connection++;
 
                 } catch (SocketTimeoutException ste) {
                     // do nothing
@@ -146,13 +145,14 @@ class DeproxyEndpoint {
 
         DeproxyEndpoint _parent;
         Socket _socket;
+        String connectionName
 
-
-        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String name) {
-            super(name);
+        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String connectionName, String threadName) {
+            super(threadName);
 
             _parent = parent;
             _socket = socket;
+            this.connectionName = connectionName
         }
 
         @Override

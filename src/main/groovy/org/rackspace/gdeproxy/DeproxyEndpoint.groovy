@@ -1,5 +1,6 @@
 package org.rackspace.gdeproxy
 import groovy.util.logging.Log4j
+import org.apache.log4j.Logger
 import org.linkedin.util.clock.SystemClock
 
 import java.text.SimpleDateFormat
@@ -89,7 +90,55 @@ class DeproxyEndpoint {
       })
   }
 
+    public class DeproxyEndpointListenerThread extends Thread {
 
+        DeproxyEndpoint _parent;
+        ServerSocket _socket;
+        Logger log = Logger.getLogger(DeproxyEndpointListenerThread.class.getName());
+
+        public DeproxyEndpointListenerThread(DeproxyEndpoint parent, ServerSocket socket, String name) {
+            super(name);
+
+            _parent = parent;
+            _socket = socket;
+        }
+
+        @Override
+        public void run() {
+
+            Integer connection = 0;
+            while (!_socket.isClosed()) {
+                try {
+                    _socket.setSoTimeout(1000);
+
+                    Socket conn;
+                    try {
+                        conn = _socket.accept();
+                    } catch (SocketException e) {
+                        if (_socket.isClosed()) {
+                            break;
+                        } else {
+                            throw e;
+                        }
+                    }
+
+                    log.debug("Accepted a new connection");
+                    //conn.setSoTimeout(1000);
+                    log.debug("Creating the handler thread");
+                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(_parent, conn, this.getName() + "-connection-" + connection.toString());
+                    log.debug("Starting the handler thread");
+                    handlerThread.start();
+                    log.debug("Handler thread started");
+                    connection++;
+
+                } catch (SocketTimeoutException ste) {
+                    // do nothing
+                } catch (IOException ex) {
+                    log.error(null, ex);
+                }
+            }
+        }
+    }
   //    def process_new_connection(self, request, client_address):
   //        logger.debug('received request from %s' % str(client_address))
   //        try:

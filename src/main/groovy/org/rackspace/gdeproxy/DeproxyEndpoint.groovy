@@ -139,6 +139,30 @@ class DeproxyEndpoint {
             }
         }
     }
+
+    public class DeproxyEndpointHandlerThread extends Thread {
+
+        Logger log = Logger.getLogger(DeproxyEndpointHandlerThread.class.getName());
+
+        DeproxyEndpoint _parent;
+        Socket _socket;
+
+
+        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String name) {
+            super(name);
+
+            _parent = parent;
+            _socket = socket;
+        }
+
+        @Override
+        public void run() {
+            log.debug("Processing new connection");
+            _parent.processNewConnection(_socket);
+            log.debug("Connection processed");
+        }
+    }
+
   //    def process_new_connection(self, request, client_address):
   //        logger.debug('received request from %s' % str(client_address))
   //        try:

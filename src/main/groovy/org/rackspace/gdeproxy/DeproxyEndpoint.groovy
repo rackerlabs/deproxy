@@ -520,7 +520,7 @@ class DeproxyEndpoint {
       //                message_chain.add_handling(h)
       //            else:
       //                self.deproxy.add_orphaned_handling(h)
-      def handling = new Handling(this, request, response)
+      def handling = new Handling(this, request, response, connectionName)
       if (messageChain) {
         messageChain.addHandling(handling)
       } else {

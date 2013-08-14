@@ -88,6 +88,7 @@ class DeproxyEndpoint {
         Logger log = Logger.getLogger(DeproxyEndpointListenerThread.class.getName());
 
         public DeproxyEndpointListenerThread(DeproxyEndpoint parent, ServerSocket socket, String name) {
+
             this.setName(name)
             _parent = parent;
             _socket = socket;
@@ -138,8 +139,8 @@ class DeproxyEndpoint {
         String connectionName
 
         public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String connectionName, String threadName) {
-            super(threadName);
 
+            this.setName(threadName);
             _parent = parent;
             _socket = socket;
             this.connectionName = connectionName

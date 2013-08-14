@@ -4,7 +4,7 @@
 
     <groupId>org.rackspace</groupId>
     <artifactId>gdeproxy</artifactId>
-    <version>0.14</version>
+    <version>0.15-SNAPSHOT</version>
 
     <name>GDeproxy</name>
 

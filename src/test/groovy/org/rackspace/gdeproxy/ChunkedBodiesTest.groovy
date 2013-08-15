@@ -30,7 +30,7 @@ public class ChunkedBodiesTest {
     Socket server
 
     @Test
-    void testChunkedRequestBody() {
+    void testChunkedRequestBodyInBareClientConnector() {
 
         String body = """ This is another body
 

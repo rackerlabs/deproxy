@@ -6,11 +6,9 @@ update docs
     code samples are still in python; they need to be converted to groovy
     new functionality has been added, needs to be documented
 
-update HISTORY.rst
-
-chunked body reading
+chunked body reading (transfer coding)
     will require a more expansive model of the request/response and the behavior of the connector(s)
-compression
+compression (content coding)
     ditto
 
 

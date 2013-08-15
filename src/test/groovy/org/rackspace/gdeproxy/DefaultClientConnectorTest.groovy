@@ -40,22 +40,7 @@ class DefaultClientConnectorTest {
         String serverSideRequest;
 
         def t = Thread.startDaemon("response") {
-
-            byte[] bytes = new byte[requestString.length()]
-            int n = 0;
-            while (n < bytes.length) {
-                def count = server.inputStream.read(bytes, n, bytes.length - n)
-                n += count
-            }
-            ByteBuffer bb = ByteBuffer.wrap(bytes)
-            CharBuffer cb = Charset.forName("US-ASCII").decode(bb)
-            serverSideRequest = cb.toString()
-
-
-            bytes = new byte[responseString.length()]
-            Charset.forName("US-ASCII").encode(responseString).get(bytes)
-            server.outputStream.write(bytes)
-            server.outputStream.flush()
+            serverSideRequest = StaticTcpServer.run(server, responseString, requestString.length())
         }
 
         DefaultClientConnector clientConnector = new DefaultClientConnector(client)

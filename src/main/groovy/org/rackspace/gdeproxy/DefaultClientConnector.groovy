@@ -7,6 +7,13 @@ package org.rackspace.gdeproxy
  */
 class DefaultClientConnector extends BareClientConnector {
 
+    public DefaultClientConnector() {
+        this(null)
+    }
+    public DefaultClientConnector(Socket socket) {
+        super(socket)
+    }
+
     @Override
     Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
 

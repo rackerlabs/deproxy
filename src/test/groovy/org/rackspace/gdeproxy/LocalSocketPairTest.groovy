@@ -41,6 +41,9 @@ class LocalSocketPairTest {
         def qwerty = LineReader.readLine(reader)
 
         assertEquals(qwerty, "qwerty")
+
+        client.close()
+        server.close()
     }
 
     @Test
@@ -72,6 +75,9 @@ class LocalSocketPairTest {
         def qwerty = LineReader.readLine(reader)
 
         assertEquals(qwerty, "qwerty")
+
+        client.close()
+        server.close()
     }
 
     @Test
@@ -109,5 +115,8 @@ class LocalSocketPairTest {
         def qwerty = LineReader.readLine(reader)
 
         assertEquals(qwerty, "qwerty")
+
+        client.close()
+        server.close()
     }
 }

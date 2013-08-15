@@ -26,29 +26,64 @@ public class ChunkedBodiesTest {
         this.endpoint = this.deproxy.addEndpoint(this.port);
     }
 
-    @Ignore
+    Socket client
+    Socket server
+
     @Test
     void testChunkedRequestBody() {
 
-        def body = """ This is another body
+        String body = """ This is another body
 
-            This is the next paragraph.
-            """
+This is the next paragraph.
+"""
 
-        def length = body.length();
-        def chunkedBody = "${length}\r\n${body}\r\n0\r\n\r\n";
+        String length = Integer.toHexString(body.length());
 
-        def mc = this.deproxy.makeRequest(url: this.url, method: "POST", 
-                                          requestBody: body, chunked: true,
-                                          clientConnector: new ApacheClientConnector());
+        String requestString = ("GET / HTTP/1.1\r\n" +
+                "Transfer-Endoding: chunked\r\n" +
+                "\r\n" +
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n") // end of chunked body, no trailer
 
-        assertTrue(mc.sentRequest.headers.contains("Transfer-Encoding"));
-        assertEquals("chunked", mc.sentRequest.headers.getFirstValue("Transfer-Encoding"));
-        assertEquals(chunkedBody, mc.sentRequest.body);
-        assertEquals(1, mc.handlings.size());
-        assertTrue(mc.handlings[0].request.headers.contains("Transfer-Encoding"));
-        assertEquals("chunked", mc.handlings[0].request.headers.getFirstValue("Transfer-Encoding"));
-        assertEquals(body, mc.handlings[0].request.body);
+        String responseString = ("HTTP/1.1 200 OK\r\n" +
+                "Server: StaticTcpServer\r\n" +
+                "Content-Length: 0\r\n" +
+                "\r\n")
+
+        (client, server) = LocalSocketPair.createLocalSocketPair()
+        client.soTimeout = 5000
+        server.soTimeout = 5000
+
+        String serverSideRequest
+
+        def t = Thread.startDaemon("static-tcp-server") {
+            serverSideRequest = StaticTcpServer.run(server, responseString,
+                    requestString.length())
+        }
+
+        Request request = new Request("GET", "/",
+                ["Transfer-Encoding": "chunked"], body)
+        RequestParams params = new RequestParams()
+        params.usedChunkedTransferEncoding = true
+
+        BareClientConnector clientConnector = new BareClientConnector(client)
+
+        Response response = clientConnector.sendRequest(request, false,
+                "localhost", server.localPort, params)
+
+
+
+        assertEquals(requestString, serverSideRequest)
+        assertEquals("200", response.code)
+        assertEquals("OK", response.message)
+        assertEquals(2, response.headers.size())
+        assertTrue(response.headers.contains("Server"))
+        assertEquals("StaticTcpServer", response.headers["Server"])
+        assertTrue(response.headers.contains("Content-Length"))
+        assertEquals("0", response.headers["Content-Length"])
+        assertEquals("", response.body)
     }
 
     @Ignore
@@ -81,6 +116,16 @@ public class ChunkedBodiesTest {
     void tearDown() {
         if (this.deproxy) {
             this.deproxy.shutdown();
+        }
+
+        if (client) {
+            client.close()
+            client = null
+        }
+
+        if (server) {
+            server.close()
+            server = null
         }
     }
 

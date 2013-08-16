@@ -518,7 +518,7 @@ class DeproxyEndpoint {
       }
       //
       //            self.send_response(wfile, resp)
-      sendResponse(outStream, response)
+      sendResponse(outStream, response, context)
       //
       //            wfile.flush()
       //
@@ -716,7 +716,7 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(OutputStream outStream, Response response) {
+  def sendResponse(OutputStream outStream, Response response, HandlerContext context) {
 
     def writer = new PrintWriter(outStream, true);
 

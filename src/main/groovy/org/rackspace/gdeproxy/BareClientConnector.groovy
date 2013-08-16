@@ -40,8 +40,7 @@ class BareClientConnector implements ClientConnector {
         Socket s;
         if (this.socket) {
             s = this.socket
-        }
-        else if (https) {
+        } else if (https) {
             s = SSLSocketFactory.getDefault().createSocket(host, port)
         } else {
             s = new Socket(host, port)
@@ -61,7 +60,8 @@ class BareClientConnector implements ClientConnector {
         writer.flush();
         outStream.flush();
 
-        BodyWriter.writeBody(request.body, outStream, request.headers)
+        BodyWriter.writeBody(request.body, outStream, request.headers,
+                             params.usedChunkedTransferEncoding)
 
         InputStream inStream = s.getInputStream();
 

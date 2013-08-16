@@ -15,13 +15,12 @@ import java.nio.charset.CodingErrorAction
  */
 @Log4j
 class BodyWriter {
-    def static void writeBody(body, OutputStream outStream, headers) {
+    def static void writeBody(body, OutputStream outStream, headers, boolean chunked=false) {
 
         outStream.flush()
 
         if (body != null) {
-            if (headers.contains("Transfer-Encoding") &&
-                    headers["Transfer-Encoding"] == "chunked") {
+            if (chunked) {
 
                 writeBodyChunked(body, outStream)
 

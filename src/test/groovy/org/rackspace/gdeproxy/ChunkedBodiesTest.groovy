@@ -40,7 +40,7 @@ This is the next paragraph.
         String length = Integer.toHexString(body.length());
 
         String requestString = ("GET / HTTP/1.1\r\n" +
-                "Transfer-Endoding: chunked\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
                 "\r\n" +
                 "${length}\r\n" + // chunk-size, with no chunk-extension
                 "${body}\r\n" + // chunk-data

@@ -188,6 +188,56 @@ This is the next paragraph.
     }
 
     @Test
+    void testChunkedResponseBodyInBareClientConnector() {
+
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+
+        String length = Integer.toHexString(body.length());
+
+        String responseString = ("HTTP/1.1 200 OK\r\n" +
+                "Server: StaticTcpServer\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
+                "\r\n" +
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n"  // end of chunked body, no trailer
+            )
+
+        (client, server) = LocalSocketPair.createLocalSocketPair()
+        client.soTimeout = 5000
+        server.soTimeout = 5000
+
+        String serverSideRequest
+
+        def t = Thread.startDaemon("static-tcp-server") {
+            serverSideRequest = StaticTcpServer.handleOneRequest(server,
+                    responseString, 1)
+        }
+
+        Request request = new Request("GET", "/",
+                ["Transfer-Encoding": "chunked"], body)
+
+        BareClientConnector clientConnector = new BareClientConnector(client)
+
+
+
+        Response response = clientConnector.sendRequest(request, false,
+                "localhost", server.localPort, new RequestParams())
+
+
+
+        assertEquals("200", response.code)
+        assertEquals("OK", response.message)
+        assertEquals(2, response.headers.size())
+        assertTrue(response.headers.contains("Server"))
+        assertEquals("StaticTcpServer", response.headers["Server"])
+        assertTrue(response.headers.contains("Transfer-Encoding"))
+        assertEquals("chunked", response.headers["Transfer-Encoding"])
+        assertEquals(body, response.body)
+    }
+
+    @Test
     void testChunkedBodyInBodyWriter1() {
 
         String body = """ This is another body\n\r\nThis is the next paragraph.\n"""

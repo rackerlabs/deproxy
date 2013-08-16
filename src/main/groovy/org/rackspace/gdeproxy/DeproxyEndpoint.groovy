@@ -449,19 +449,19 @@ class DeproxyEndpoint {
         log.debug "returned from handler"
 
 
-      if (response.body && !response.headers.contains("Content-Length")) {
-          def length
-          if (response.body instanceof String) {
-            length = response.body.length()
-          } else if (response.body instanceof byte[]) {
-              length = response.body.length
-          } else {
-              throw new UnsupportedOperationException("Unknown data type in request body")
-          }
-          response.headers.add("Content-Length", length)
-      }
-
         if (context.sendDefaultResponseHeaders) {
+
+            if (response.body && !response.headers.contains("Content-Length")) {
+                def length
+                if (response.body instanceof String) {
+                    length = response.body.length()
+                } else if (response.body instanceof byte[]) {
+                    length = response.body.length
+                } else {
+                    throw new UnsupportedOperationException("Unknown data type in request body")
+                }
+                response.headers.add("Content-Length", length)
+            }
 
             if (!response.headers.contains("Server")) {
                 response.headers.add("Server", Deproxy.VERSION_STRING)

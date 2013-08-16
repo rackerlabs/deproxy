@@ -441,26 +441,8 @@ class DeproxyEndpoint {
         }
 
         log.debug "returned from handler"
-      //
-      //            add_default_headers = True
-      //            if type(resp) == tuple:
-      //                logger.debug('Handler gave back a tuple: %s',
-      //                             (type(resp[0]), resp[1:]))
-      //                if len(resp) > 1:
-      //                    add_default_headers = resp[1]
-      //                resp = resp[0]
-      def addDefaultHeaders = true
-      if (response instanceof List){
-        if (response.size() > 1){
-          addDefaultHeaders = response[1]
-        }
 
-        response = response[0]
-      }
-      //
-      //            if (resp.body is not None and
-      //                    'Content-Length' not in resp.headers):
-      //                resp.headers.add('Content-Length', len(resp.body))
+
       if (response.body && !response.headers.contains("Content-Length")) {
           def length
           if (response.body instanceof String) {
@@ -473,7 +455,7 @@ class DeproxyEndpoint {
           response.headers.add("Content-Length", length)
       }
 
-        if (addDefaultHeaders) {
+        if (context.sendDefaultResponseHeaders) {
 
             if (!response.headers.contains("Server")) {
                 response.headers.add("Server", Deproxy.VERSION_STRING)

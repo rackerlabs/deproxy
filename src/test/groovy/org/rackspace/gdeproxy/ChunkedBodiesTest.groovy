@@ -2,7 +2,10 @@
 package org.rackspace.gdeproxy
 
 import groovy.util.logging.Log4j;
-import org.junit.*;
+import org.junit.*
+
+import java.nio.ByteBuffer;
+
 import static org.junit.Assert.*;
 
 /**
@@ -285,6 +288,76 @@ This is the next paragraph.
         assertTrue(response.headers.contains("Transfer-Encoding"))
         assertEquals("chunked", response.headers["Transfer-Encoding"])
         assertEquals(body, response.body)
+    }
+
+    @Test
+    void testChunkedResponseBodyInDeproxyEndpoint() {
+
+        // create canned request & response
+
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+
+        String length = Integer.toHexString(body.length());
+        String requestString = ("GET / HTTP/1.1\r\n" +
+                "Host: localhost\r\n" +
+                "Content-Length: 0\r\n" +
+                "Accept: */*\r\n" +
+                "User-Agent: Canned-String\r\n" +
+                "\r\n")
+
+        String responseString = ("HTTP/1.1 200 OK\r\n" +
+                "Server: ${Deproxy.VERSION_STRING}\r\n" +
+                "Date: EEE, dd MMM yyyy HH:mm:ss z\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
+                "\r\n" +
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n" // end of chunked body, no trailer
+            )
+        byte[] responseBytes = responseString.getBytes("US-ASCII")
+
+        // setup deproxy and endpoint
+
+        deproxy = new Deproxy();
+        PortFinder pf = new PortFinder();
+        int port = pf.getNextOpenPort();
+        String url = "http://localhost:${port}/";
+        def handler = { request, HandlerContext context ->
+            context.sendChunkedResponse = true
+            return new Response(200, "OK", null, body)
+        }
+        DeproxyEndpoint endpoint = deproxy.addEndpoint(port, null, null, handler);
+
+        // create raw connection
+
+        client = endpoint.createRawConnection()
+        client.soTimeout = 3000
+
+        // send the data to the endpoint
+
+        client.outputStream.write(requestString.getBytes("US-ASCII"))
+
+        // read the response
+
+        byte[] bytesRecieved = new byte[responseBytes.length]
+        try {
+
+            int n = 0;
+            while (n < bytesRecieved.length) {
+                def count = client.inputStream.read(bytesRecieved, n, bytesRecieved.length - n)
+                n += count
+            }
+
+        } catch (SocketTimeoutException ignored) {
+
+        }
+        String stringRecieved = new String(bytesRecieved, "US-ASCII")
+
+
+        // compare the front parts and back parts of the string; skip the date
+        assertEquals(responseString.substring(0, 55), stringRecieved.substring(0, 55))
+        assertEquals(responseString.substring(84), stringRecieved.substring(84))
     }
 
     @Test

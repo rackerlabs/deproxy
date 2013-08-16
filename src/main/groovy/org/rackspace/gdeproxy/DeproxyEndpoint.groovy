@@ -451,18 +451,6 @@ class DeproxyEndpoint {
 
         if (context.sendDefaultResponseHeaders) {
 
-            if (response.body && !response.headers.contains("Content-Length")) {
-                def length
-                if (response.body instanceof String) {
-                    length = response.body.length()
-                } else if (response.body instanceof byte[]) {
-                    length = response.body.length
-                } else {
-                    throw new UnsupportedOperationException("Unknown data type in request body")
-                }
-                response.headers.add("Content-Length", length)
-            }
-
             if (!response.headers.contains("Server")) {
                 response.headers.add("Server", Deproxy.VERSION_STRING)
             }
@@ -472,24 +460,34 @@ class DeproxyEndpoint {
 
             if (response.body) {
 
-                def length
-                String contentType
-                if (response.body instanceof String) {
-                    length = response.body.length()
-                    contentType = "text/plain"
-                } else if (response.body instanceof byte[]) {
-                    length = response.body.length
-                    contentType = "application/octet-stream"
-                } else {
-                    throw new UnsupportedOperationException("Unknown data type in requestBody")
-                }
+                if (context.sendChunkedResponse) {
 
-                if (length > 0) {
-                    if (!response.headers.contains("Content-Length")) {
-                        response.headers.add("Content-Length", length)
+                    if (!response.headers.contains("Transfer-Encoding")) {
+                        response.headers.add("Transfer-Encoding", "chunked")
                     }
-                    if (!response.headers.contains("Content-Type")) {
-                        response.headers.add("Content-Type", contentType)
+
+                } else if (!response.headers.contains("Transfer-Encoding") ||
+                            response.headers["Transfer-Encoding"] == "identity") {
+
+                    def length
+                    String contentType
+                    if (response.body instanceof String) {
+                        length = response.body.length()
+                        contentType = "text/plain"
+                    } else if (response.body instanceof byte[]) {
+                        length = response.body.length
+                        contentType = "application/octet-stream"
+                    } else {
+                        throw new UnsupportedOperationException("Unknown data type in requestBody")
+                    }
+
+                    if (length > 0) {
+                        if (!response.headers.contains("Content-Length")) {
+                            response.headers.add("Content-Length", length)
+                        }
+                        if (!response.headers.contains("Content-Type")) {
+                            response.headers.add("Content-Type", contentType)
+                        }
                     }
                 }
             }

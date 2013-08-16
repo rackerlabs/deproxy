@@ -150,6 +150,79 @@ class BodyReader {
 
     static byte[] readChunkedBody(InputStream inStream) {
 
-        return new byte[0];
+        // see rfc 2616, section 3.6.1
+
+        // Chunked-Body   = *chunk
+        //                  last-chunk
+        //                  trailer
+        //                  CRLF
+        //
+        // chunk          = chunk-size [ chunk-extension ] CRLF
+        //                  chunk-data CRLF
+        // chunk-size     = 1*HEX
+        // last-chunk     = 1*("0") [ chunk-extension ] CRLF
+        //
+        // chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
+        // chunk-ext-name = token
+        // chunk-ext-val  = token | quoted-string
+        // chunk-data     = chunk-size(OCTET)
+        // trailer        = *(entity-header CRLF)
+
+        List<byte[]> chunks = []
+
+        while (true) {
+
+            // chunk-size [ chunk-extension ] CRLF
+            // 1*("0") [ chunk-extension ] CRLF
+            def line = LineReader.readLine(inStream)
+
+            // find the extent of the chunk-size
+            int i;
+            for (i = 0; i < line.length(); i++) {
+                def value = Character.digit(line.charAt(i), 16)
+                if (value < 0 || value > 15) break;
+            }
+
+            if (i < 1) {
+                // started with an invalid character
+                throw new NumberFormatException("Invalid chunk size")
+            }
+
+            int length = Integer.parseInt(line.substring(0, i), 16)
+
+            // ignore any chunk-extension for now
+
+            // last-chunk = 1*("0") ...
+            if (length < 1) break;
+
+            // chunk-data CRLF
+            byte[] chunkData = new byte[length]
+            inStream.read(chunkData)
+            LineReader.readLine(inStream)
+
+            chunks.add(chunkData)
+        }
+
+        def trailer = HeaderReader.readHeaders(inStream)
+        // we don't do anything with the trailer yet.
+        // according to the rfc, everything in the trailer should be an
+        // entity-header. There are also additional requirements
+
+
+        // merge all the chunks together
+
+        int totalLength = 0
+        for (byte[] chunk in chunks) {
+            totalLength += chunk.length
+        }
+
+        byte[] binaryData = new byte[totalLength]
+        ByteBuffer buffer = ByteBuffer.wrap(binaryData)
+
+        for (byte[] chunk in chunks) {
+            buffer.put(chunk)
+        }
+
+        return binaryData
     }
 }

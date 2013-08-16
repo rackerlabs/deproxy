@@ -268,6 +268,45 @@ This is the next paragraph.
         assertArrayEquals(chunkedBody, bytesWritten)
     }
 
+    @Test
+    void testChunkedBodyInBodyReader1() {
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+        String length = Integer.toHexString(body.length());
+        byte[] chunkedBody = (
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n" // end of chunked body, no trailer
+            ).getBytes("US-ASCII")
+        ByteArrayInputStream inStream = new ByteArrayInputStream(chunkedBody)
+
+
+        byte[] bytesRead = BodyReader.readChunkedBody(inStream)
+
+
+        assertArrayEquals(body.getBytes("US-ASCII"), bytesRead)
+    }
+
+    @Test
+    void testChunkedBodyInBodyReader2() {
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+        String length = Integer.toHexString(body.length());
+        byte[] chunkedBody = (
+        "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n" // end of chunked body, no trailer
+        ).getBytes("US-ASCII")
+        ByteArrayInputStream inStream = new ByteArrayInputStream(chunkedBody)
+        HeaderCollection headers = new HeaderCollection(['Transfer-Encoding': 'chunked'])
+
+
+        byte[] bytesRead = BodyReader.readBody(inStream, headers)
+
+
+        assertArrayEquals(body.getBytes("US-ASCII"), bytesRead)
+    }
+
     @After
     void tearDown() {
         if (this.deproxy) {

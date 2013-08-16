@@ -20,7 +20,13 @@ class BodyWriter {
         outStream.flush()
 
         if (body != null) {
-            if (body instanceof String) {
+            if (headers.contains("Transfer-Encoding") &&
+                    headers["Transfer-Encoding"] == "chunked") {
+
+                writeBodyChunked(body, outStream)
+
+            } else if (body instanceof String) {
+
                 log.debug("sending string body, length ${body.length()}")
                 log.debug(body)
                 if (body.length() > 0) {

@@ -158,11 +158,13 @@ class BodiesTest {
         assertEquals(1, mc.receivedResponse.headers.size())
         assertEquals(1, mc.receivedResponse.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
         assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Length"))
+        assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Type"))
         assertEquals("", mc.receivedResponse.body);
         assertEquals(1, mc.handlings.size());
         assertEquals(1, mc.handlings[0].response.headers.size())
         assertEquals(1, mc.receivedResponse.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
         assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Length"))
+        assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Type"))
         assertEquals(body, mc.handlings[0].response.body);
     }
 

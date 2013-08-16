@@ -384,20 +384,26 @@ class DeproxyEndpoint {
       }
 
         // Handler resolution:
-        // 1. Check the handlers mapping specified to ``make_request``
-        // a. By reference
-        // b. By name
-        // 2. Check the default_handler specified to ``make_request``
+        // 1. Check the handlers mapping specified to ``makeRequest``
+        //   a. By reference
+        //   b. By name
+        // 2. Check the defaultHandler specified to ``makeRequest``
         // 3. Check the default for this endpoint
         // 4. Check the default for the parent Deproxy
-        // 5. Fallback to simple_handler
+        // 5. Fallback to simpleHandler
 
       def handler
       if (messageChain &&
-        messageChain.handlers &&
-        messageChain.handlers.containsKey(this)) {
+            messageChain.handlers &&
+            messageChain.handlers.containsKey(this)) {
 
         handler = messageChain.handlers[this]
+
+      } else if (messageChain &&
+              messageChain.handlers &&
+              messageChain.handlers.containsKey(this._name)) {
+
+          handler = messageChain.handlers[this._name]
 
       } else if (messageChain && messageChain.defaultHandler){
 

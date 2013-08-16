@@ -15,7 +15,7 @@ import java.nio.charset.CodingErrorAction
  */
 @Log4j
 class BodyWriter {
-    def static void writeBody(body, OutputStream outStream, headers, boolean chunked=false) {
+    def static void writeBody(body, OutputStream outStream, boolean chunked=false) {
 
         outStream.flush()
 

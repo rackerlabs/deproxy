@@ -733,7 +733,7 @@ class DeproxyEndpoint {
 
     HeaderWriter.writeHeaders(outStream, response.headers)
 
-    BodyWriter.writeBody(response.body, outStream, response.headers)
+    BodyWriter.writeBody(response.body, outStream)
 
     log.debug("finished sending response")
   }

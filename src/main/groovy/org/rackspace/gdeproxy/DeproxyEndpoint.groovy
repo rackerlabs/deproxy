@@ -418,9 +418,29 @@ class DeproxyEndpoint {
       }
 
       log.debug "calling handler"
-      Response response = handler(request)
+      Response response
+        HandlerContext context = new HandlerContext()
 
-      log.debug "returned from handler"
+        if (handler instanceof Closure) {
+            if (handler.getMaximumNumberOfParameters() == 1) {
+
+                response = handler(request)
+
+            } else if (handler.getMaximumNumberOfParameters() == 2) {
+
+                response = handler(request, context)
+
+            } else {
+
+                throw new UnsupportedOperationException("Invalid number of parameters in handler")
+            }
+
+        } else {
+
+            response = handler(request)
+        }
+
+        log.debug "returned from handler"
       //
       //            add_default_headers = True
       //            if type(resp) == tuple:

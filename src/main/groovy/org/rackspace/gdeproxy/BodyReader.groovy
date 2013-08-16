@@ -133,4 +133,8 @@ class BodyReader {
         return bindata
     }
 
+    static byte[] readChunkedBody(InputStream inStream) {
+
+        return new byte[0];
+    }
 }

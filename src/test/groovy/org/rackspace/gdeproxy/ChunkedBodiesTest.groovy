@@ -86,7 +86,6 @@ This is the next paragraph.
         assertEquals("", response.body)
     }
 
-
     @Test
     void testChunkedRequestBodyInDefaultClientConnector() {
 
@@ -125,8 +124,7 @@ This is the next paragraph.
                     requestString.length())
         }
 
-        Request request = new Request("GET", "/",
-                ["Transfer-Encoding": "chunked"], body)
+        Request request = new Request("GET", "/", [:], body)
         RequestParams params = new RequestParams()
         params.usedChunkedTransferEncoding = true
 

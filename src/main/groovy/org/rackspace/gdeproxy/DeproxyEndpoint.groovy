@@ -153,6 +153,10 @@ class DeproxyEndpoint {
         }
     }
 
+    Socket createRawConnection() {
+        return new Socket("localhost", this._port)
+    }
+
   //    def process_new_connection(self, request, client_address):
   //        logger.debug('received request from %s' % str(client_address))
   //        try:

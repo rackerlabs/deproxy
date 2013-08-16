@@ -225,7 +225,49 @@ This is the next paragraph.
         assertEquals("chunked", mc.receivedResponse.headers.getFirstValue("Transfer-Encoding"))
         assertEquals(body, mc.receivedResponse.body);
     }
-    
+
+    @Test
+    void testChunkedBodyInBodyWriter1() {
+
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+        String length = Integer.toHexString(body.length());
+        byte[] chunkedBody = (
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n" // end of chunked body, no trailer
+            ).getBytes("US-ASCII")
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream()
+
+
+        BodyWriter.writeBodyChunked(body, outStream)
+        byte[] bytesWritten = outStream.toByteArray()
+
+
+        assertArrayEquals(chunkedBody, bytesWritten)
+    }
+
+    @Test
+    void testChunkedBodyInBodyWriter2() {
+
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+        String length = Integer.toHexString(body.length());
+        byte[] chunkedBody = (
+        "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n" // end of chunked body, no trailer
+        ).getBytes("US-ASCII")
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream()
+
+
+        BodyWriter.writeBody(body, outStream, true)
+        byte[] bytesWritten = outStream.toByteArray()
+
+
+        assertArrayEquals(chunkedBody, bytesWritten)
+    }
+
     @After
     void tearDown() {
         if (this.deproxy) {

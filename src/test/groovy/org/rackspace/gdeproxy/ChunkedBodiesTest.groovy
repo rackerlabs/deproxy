@@ -146,6 +146,60 @@ This is the next paragraph.
         assertEquals("", response.body)
     }
 
+    @Test
+    void testChunkedRequestBodyInDeproxyEndpoint() {
+
+        // setup - create canned request; setup deproxy and endpoint
+
+        Deproxy deproxy = new Deproxy();
+        PortFinder pf = new PortFinder();
+        int port = pf.getNextOpenPort();
+        String url = "http://localhost:${port}/";
+        DeproxyEndpoint endpoint = deproxy.addEndpoint(port);
+
+        String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
+
+        String length = Integer.toHexString(body.length());
+        String requestString = ("GET / HTTP/1.1\r\n" +
+                "Host: localhost:${port}\r\n" +
+                "Content-Type: text/plain\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
+                "Accept: */*\r\n" +
+                "Accept-Encoding: identity\r\n" +
+                "User-Agent: Canned-String\r\n" +
+                "\r\n" +
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n") // end of chunked body, no trailer
+
+        String responseString = ("HTTP/1.1 200 OK\r\n" +
+                "Server: StaticTcpServer\r\n" +
+                "Content-Length: 0\r\n" +
+                "\r\n")
+
+
+
+        client = endpoint.createRawConnection()
+        client.soTimeout = 3000
+
+        MessageChain mc
+        def t = Thread.startDaemon("request-on-the-side-to-get-orphan") {
+            mc = deproxy.makeRequest(url: url, defaultHandler: Handlers.Delay(2000),
+                                     addDefaultHeaders: true)
+        }
+
+        client.outputStream.write(requestString.getBytes("US-ASCII"))
+
+
+        t.join()
+
+
+        assertEquals(1, mc.orphanedHandlings.size())
+        assertEquals(body, mc.orphanedHandlings[0].request.body)
+
+    }
+
     @Ignore
     @Test
     void testChunkedResponseBody() {

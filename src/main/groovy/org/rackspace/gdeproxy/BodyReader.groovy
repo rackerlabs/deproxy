@@ -40,9 +40,24 @@ class BodyReader {
 
 
         // # 2
-        headers.findAll("Transfer-Encoding").each {
-            if (it.value != "identity")
-            {
+        if (headers.contains("Transfer-Encoding")) {
+            if (headers["Transfer-Encoding"] == "identity") {
+
+                // ignore Transfer-Encoding. proceed to #3
+
+            } else if (headers["Transfer-Encoding"] == "chunked") {
+
+                bindata = readChunkedBody(inStream)
+
+            } else {
+
+                // rfc 2616 § 3.6
+                //
+                // A server which receives an entity-body with a transfer-coding it does
+                // not understand SHOULD return 501 (Unimplemented), and close the
+                // connection. A server MUST NOT send transfer-codings to an HTTP/1.0
+                // client.
+
                 log.error "Non-identity transfer encoding, not yet supported in GDeproxy.  Unable to read response body."
                 return null
             }

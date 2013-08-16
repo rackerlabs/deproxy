@@ -61,7 +61,7 @@ class BareClientConnector implements ClientConnector {
         writer.flush();
         outStream.flush();
 
-        BodyWriter.writeBody(request.body, outStream)
+        BodyWriter.writeBody(request.body, outStream, request.headers)
 
         InputStream inStream = s.getInputStream();
 

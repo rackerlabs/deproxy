@@ -200,32 +200,6 @@ This is the next paragraph.
 
     }
 
-    @Ignore
-    @Test
-    void testChunkedResponseBody() {
-        def body = """ This is another body
-
-            This is the next paragraph.
-            """
-        def length = body.length();
-        def chunkedBody = "${length}\r\n${body}\r\n0\r\n\r\n";
-
-        def handler = { request, context ->
-            context.sendChunkedResponse = true
-            return new Response(200, "OK", [:], body);
-        }
-
-        def mc = this.deproxy.makeRequest(url: this.url, defaultHandler: handler);
-
-        assertEquals(1, mc.handlings.size());
-        assertTrue(mc.handlings[0].response.headers.contains("Transfer-Encoding"))
-        assertEquals("chunked", mc.handlings[0].response.headers.getFirstValue("Transfer-Encoding"))
-        assertEquals(chunkedBody, mc.handlings[0].response.body);
-        assertTrue(mc.receivedResponse.headers.contains("Transfer-Encoding"))
-        assertEquals("chunked", mc.receivedResponse.headers.getFirstValue("Transfer-Encoding"))
-        assertEquals(body, mc.receivedResponse.body);
-    }
-
     @Test
     void testChunkedBodyInBodyWriter1() {
 

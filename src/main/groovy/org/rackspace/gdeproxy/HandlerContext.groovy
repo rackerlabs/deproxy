@@ -4,6 +4,6 @@ class HandlerContext {
 
 //    boolean requestWasChunked;
 
-//    boolean sendChunkedResponse = false;
+    boolean sendChunkedResponse = false;
     boolean sendDefaultResponseHeaders = true;
 }

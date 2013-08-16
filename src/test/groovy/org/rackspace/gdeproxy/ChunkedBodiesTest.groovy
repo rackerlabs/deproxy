@@ -59,7 +59,7 @@ This is the next paragraph.
         String serverSideRequest
 
         def t = Thread.startDaemon("static-tcp-server") {
-            serverSideRequest = StaticTcpServer.run(server, responseString,
+            serverSideRequest = StaticTcpServer.handleOneRequest(server, responseString,
                     requestString.length())
         }
 
@@ -121,7 +121,7 @@ This is the next paragraph.
         String serverSideRequest
 
         def t = Thread.startDaemon("static-tcp-server") {
-            serverSideRequest = StaticTcpServer.run(server, responseString,
+            serverSideRequest = StaticTcpServer.handleOneRequest(server, responseString,
                     requestString.length())
         }
 

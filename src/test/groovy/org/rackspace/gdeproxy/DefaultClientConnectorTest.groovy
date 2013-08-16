@@ -1,13 +1,7 @@
 package org.rackspace.gdeproxy
 
 import groovy.util.logging.Log4j
-import org.junit.Before
 import org.junit.Test
-
-import java.nio.ByteBuffer
-import java.nio.CharBuffer
-import java.nio.charset.Charset
-import java.nio.charset.CharsetDecoder
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
@@ -40,7 +34,7 @@ class DefaultClientConnectorTest {
         String serverSideRequest;
 
         def t = Thread.startDaemon("response") {
-            serverSideRequest = StaticTcpServer.run(server, responseString, requestString.length())
+            serverSideRequest = StaticTcpServer.handleOneRequest(server, responseString, requestString.length())
         }
 
         DefaultClientConnector clientConnector = new DefaultClientConnector(client)

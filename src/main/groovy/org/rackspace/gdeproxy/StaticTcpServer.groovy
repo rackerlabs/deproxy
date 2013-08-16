@@ -11,7 +11,7 @@ import java.nio.charset.Charset
  */
 class StaticTcpServer {
 
-    def static run(Socket socket, String responseString, int requestLength) {
+    def static handleOneRequest(Socket socket, String responseString, int requestLength) {
 
         byte[] bytes = new byte[requestLength]
         int n = 0;

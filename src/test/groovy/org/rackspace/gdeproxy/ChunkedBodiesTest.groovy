@@ -13,19 +13,6 @@ import static org.junit.Assert.*;
 public class ChunkedBodiesTest {
 	
     Deproxy deproxy;
-    int port;
-    String url;
-    DeproxyEndpoint endpoint;
-
-    @Before
-    void setUp() {
-        this.deproxy = new Deproxy();
-        PortFinder pf = new PortFinder();
-        this.port = pf.getNextOpenPort();
-        this.url = "http://localhost:${this.port}/";
-        this.endpoint = this.deproxy.addEndpoint(this.port);
-    }
-
     Socket client
     Socket server
 
@@ -151,7 +138,7 @@ This is the next paragraph.
 
         // setup - create canned request; setup deproxy and endpoint
 
-        Deproxy deproxy = new Deproxy();
+        deproxy = new Deproxy();
         PortFinder pf = new PortFinder();
         int port = pf.getNextOpenPort();
         String url = "http://localhost:${port}/";
@@ -244,6 +231,7 @@ This is the next paragraph.
 
     @Test
     void testChunkedBodyInBodyReader1() {
+
         String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
         String length = Integer.toHexString(body.length());
         byte[] chunkedBody = (
@@ -263,6 +251,7 @@ This is the next paragraph.
 
     @Test
     void testChunkedBodyInBodyReader2() {
+
         String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
         String length = Integer.toHexString(body.length());
         byte[] chunkedBody = (

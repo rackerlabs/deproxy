@@ -86,6 +86,68 @@ This is the next paragraph.
         assertEquals("", response.body)
     }
 
+
+    @Test
+    void testChunkedRequestBodyInDefaultClientConnector() {
+
+        String body = """ This is another body
+
+This is the next paragraph.
+"""
+
+        String length = Integer.toHexString(body.length());
+
+        String requestString = ("GET / HTTP/1.1\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
+                "Host: localhost\r\n" +
+                "Accept: */*\r\n" +
+                "Accept-Encoding: identity\r\n" +
+                "User-Agent: ${Deproxy.VERSION_STRING}\r\n" +
+                "\r\n" +
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                "${body}\r\n" + // chunk-data
+                "0\r\n" + // last-chunk, with no chunk-extension
+                "\r\n") // end of chunked body, no trailer
+
+        String responseString = ("HTTP/1.1 200 OK\r\n" +
+                "Server: StaticTcpServer\r\n" +
+                "Content-Length: 0\r\n" +
+                "\r\n")
+
+        (client, server) = LocalSocketPair.createLocalSocketPair()
+        client.soTimeout = 5000
+        server.soTimeout = 5000
+
+        String serverSideRequest
+
+        def t = Thread.startDaemon("static-tcp-server") {
+            serverSideRequest = StaticTcpServer.run(server, responseString,
+                    requestString.length())
+        }
+
+        Request request = new Request("GET", "/",
+                ["Transfer-Encoding": "chunked"], body)
+        RequestParams params = new RequestParams()
+        params.usedChunkedTransferEncoding = true
+
+        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+
+        Response response = clientConnector.sendRequest(request, false,
+                "localhost", server.localPort, params)
+
+
+
+        assertEquals(requestString, serverSideRequest)
+        assertEquals("200", response.code)
+        assertEquals("OK", response.message)
+        assertEquals(2, response.headers.size())
+        assertTrue(response.headers.contains("Server"))
+        assertEquals("StaticTcpServer", response.headers["Server"])
+        assertTrue(response.headers.contains("Content-Length"))
+        assertEquals("0", response.headers["Content-Length"])
+        assertEquals("", response.body)
+    }
+
     @Ignore
     @Test
     void testChunkedResponseBody() {

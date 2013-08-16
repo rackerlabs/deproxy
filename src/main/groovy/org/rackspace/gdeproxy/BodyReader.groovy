@@ -24,11 +24,22 @@ class BodyReader {
 
         byte[] bindata
 
-        //    if ('Transfer-Encoding' in headers and
-        //            headers['Transfer-Encoding'] != 'identity'):
-        //        # 2
-        //        logger.debug('NotImplementedError - Transfer-Encoding != identity')
-        //        raise NotImplementedError
+        /*
+           RFC 2616 section 4.4, Message Length
+           1. Any response message that must not return a body (1xx, 204,
+                304, HEAD) should be terminated by the first empty line
+                after the header fields, regardless of entity headers.
+           2. If the Transfer-Encoding header is present and has a value
+                other than "identity", then it uses chunked encoding.
+           3. If Content-Length is present, it specifies both the
+                transfer-length and entity-length in octets (these must be
+                the same)
+           4. multipart/byteranges
+           5. server closes the connection, for response bodies
+         */
+
+
+        // # 2
         headers.findAll("Transfer-Encoding").each {
             if (it.value != "identity")
             {
@@ -36,11 +47,9 @@ class BodyReader {
                 return null
             }
         }
-        //    elif 'Content-Length' in headers:
-        //        # 3
-        //        length = int(headers['Content-Length'])
-        //        body = stream.read(length)
-        if (headers.contains("Content-Length")) {
+
+        // # 3
+        if (bindata == null &&  headers.contains("Content-Length")) {
             int length = headers.getFirstValue("Content-Length").toInteger();
             log.debug("Headers contain Content-Length: ${length}")
 
@@ -64,15 +73,10 @@ class BodyReader {
                 }
             }
         }
-        //    elif False:
-        //        # multipart/byteranges ?
-        //        logger.debug('NotImplementedError - multipart/byteranges')
-        //        raise NotImplementedError
 
-        //    else:
-        //        # there is no body
-        //        body = None
-        //    return body
+        // # 4 multipart/byteranges
+
+        // else, there is no body (?)
 
         if (bindata == null) {
             log.debug("Returning null");

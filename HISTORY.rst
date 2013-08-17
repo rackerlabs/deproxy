@@ -3,6 +3,22 @@
 History
 -------
 
+0.15 (in progress)
+++++++++++++++++++
+
+- Rudimentary support for chunked message bodies. Does not include chunk
+  extensions or trailers.
+- More, useful testing tools:
+- LocalSocketPair, for easily creating a pair of connected sockets.
+- Open a socket connection to an endpoint, without going through a client.
+- Specify the socket for BareClientConnector and DefaultClientConnector to
+  use.
+- StaticTcpServer, for receiving data and returning canned responses.
+- Handler context, for passing info and directives from a handler back to an
+  endpoint.
+- sendDefaultResponseHeaders can be enabled or disabled.
+
+
 0.11 (2013-08-08)
 ++++++++++++++++++
 

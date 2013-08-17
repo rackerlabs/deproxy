@@ -460,7 +460,7 @@ class DeproxyEndpoint {
 
             if (response.body) {
 
-                if (context.sendChunkedResponse) {
+                if (context.usedChunkedTransferEncoding) {
 
                     if (!response.headers.contains("Transfer-Encoding")) {
                         response.headers.add("Transfer-Encoding", "chunked")
@@ -744,7 +744,7 @@ class DeproxyEndpoint {
     HeaderWriter.writeHeaders(outStream, response.headers)
 
     BodyWriter.writeBody(response.body, outStream,
-                         context.sendChunkedResponse)
+                         context.usedChunkedTransferEncoding)
 
     log.debug("finished sending response")
   }

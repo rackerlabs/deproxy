@@ -4,8 +4,6 @@ package org.rackspace.gdeproxy
 import groovy.util.logging.Log4j;
 import org.junit.*
 
-import java.nio.ByteBuffer;
-
 import static org.junit.Assert.*;
 
 /**
@@ -324,7 +322,7 @@ This is the next paragraph.
         int port = pf.getNextOpenPort();
         String url = "http://localhost:${port}/";
         def handler = { request, HandlerContext context ->
-            context.sendChunkedResponse = true
+            context.usedChunkedTransferEncoding = true
             return new Response(200, "OK", null, body)
         }
         DeproxyEndpoint endpoint = deproxy.addEndpoint(port, null, null, handler);

@@ -305,7 +305,7 @@ This is the next paragraph.
 
         String responseString = ("HTTP/1.1 200 OK\r\n" +
                 "Server: ${Deproxy.VERSION_STRING}\r\n" +
-                "Date: EEE, dd MMM yyyy HH:mm:ss z\r\n" +
+                "Date: EEE, dd MMM yyyy HH:mm:ss zzz\r\n" +
                 "Transfer-Encoding: chunked\r\n" +
                 "\r\n" +
                 "${length}\r\n" + // chunk-size, with no chunk-extension

@@ -7,6 +7,13 @@ package org.rackspace.gdeproxy
  */
 class DefaultClientConnector extends BareClientConnector {
 
+    public DefaultClientConnector() {
+        this(null)
+    }
+    public DefaultClientConnector(Socket socket) {
+        super(socket)
+    }
+
     @Override
     Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
 
@@ -14,24 +21,34 @@ class DefaultClientConnector extends BareClientConnector {
 
             if (request.body) {
 
-                def length
-                String contentType
-                if (request.body instanceof String) {
-                    length = request.body.length()
-                    contentType = "text/plain"
-                } else if (request.body instanceof byte[]) {
-                    length = request.body.length
-                    contentType = "application/octet-stream"
-                } else {
-                    throw new UnsupportedOperationException("Unknown data type in requestBody")
-                }
+                if (params.usedChunkedTransferEncoding) {
 
-                if (length > 0) {
-                    if (!request.headers.contains("Content-Length")) {
-                        request.headers.add("Content-Length", length)
+                    if (!request.headers.contains("Transfer-Encoding")) {
+                        request.headers.add("Transfer-Encoding", "chunked")
                     }
-                    if (!request.headers.contains("Content-Type")) {
-                        request.headers.add("Content-Type", contentType)
+
+                } else if (!request.headers.contains("Transfer-Encoding") ||
+                            request.headers["Transfer-Encoding"] == "identity") {
+
+                    def length
+                    String contentType
+                    if (request.body instanceof String) {
+                        length = request.body.length()
+                        contentType = "text/plain"
+                    } else if (request.body instanceof byte[]) {
+                        length = request.body.length
+                        contentType = "application/octet-stream"
+                    } else {
+                        throw new UnsupportedOperationException("Unknown data type in requestBody")
+                    }
+
+                    if (length > 0) {
+                        if (!request.headers.contains("Content-Length")) {
+                            request.headers.add("Content-Length", length)
+                        }
+                        if (!request.headers.contains("Content-Type")) {
+                            request.headers.add("Content-Type", contentType)
+                        }
                     }
                 }
             }

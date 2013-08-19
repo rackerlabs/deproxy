@@ -77,7 +77,82 @@ class CustomHandlersTest {
     assertEquals("606", mc.receivedResponse.code);
   }
 
-  @After
+
+    @Test
+    public void testCustomHandlerInlineClosureWithContext() {
+
+        def mc = this.deproxy.makeRequest(url:this.url,
+                defaultHandler: { request, context ->
+                    new Response(
+                            606,
+                            "Spoiler",
+                            ["Header-Name": "Header-Value", "Context-Object": context],
+                            "Snape kills Dumbledore");
+                });
+
+        assertEquals("606", mc.receivedResponse.code);
+        assertTrue(mc.receivedResponse.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.receivedResponse.headers["Header-Name"])
+        assertTrue(mc.receivedResponse.headers.contains("Context-Object"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertTrue(mc.handlings[0].response.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.handlings[0].response.headers["Header-Name"])
+        assertTrue(mc.handlings[0].response.headers.contains("Context-Object"))
+    }
+
+    def customHandlerMethodWithContext(Request request,
+                                       HandlerContext context) {
+        new Response(
+                606,
+                "Spoiler",
+                ["Header-Name": "Header-Value", "Context-Object": context],
+                "Snape kills Dumbledore");
+    }
+
+    @Test
+    public void testCustomHandlerMethodWithContext() {
+        def mc = this.deproxy.makeRequest(url:this.url,
+                defaultHandler: this.&customHandlerMethodWithContext);
+
+        assertEquals("606", mc.receivedResponse.code);
+        assertTrue(mc.receivedResponse.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.receivedResponse.headers["Header-Name"])
+        assertTrue(mc.receivedResponse.headers.contains("Context-Object"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertTrue(mc.handlings[0].response.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.handlings[0].response.headers["Header-Name"])
+        assertTrue(mc.handlings[0].response.headers.contains("Context-Object"))
+    }
+
+    public static Response customHandlerStaticMethodWithContext(
+            Request request,
+            HandlerContext context) {
+        return new Response(
+                606,
+                "Spoiler",
+                ["Header-Name": "Header-Value", "Context-Object": context],
+                "Snape kills Dumbledore");
+    }
+
+    @Test
+    public void testCustomHandlerStaticMethodWithContext() {
+        def mc = this.deproxy.makeRequest(url:this.url,
+                defaultHandler: CustomHandlersTest.&customHandlerStaticMethodWithContext);
+
+        assertEquals("606", mc.receivedResponse.code);
+        assertTrue(mc.receivedResponse.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.receivedResponse.headers["Header-Name"])
+        assertTrue(mc.receivedResponse.headers.contains("Context-Object"))
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertTrue(mc.handlings[0].response.headers.contains("Header-Name"))
+        assertEquals("Header-Value", mc.handlings[0].response.headers["Header-Name"])
+        assertTrue(mc.handlings[0].response.headers.contains("Context-Object"))
+    }
+
+    @After
   public void tearDown() {
     if (this.deproxy) {
       this.deproxy.shutdown();

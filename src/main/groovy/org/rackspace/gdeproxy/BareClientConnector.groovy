@@ -14,6 +14,15 @@ import javax.net.ssl.SSLSocketFactory
 @Log4j
 class BareClientConnector implements ClientConnector {
 
+    public BareClientConnector() {
+        this(null)
+    }
+    public BareClientConnector(Socket socket) {
+        this.socket = socket
+    }
+
+    Socket socket
+
     @Override
     Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
         """Send the given request to the host and return the Response."""
@@ -29,7 +38,9 @@ class BareClientConnector implements ClientConnector {
 
         log.debug "creating socket: host=${host}, port=${port}"
         Socket s;
-        if (https) {
+        if (this.socket) {
+            s = this.socket
+        } else if (https) {
             s = SSLSocketFactory.getDefault().createSocket(host, port)
         } else {
             s = new Socket(host, port)
@@ -49,7 +60,8 @@ class BareClientConnector implements ClientConnector {
         writer.flush();
         outStream.flush();
 
-        BodyWriter.writeBody(request.body, outStream)
+        BodyWriter.writeBody(request.body, outStream,
+                             params.usedChunkedTransferEncoding)
 
         InputStream inStream = s.getInputStream();
 

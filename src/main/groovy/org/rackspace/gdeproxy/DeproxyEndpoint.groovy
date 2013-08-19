@@ -154,6 +154,10 @@ class DeproxyEndpoint {
         }
     }
 
+    Socket createRawConnection() {
+        return new Socket("localhost", this._port)
+    }
+
   //    def process_new_connection(self, request, client_address):
   //        logger.debug('received request from %s' % str(client_address))
   //        try:
@@ -381,20 +385,26 @@ class DeproxyEndpoint {
       }
 
         // Handler resolution:
-        // 1. Check the handlers mapping specified to ``make_request``
-        // a. By reference
-        // b. By name
-        // 2. Check the default_handler specified to ``make_request``
+        // 1. Check the handlers mapping specified to ``makeRequest``
+        //   a. By reference
+        //   b. By name
+        // 2. Check the defaultHandler specified to ``makeRequest``
         // 3. Check the default for this endpoint
         // 4. Check the default for the parent Deproxy
-        // 5. Fallback to simple_handler
+        // 5. Fallback to simpleHandler
 
       def handler
       if (messageChain &&
-        messageChain.handlers &&
-        messageChain.handlers.containsKey(this)) {
+            messageChain.handlers &&
+            messageChain.handlers.containsKey(this)) {
 
         handler = messageChain.handlers[this]
+
+      } else if (messageChain &&
+              messageChain.handlers &&
+              messageChain.handlers.containsKey(this._name)) {
+
+          handler = messageChain.handlers[this._name]
 
       } else if (messageChain && messageChain.defaultHandler){
 
@@ -415,42 +425,32 @@ class DeproxyEndpoint {
       }
 
       log.debug "calling handler"
-      Response response = handler(request)
+      Response response
+        HandlerContext context = new HandlerContext()
 
-      log.debug "returned from handler"
-      //
-      //            add_default_headers = True
-      //            if type(resp) == tuple:
-      //                logger.debug('Handler gave back a tuple: %s',
-      //                             (type(resp[0]), resp[1:]))
-      //                if len(resp) > 1:
-      //                    add_default_headers = resp[1]
-      //                resp = resp[0]
-      def addDefaultHeaders = true
-      if (response instanceof List){
-        if (response.size() > 1){
-          addDefaultHeaders = response[1]
+        if (handler instanceof Closure) {
+            if (handler.getMaximumNumberOfParameters() == 1) {
+
+                response = handler(request)
+
+            } else if (handler.getMaximumNumberOfParameters() == 2) {
+
+                response = handler(request, context)
+
+            } else {
+
+                throw new UnsupportedOperationException("Invalid number of parameters in handler")
+            }
+
+        } else {
+
+            response = handler(request)
         }
 
-        response = response[0]
-      }
-      //
-      //            if (resp.body is not None and
-      //                    'Content-Length' not in resp.headers):
-      //                resp.headers.add('Content-Length', len(resp.body))
-      if (response.body && !response.headers.contains("Content-Length")) {
-          def length
-          if (response.body instanceof String) {
-            length = response.body.length()
-          } else if (response.body instanceof byte[]) {
-              length = response.body.length
-          } else {
-              throw new UnsupportedOperationException("Unknown data type in request body")
-          }
-          response.headers.add("Content-Length", length)
-      }
+        log.debug "returned from handler"
 
-        if (addDefaultHeaders) {
+
+        if (context.sendDefaultResponseHeaders) {
 
             if (!response.headers.contains("Server")) {
                 response.headers.add("Server", Deproxy.VERSION_STRING)
@@ -461,24 +461,34 @@ class DeproxyEndpoint {
 
             if (response.body) {
 
-                def length
-                String contentType
-                if (response.body instanceof String) {
-                    length = response.body.length()
-                    contentType = "text/plain"
-                } else if (response.body instanceof byte[]) {
-                    length = response.body.length
-                    contentType = "application/octet-stream"
-                } else {
-                    throw new UnsupportedOperationException("Unknown data type in requestBody")
-                }
+                if (context.usedChunkedTransferEncoding) {
 
-                if (length > 0) {
-                    if (!response.headers.contains("Content-Length")) {
-                        response.headers.add("Content-Length", length)
+                    if (!response.headers.contains("Transfer-Encoding")) {
+                        response.headers.add("Transfer-Encoding", "chunked")
                     }
-                    if (!response.headers.contains("Content-Type")) {
-                        response.headers.add("Content-Type", contentType)
+
+                } else if (!response.headers.contains("Transfer-Encoding") ||
+                            response.headers["Transfer-Encoding"] == "identity") {
+
+                    def length
+                    String contentType
+                    if (response.body instanceof String) {
+                        length = response.body.length()
+                        contentType = "text/plain"
+                    } else if (response.body instanceof byte[]) {
+                        length = response.body.length
+                        contentType = "application/octet-stream"
+                    } else {
+                        throw new UnsupportedOperationException("Unknown data type in requestBody")
+                    }
+
+                    if (length > 0) {
+                        if (!response.headers.contains("Content-Length")) {
+                            response.headers.add("Content-Length", length)
+                        }
+                        if (!response.headers.contains("Content-Type")) {
+                            response.headers.add("Content-Type", contentType)
+                        }
                     }
                 }
             }
@@ -509,7 +519,7 @@ class DeproxyEndpoint {
       }
       //
       //            self.send_response(wfile, resp)
-      sendResponse(outStream, response)
+      sendResponse(outStream, response, context)
       //
       //            wfile.flush()
       //
@@ -707,7 +717,7 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(OutputStream outStream, Response response) {
+  def sendResponse(OutputStream outStream, Response response, HandlerContext context) {
 
     def writer = new PrintWriter(outStream, true);
 
@@ -734,7 +744,8 @@ class DeproxyEndpoint {
 
     HeaderWriter.writeHeaders(outStream, response.headers)
 
-    BodyWriter.writeBody(response.body, outStream)
+    BodyWriter.writeBody(response.body, outStream,
+                         context.usedChunkedTransferEncoding)
 
     log.debug("finished sending response")
   }

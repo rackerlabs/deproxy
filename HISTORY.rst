@@ -3,7 +3,7 @@
 History
 -------
 
-0.15 (in progress)
+0.15 (2013-08-19)
 ++++++++++++++++++
 
 - Rudimentary support for chunked message bodies. Does not include chunk

@@ -121,7 +121,10 @@ class DeproxyEndpoint {
         Socket socket;
         String connectionName
 
-        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String connectionName, String threadName) {
+        public DeproxyEndpointHandlerThread(DeproxyEndpoint parent,
+                                            Socket socket,
+                                            String connectionName,
+                                            String threadName) {
 
             this.setName(threadName);
             this.parent = parent;
@@ -131,17 +134,22 @@ class DeproxyEndpoint {
 
         @Override
         public void run() {
+
             log.debug("Processing new connection");
+
             this.parent.processNewConnection(this.socket, connectionName);
+
             log.debug("Connection processed");
         }
     }
 
     Socket createRawConnection() {
+
         return new Socket("localhost", this.port)
     }
 
     def processNewConnection(Socket socket, String connectionName) {
+
         log.debug "processing new connection..."
         def reader;
         def writer;
@@ -149,21 +157,28 @@ class DeproxyEndpoint {
         InputStream inStream;
 
         try {
+
             log.debug "getting reader"
             log.debug "getting writer"
             inStream = socket.getInputStream()
             outStream = socket.getOutputStream();
+
             try {
+
                 log.debug "starting loop"
                 def close = false
                 while (!close) {
+
                     log.debug "about to handle one request"
 
                     close = handleOneRequest(inStream, outStream, connectionName)
                     log.debug "handled one request"
                 }
+
                 log.debug "ending loop"
+
             } catch (RuntimeException e) {
+
                 log.error("there was an error", e)
                 sendResponse(outStream,
                         new Response(500, "Internal Server Error", null,
@@ -212,7 +227,7 @@ class DeproxyEndpoint {
                 return true
             }
 
-            def (request, persistConnection) = ret
+            def (Request request, boolean persistConnection) = ret
 
             if (persistConnection) {
 

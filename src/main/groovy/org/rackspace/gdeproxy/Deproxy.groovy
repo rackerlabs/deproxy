@@ -17,10 +17,10 @@ class Deproxy {
     public def defaultHandler = null
     public def defaultClientConnector
 
-    protected def messageChainsLock = new ReentrantLock()
-    protected def messageChains = [:]
-    protected def endpointLock = new ReentrantLock()
-    protected def endpoints = []
+    protected final def messageChainsLock = new ReentrantLock()
+    protected Map<String, MessageChain> messageChains = [:]
+    protected final def endpointLock = new ReentrantLock()
+    protected List<DeproxyEndpoint> endpoints = []
 
     private static String getVersion() {
         def res = Deproxy.class.getResourceAsStream("version.txt")
@@ -35,7 +35,7 @@ class Deproxy {
         return new String(bytes as byte[], "UTF-8")
     }
 
-    Deproxy(defaultHandler=null, defaultClientConnector=null) {
+    Deproxy(defaultHandler=null, ClientConnector defaultClientConnector=null) {
 
         if (defaultClientConnector == null) {
             defaultClientConnector = new DefaultClientConnector()
@@ -136,7 +136,7 @@ class Deproxy {
         return messageChain
     }
 
-    def addEndpoint(int port, name=null, hostname=null, defaultHandler=null) {
+    def addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
 
         def endpoint = null
 
@@ -154,7 +154,7 @@ class Deproxy {
         }
     }
 
-    def _removeEndpoint(endpoint) {
+    def _removeEndpoint(DeproxyEndpoint endpoint) {
 
         synchronized (this.endpointLock) {
 
@@ -176,7 +176,7 @@ class Deproxy {
         }
     }
 
-    def addMessageChain(requestId, messageChain) {
+    def addMessageChain(String requestId, MessageChain messageChain) {
 
         synchronized (this.messageChainsLock) {
 
@@ -184,7 +184,7 @@ class Deproxy {
         }
     }
 
-    def removeMessageChain(requestId) {
+    def removeMessageChain(String requestId) {
 
         synchronized (this.messageChainsLock) {
 
@@ -192,7 +192,7 @@ class Deproxy {
         }
     }
 
-    def getMessageChain(requestId) {
+    def getMessageChain(String requestId) {
 
         synchronized (this.messageChainsLock) {
 
@@ -207,7 +207,7 @@ class Deproxy {
         }
     }
 
-    def addOrphanedHandling(handling) {
+    def addOrphanedHandling(Handling handling) {
 
         synchronized (this.messageChainsLock) {
 

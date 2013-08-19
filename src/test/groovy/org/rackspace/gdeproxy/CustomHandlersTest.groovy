@@ -10,78 +10,78 @@ import static org.junit.Assert.*;
 
 class CustomHandlersTest {
 
-  int port;
-  String url;
-  Deproxy deproxy;
-  DeproxyEndpoint endpoint;
+    int port;
+    String url;
+    Deproxy deproxy;
+    DeproxyEndpoint endpoint;
 
-  @Before
-  public void setUp() {
-    PortFinder pf = new PortFinder();
-    this.port = pf.getNextOpenPort();
-    this.url = "http://localhost:${this.port}/";
-    this.deproxy = new Deproxy();
-    this.endpoint = this.deproxy.addEndpoint(this.port);
-  }
+    @Before
+    public void setUp() {
+        PortFinder pf = new PortFinder();
+        this.port = pf.getNextOpenPort();
+        this.url = "http://localhost:${this.port}/";
+        this.deproxy = new Deproxy();
+        this.endpoint = this.deproxy.addEndpoint(this.port);
+    }
 
-  @Test
-  public void testCustomHandlerInlineClosure() {
+    @Test
+    public void testCustomHandlerInlineClosure() {
 
-    def mc = this.deproxy.makeRequest(url:this.url,
-      defaultHandler: { request ->
+        def mc = this.deproxy.makeRequest(url: this.url,
+                defaultHandler: { request ->
+                    new Response(
+                            606,
+                            "Spoiler",
+                            ["Header-Name": "Header-Value"],
+                            "Snape kills Dumbledore");
+                });
+
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertEquals("606", mc.receivedResponse.code);
+    }
+
+    def customHandlerMethod(request) {
         new Response(
-          606,
-          "Spoiler",
-          ["Header-Name": "Header-Value"],
-          "Snape kills Dumbledore");
-      });
+                606,
+                "Spoiler",
+                ["Header-Name": "Header-Value"],
+                "Snape kills Dumbledore");
+    }
 
-    assertEquals(1, mc.handlings.size());
-    assertEquals("606", mc.handlings[0].response.code);
-    assertEquals("606", mc.receivedResponse.code);
-  }
+    @Test
+    public void testCustomHandlerMethod() {
+        def mc = this.deproxy.makeRequest(url: this.url,
+                defaultHandler: this.&customHandlerMethod);
 
-  def customHandlerMethod(request) {
-    new Response(
-      606,
-      "Spoiler",
-      ["Header-Name": "Header-Value"],
-      "Snape kills Dumbledore");
-  }
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertEquals("606", mc.receivedResponse.code);
+    }
 
-  @Test
-  public void testCustomHandlerMethod() {
-    def mc = this.deproxy.makeRequest(url:this.url,
-      defaultHandler: this.&customHandlerMethod);
+    public static Response customHandlerStaticMethod(Request request) {
+        return new Response(
+                606,
+                "Spoiler",
+                ["Header-Name": "Header-Value"],
+                "Snape kills Dumbledore");
+    }
 
-    assertEquals(1, mc.handlings.size());
-    assertEquals("606", mc.handlings[0].response.code);
-    assertEquals("606", mc.receivedResponse.code);
-  }
+    @Test
+    public void testCustomHandlerStaticMethod() {
+        def mc = this.deproxy.makeRequest(url: this.url,
+                defaultHandler: CustomHandlersTest.&customHandlerStaticMethod);
 
-  public static Response customHandlerStaticMethod(Request request) {
-    return new Response(
-      606,
-      "Spoiler",
-      ["Header-Name": "Header-Value"],
-      "Snape kills Dumbledore");
-  }
-
-  @Test
-  public void testCustomHandlerStaticMethod() {
-    def mc = this.deproxy.makeRequest(url:this.url,
-      defaultHandler: CustomHandlersTest.&customHandlerStaticMethod);
-
-    assertEquals(1, mc.handlings.size());
-    assertEquals("606", mc.handlings[0].response.code);
-    assertEquals("606", mc.receivedResponse.code);
-  }
+        assertEquals(1, mc.handlings.size());
+        assertEquals("606", mc.handlings[0].response.code);
+        assertEquals("606", mc.receivedResponse.code);
+    }
 
 
     @Test
     public void testCustomHandlerInlineClosureWithContext() {
 
-        def mc = this.deproxy.makeRequest(url:this.url,
+        def mc = this.deproxy.makeRequest(url: this.url,
                 defaultHandler: { request, context ->
                     new Response(
                             606,
@@ -112,7 +112,7 @@ class CustomHandlersTest {
 
     @Test
     public void testCustomHandlerMethodWithContext() {
-        def mc = this.deproxy.makeRequest(url:this.url,
+        def mc = this.deproxy.makeRequest(url: this.url,
                 defaultHandler: this.&customHandlerMethodWithContext);
 
         assertEquals("606", mc.receivedResponse.code);
@@ -138,7 +138,7 @@ class CustomHandlersTest {
 
     @Test
     public void testCustomHandlerStaticMethodWithContext() {
-        def mc = this.deproxy.makeRequest(url:this.url,
+        def mc = this.deproxy.makeRequest(url: this.url,
                 defaultHandler: CustomHandlersTest.&customHandlerStaticMethodWithContext);
 
         assertEquals("606", mc.receivedResponse.code);
@@ -153,13 +153,12 @@ class CustomHandlersTest {
     }
 
     @After
-  public void tearDown() {
-    if (this.deproxy) {
-      this.deproxy.shutdown();
+    public void tearDown() {
+        if (this.deproxy) {
+            this.deproxy.shutdown();
+        }
     }
-  }
 }
-
 
 //class TestCustomHandlers(unittest.TestCase):
 //    def setUp(self):

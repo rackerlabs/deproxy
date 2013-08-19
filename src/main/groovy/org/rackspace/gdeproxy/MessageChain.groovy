@@ -6,7 +6,6 @@ package org.rackspace.gdeproxy
  *  DeproxyEndpoint objects.
  */
 
-//class MessageChain:
 class MessageChain {
 
     Request sentRequest
@@ -17,22 +16,9 @@ class MessageChain {
     List<Handling> orphanedHandlings = []
     def _lock = new Object()
 
-    //    def __init__(self, default_handler, handlers):
-    //        """
-    //Params:
-    //default_handler - An optional handler function to use for requests
-    //related to this MessageChain, if not specified elsewhere
-    //handlers - A mapping object that maps endpoint references or names of
-    //endpoints to handlers
-    //"""
     public MessageChain(defaultHandler = null, handlers = null) {
-        //        self.sent_request = None
-        //        self.received_response = None
         this.defaultHandler = defaultHandler
         this.handlers = handlers
-        //        self.handlings = []
-        //        self.orphaned_handlings = []
-        //        self.lock = threading.Lock()
     this.defaultHandler = defaultHandler;
     this.handlers = handlers;
     }

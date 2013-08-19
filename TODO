@@ -6,10 +6,10 @@ update docs
     code samples are still in python; they need to be converted to groovy
     new functionality has been added, needs to be documented
 
-chunked body reading (transfer coding)
-    will require a more expansive model of the request/response and the behavior of the connector(s)
+distinction between message body and transfer-encoded message body, between
+        the request/response and the bytes-on-the-wire
 compression (content coding)
-    ditto
+    will likely require changes to the object model
 
 
 no particular order:

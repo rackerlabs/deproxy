@@ -24,23 +24,47 @@ class BodyReader {
 
         byte[] bindata
 
-        //    if ('Transfer-Encoding' in headers and
-        //            headers['Transfer-Encoding'] != 'identity'):
-        //        # 2
-        //        logger.debug('NotImplementedError - Transfer-Encoding != identity')
-        //        raise NotImplementedError
-        headers.findAll("Transfer-Encoding").each {
-            if (it.value != "identity")
-            {
+        /*
+           RFC 2616 section 4.4, Message Length
+           1. Any response message that must not return a body (1xx, 204,
+                304, HEAD) should be terminated by the first empty line
+                after the header fields, regardless of entity headers.
+           2. If the Transfer-Encoding header is present and has a value
+                other than "identity", then it uses chunked encoding.
+           3. If Content-Length is present, it specifies both the
+                transfer-length and entity-length in octets (these must be
+                the same)
+           4. multipart/byteranges
+           5. server closes the connection, for response bodies
+         */
+
+
+        // # 2
+        if (headers.contains("Transfer-Encoding")) {
+            if (headers["Transfer-Encoding"] == "identity") {
+
+                // ignore Transfer-Encoding. proceed to #3
+
+            } else if (headers["Transfer-Encoding"] == "chunked") {
+
+                bindata = readChunkedBody(inStream)
+
+            } else {
+
+                // rfc 2616 § 3.6
+                //
+                // A server which receives an entity-body with a transfer-coding it does
+                // not understand SHOULD return 501 (Unimplemented), and close the
+                // connection. A server MUST NOT send transfer-codings to an HTTP/1.0
+                // client.
+
                 log.error "Non-identity transfer encoding, not yet supported in GDeproxy.  Unable to read response body."
                 return null
             }
         }
-        //    elif 'Content-Length' in headers:
-        //        # 3
-        //        length = int(headers['Content-Length'])
-        //        body = stream.read(length)
-        if (headers.contains("Content-Length")) {
+
+        // # 3
+        if (bindata == null &&  headers.contains("Content-Length")) {
             int length = headers.getFirstValue("Content-Length").toInteger();
             log.debug("Headers contain Content-Length: ${length}")
 
@@ -64,15 +88,10 @@ class BodyReader {
                 }
             }
         }
-        //    elif False:
-        //        # multipart/byteranges ?
-        //        logger.debug('NotImplementedError - multipart/byteranges')
-        //        raise NotImplementedError
 
-        //    else:
-        //        # there is no body
-        //        body = None
-        //    return body
+        // # 4 multipart/byteranges
+
+        // else, there is no body (?)
 
         if (bindata == null) {
             log.debug("Returning null");
@@ -129,4 +148,81 @@ class BodyReader {
         return bindata
     }
 
+    static byte[] readChunkedBody(InputStream inStream) {
+
+        // see rfc 2616, section 3.6.1
+
+        // Chunked-Body   = *chunk
+        //                  last-chunk
+        //                  trailer
+        //                  CRLF
+        //
+        // chunk          = chunk-size [ chunk-extension ] CRLF
+        //                  chunk-data CRLF
+        // chunk-size     = 1*HEX
+        // last-chunk     = 1*("0") [ chunk-extension ] CRLF
+        //
+        // chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
+        // chunk-ext-name = token
+        // chunk-ext-val  = token | quoted-string
+        // chunk-data     = chunk-size(OCTET)
+        // trailer        = *(entity-header CRLF)
+
+        List<byte[]> chunks = []
+
+        while (true) {
+
+            // chunk-size [ chunk-extension ] CRLF
+            // 1*("0") [ chunk-extension ] CRLF
+            def line = LineReader.readLine(inStream)
+
+            // find the extent of the chunk-size
+            int i;
+            for (i = 0; i < line.length(); i++) {
+                def value = Character.digit(line.charAt(i), 16)
+                if (value < 0 || value > 15) break;
+            }
+
+            if (i < 1) {
+                // started with an invalid character
+                throw new NumberFormatException("Invalid chunk size")
+            }
+
+            int length = Integer.parseInt(line.substring(0, i), 16)
+
+            // ignore any chunk-extension for now
+
+            // last-chunk = 1*("0") ...
+            if (length < 1) break;
+
+            // chunk-data CRLF
+            byte[] chunkData = new byte[length]
+            inStream.read(chunkData)
+            LineReader.readLine(inStream)
+
+            chunks.add(chunkData)
+        }
+
+        def trailer = HeaderReader.readHeaders(inStream)
+        // we don't do anything with the trailer yet.
+        // according to the rfc, everything in the trailer should be an
+        // entity-header. There are also additional requirements
+
+
+        // merge all the chunks together
+
+        int totalLength = 0
+        for (byte[] chunk in chunks) {
+            totalLength += chunk.length
+        }
+
+        byte[] binaryData = new byte[totalLength]
+        ByteBuffer buffer = ByteBuffer.wrap(binaryData)
+
+        for (byte[] chunk in chunks) {
+            buffer.put(chunk)
+        }
+
+        return binaryData
+    }
 }

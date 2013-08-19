@@ -117,7 +117,7 @@ class BodiesTest {
     }
 
     @Test
-    void testDefaultResponseHeadersForBinaryBody() {
+    void testDefaultResponseHeadersForTextBody() {
         def body = """ This is another body
 
         This is the next paragraph.
@@ -139,28 +139,33 @@ class BodiesTest {
         assertEquals("text/plain", mc.handlings[0].response.headers["Content-Type"])
     }
 
-    // this one doesn't work correctly, because we don't have a reliable way
-    // to turn of default response headers
-    @Ignore
     @Test
-    void testNoDefaultResponseHeadersForBinaryBody() {
+    void testNoDefaultResponseHeadersForTextBody() {
         def body = """ This is another body
 
         This is the next paragraph.
         """
 
-        def handler = { request ->
-            return [ new Response(200, "OK", null, body), false ];
+        def handler = { request, HandlerContext context ->
+            context.sendDefaultResponseHeaders = false
+            return new Response(200, "OK", null, body);
         }
 
         def mc = this.deproxy.makeRequest(url: this.url,
                 defaultHandler: handler);
 
-        assertEquals("", mc.receivedResponse.body);
+        assertEquals("200", mc.receivedResponse.code)
+        assertEquals(1, mc.receivedResponse.headers.size())
+        assertEquals(1, mc.receivedResponse.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
+        assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Length"))
         assertEquals(0, mc.receivedResponse.headers.getCountByName("Content-Type"))
+        assertEquals("", mc.receivedResponse.body);
         assertEquals(1, mc.handlings.size());
-        assertEquals(body, mc.handlings[0].response.body); // because there's no Content-Length header, it doesn't read the body
+        assertEquals(1, mc.handlings[0].response.headers.size())
+        assertEquals(1, mc.receivedResponse.headers.getCountByName(Deproxy.REQUEST_ID_HEADER_NAME))
+        assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Length"))
         assertEquals(0, mc.handlings[0].response.headers.getCountByName("Content-Type"))
+        assertEquals(body, mc.handlings[0].response.body);
     }
 
   @After

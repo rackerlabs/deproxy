@@ -19,6 +19,30 @@ History
 - StaticTcpServer, for receiving data and returning canned responses.
 
 
+0.14 (2013-08-14)
+++++++++++++++++++
+
+- Worked around the bug in groovy *again*, this time in
+  DeproxyEndpointHandlerThread
+
+
+0.13 (2013-08-14)
+++++++++++++++++++
+
+- Worked around a bug in groovy releated to Thread class
+  (see http://jira.codehaus.org/browse/GROOVY-5475) in
+  DeproxyEndpointListenerThread.
+
+
+0.12 (2013-08-13)
+++++++++++++++++++
+
+- Associated a unique identifier with each TCP connection. Said identifier
+  will be attached to each Handling that an endpoint handles.
+- Fixed version numbers so that User-Agent and Server headers use the correct
+  version of the software.
+
+
 0.11 (2013-08-08)
 ++++++++++++++++++
 

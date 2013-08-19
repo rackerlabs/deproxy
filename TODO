@@ -8,8 +8,8 @@ update docs
 
 distinction between message body and transfer-encoded message body, between
         the request/response and the bytes-on-the-wire
-compression
-    ditto
+compression (content coding)
+    will likely require changes to the object model
 
 
 no particular order:

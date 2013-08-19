@@ -353,15 +353,40 @@ This is the next paragraph.
         String stringRecieved = new String(bytesRecieved, "US-ASCII")
 
 
-        // compare the front parts and back parts of the string; skip the date
 
-        log.debug("responseString, front: " + responseString.substring(0, 55))
-        log.debug("stringRecieved, front: " + stringRecieved.substring(0, 55))
-        log.debug("responseString, back: " + responseString.substring(84))
-        log.debug("stringRecieved, back: " + stringRecieved.substring(84))
 
-        assertEquals(responseString.substring(0, 55), stringRecieved.substring(0, 55))
-        assertEquals(responseString.substring(84), stringRecieved.substring(84))
+        // compare the expected and actual responses. They are only partially
+        // identical, though
+
+        StringReader expected = new StringReader(responseString)
+        StringReader actual = new StringReader(stringRecieved)
+
+        // response lines should be the same
+        String expectedLine = LineReader.readLine(expected)
+        String actualLine = LineReader.readLine(actual)
+        assertEquals(expectedLine, actualLine)
+
+        // server headers have potentially variable length
+        expectedLine = LineReader.readLine(expected)
+        actualLine = LineReader.readLine(actual)
+        assertTrue(expectedLine.startsWith("Server: "))
+        assertTrue(actualLine.startsWith("Server: "))
+
+        // date headers will be different in content, but equal in length
+        expectedLine = LineReader.readLine(expected)
+        actualLine = LineReader.readLine(actual)
+        assertTrue(expectedLine.startsWith("Date: "))
+        assertTrue(actualLine.startsWith("Date: "))
+        assertEquals(expectedLine.length(), actualLine.length())
+
+        // the rest should be identical
+        expectedLine = LineReader.readLine(expected)
+        actualLine = LineReader.readLine(actual)
+        while (expectedLine != null && actualLine != null) {
+            assertEquals(expectedLine, actualLine)
+            expectedLine = LineReader.readLine(expected)
+            actualLine = LineReader.readLine(actual)
+        }
     }
 
     @Test

@@ -354,6 +354,12 @@ This is the next paragraph.
 
 
         // compare the front parts and back parts of the string; skip the date
+
+        log.debug("responseString, front: " + responseString.substring(0, 55))
+        log.debug("stringRecieved, front: " + stringRecieved.substring(0, 55))
+        log.debug("responseString, back: " + responseString.substring(84))
+        log.debug("stringRecieved, back: " + stringRecieved.substring(84))
+
         assertEquals(responseString.substring(0, 55), stringRecieved.substring(0, 55))
         assertEquals(responseString.substring(84), stringRecieved.substring(84))
     }

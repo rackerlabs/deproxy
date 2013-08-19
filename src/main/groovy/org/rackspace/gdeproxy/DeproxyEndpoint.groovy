@@ -717,7 +717,7 @@ class DeproxyEndpoint {
   //
 
   //    def send_response(self, wfile, response):
-  def sendResponse(OutputStream outStream, Response response, HandlerContext context) {
+  def sendResponse(OutputStream outStream, Response response, HandlerContext context=null) {
 
     def writer = new PrintWriter(outStream, true);
 
@@ -745,7 +745,7 @@ class DeproxyEndpoint {
     HeaderWriter.writeHeaders(outStream, response.headers)
 
     BodyWriter.writeBody(response.body, outStream,
-                         context.usedChunkedTransferEncoding)
+                         context?.usedChunkedTransferEncoding ?: false)
 
     log.debug("finished sending response")
   }

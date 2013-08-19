@@ -1,13 +1,8 @@
 package org.rackspace.gdeproxy
 
-import java.nio.ByteBuffer
-import java.nio.charset.CharacterCodingException
-import java.nio.charset.Charset
-import java.nio.charset.CodingErrorAction
 import java.util.concurrent.locks.ReentrantLock
 
-import groovy.util.logging.Log4j;
-import org.apache.log4j.Logger;
+import groovy.util.logging.Log4j
 
 /**
  * The main class.
@@ -16,15 +11,16 @@ import org.apache.log4j.Logger;
 class Deproxy {
 
     public static final String REQUEST_ID_HEADER_NAME = "Deproxy-Request-ID";
-    def _messageChainsLock = new ReentrantLock()
-    def _messageChains = [:]
-    def _endpointLock = new ReentrantLock()
-    def _endpoints = []
-    def _defaultHandler = null
-    def _defaultClientConnector
-
     public static final String VERSION = getVersion()
     public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
+
+    public def defaultHandler = null
+    public def defaultClientConnector
+
+    protected def messageChainsLock = new ReentrantLock()
+    protected def messageChains = [:]
+    protected def endpointLock = new ReentrantLock()
+    protected def endpoints = []
 
     private static String getVersion() {
         def res = Deproxy.class.getResourceAsStream("version.txt")
@@ -45,8 +41,8 @@ class Deproxy {
             defaultClientConnector = new DefaultClientConnector()
         }
 
-        _defaultHandler = defaultHandler;
-        _defaultClientConnector = defaultClientConnector
+        this.defaultHandler = defaultHandler;
+        this.defaultClientConnector = defaultClientConnector
     }
 
     public MessageChain makeRequest(Map params) {
@@ -94,7 +90,7 @@ class Deproxy {
         }
 
         if (!clientConnector) {
-            clientConnector = this._defaultClientConnector;
+            clientConnector = this.defaultClientConnector;
         }
 
         def requestId = UUID.randomUUID().toString()
@@ -144,65 +140,65 @@ class Deproxy {
 
         def endpoint = null
 
-        synchronized (_endpointLock) {
+        synchronized (this.endpointLock) {
 
             if (name == null) {
-                name = String.format("Endpoint-%d", _endpoints.size())
+                name = String.format("Endpoint-%d", this.endpoints.size())
             }
 
             endpoint = new DeproxyEndpoint(this, port, name, hostname, defaultHandler)
 
-            _endpoints.add(endpoint)
+            this.endpoints.add(endpoint)
 
             return endpoint
         }
     }
 
-    def _remove_endpoint(endpoint) {
+    def _removeEndpoint(endpoint) {
 
-        synchronized (_endpointLock) {
+        synchronized (this.endpointLock) {
 
-            def count = _endpoints.size()
+            def count = this.endpoints.size()
 
-            _endpoints = _endpoints.findAll { e -> e != endpoint }
+            this.endpoints = this.endpoints.findAll { e -> e != endpoint }
 
-            return (count != _endpoints.size())
+            return (count != this.endpoints.size())
         }
     }
 
     def shutdown() {
 
-        synchronized (_endpointLock) {
-            for (e in _endpoints) {
+        synchronized (this.endpointLock) {
+            for (e in this.endpoints) {
                 e.shutdown()
             }
-            _endpoints = []
+            this.endpoints = []
         }
     }
 
     def addMessageChain(requestId, messageChain) {
 
-        synchronized (_messageChainsLock) {
+        synchronized (this.messageChainsLock) {
 
-            _messageChains[requestId] = messageChain
+            this.messageChains[requestId] = messageChain
         }
     }
 
     def removeMessageChain(requestId) {
 
-        synchronized (_messageChainsLock) {
+        synchronized (this.messageChainsLock) {
 
-            _messageChains.remove(requestId)
+            this.messageChains.remove(requestId)
         }
     }
 
     def getMessageChain(requestId) {
 
-        synchronized (_messageChainsLock) {
+        synchronized (this.messageChainsLock) {
 
-            if (_messageChains.containsKey(requestId)) {
+            if (this.messageChains.containsKey(requestId)) {
 
-                return _messageChains[requestId]
+                return this.messageChains[requestId]
 
             } else {
 
@@ -213,9 +209,9 @@ class Deproxy {
 
     def addOrphanedHandling(handling) {
 
-        synchronized (_messageChainsLock) {
+        synchronized (this.messageChainsLock) {
 
-            for (mc in _messageChains.values()) {
+            for (mc in this.messageChains.values()) {
 
                 mc.addOrphanedHandling(handling)
             }

@@ -14,7 +14,8 @@ class MessageChain {
     def handlers = [:]
     List<Handling> handlings = []
     List<Handling> orphanedHandlings = []
-    def _lock = new Object()
+
+    protected def lock = new Object()
 
     public MessageChain(defaultHandler = null, handlers = null) {
         this.defaultHandler = defaultHandler
@@ -24,13 +25,13 @@ class MessageChain {
     }
 
     def addHandling(handling) {
-        synchronized (_lock) {
+        synchronized (this.lock) {
             this.handlings.add(handling)
         }
     }
 
     def addOrphanedHandling(handling) {
-        synchronized (_lock) {
+        synchronized (this.lock) {
             this.orphanedHandlings.add(handling)
         }
     }

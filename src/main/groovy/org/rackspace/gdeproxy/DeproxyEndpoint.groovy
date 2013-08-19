@@ -15,15 +15,15 @@ import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForC
 @Log4j
 class DeproxyEndpoint {
 
-    Deproxy _deproxy;
-    String _name;
-    int _port;
-    String _hostname;
-    Object _defaultHandler;
-    SystemClock clock = new SystemClock();
+    String name;
+    int port;
+    String hostname;
+    def defaultHandler;
 
-    Thread serverThread;
-    ServerSocket serverSocket;
+    protected Deproxy deproxy;
+    protected Thread serverThread;
+    protected ServerSocket serverSocket;
+    protected SystemClock clock = new SystemClock();
 
     public DeproxyEndpoint(Deproxy deproxy, int port, String name) {
         this(deproxy, port, name, "localhost");
@@ -51,48 +51,48 @@ class DeproxyEndpoint {
             hostname = "localhost"
         }
 
-        _deproxy = deproxy
-        _name = name
-        _port = port
-        _hostname = hostname
-        _defaultHandler = defaultHandler
-        serverThread = new Thread("Thread-${name}")
+        this.deproxy = deproxy
+        this.name = name
+        this.port = port
+        this.hostname = hostname
+        this.defaultHandler = defaultHandler
+        this.serverThread = new Thread("Thread-${name}")
 
-        serverSocket = new ServerSocket(port)
+        this.serverSocket = new ServerSocket(port)
 
-        serverThread = new DeproxyEndpointListenerThread(this, serverSocket, "Thread-${name}");
-        serverThread.start();
+        this.serverThread = new DeproxyEndpointListenerThread(this, this.serverSocket, "Thread-${name}");
+        this.serverThread.start();
 
-        waitForCondition(clock, '5s', '1s', {
+        waitForCondition(this.clock, '5s', '1s', {
             isListening()
         })
     }
 
     public class DeproxyEndpointListenerThread extends Thread {
 
-        DeproxyEndpoint _parent;
-        ServerSocket _socket;
+        DeproxyEndpoint parent;
+        ServerSocket socket;
         Logger log = Logger.getLogger(DeproxyEndpointListenerThread.class.getName());
 
         public DeproxyEndpointListenerThread(DeproxyEndpoint parent, ServerSocket socket, String name) {
 
             this.setName(name)
-            _parent = parent;
-            _socket = socket;
+            this.parent = parent;
+            this.socket = socket;
         }
 
         @Override
         public void run() {
 
-            while (!_socket.isClosed()) {
+            while (!this.socket.isClosed()) {
                 try {
-                    _socket.setSoTimeout(1000);
+                    this.socket.setSoTimeout(1000);
 
                     Socket socket;
                     try {
-                        socket = _socket.accept();
+                        socket = this.socket.accept();
                     } catch (SocketException e) {
-                        if (_socket.isClosed()) {
+                        if (this.socket.isClosed()) {
                             break;
                         } else {
                             throw e;
@@ -102,8 +102,11 @@ class DeproxyEndpoint {
                     log.debug("Accepted a new connection");
                     //socket.setSoTimeout(1000);
                     log.debug("Creating the handler thread");
+
                     String connectionName = UUID.randomUUID().toString()
-                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(_parent, socket, connectionName, this.getName() + "-connection-" + connectionName.toString());
+
+                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(this.parent, socket, connectionName, this.getName() + "-connection-" + connectionName.toString());
+
                     log.debug("Starting the handler thread");
                     handlerThread.start();
                     log.debug("Handler thread started");
@@ -121,28 +124,28 @@ class DeproxyEndpoint {
 
         Logger log = Logger.getLogger(DeproxyEndpointHandlerThread.class.getName());
 
-        DeproxyEndpoint _parent;
-        Socket _socket;
+        DeproxyEndpoint parent;
+        Socket socket;
         String connectionName
 
         public DeproxyEndpointHandlerThread(DeproxyEndpoint parent, Socket socket, String connectionName, String threadName) {
 
             this.setName(threadName);
-            _parent = parent;
-            _socket = socket;
+            this.parent = parent;
+            this.socket = socket;
             this.connectionName = connectionName
         }
 
         @Override
         public void run() {
             log.debug("Processing new connection");
-            _parent.processNewConnection(_socket, connectionName);
+            this.parent.processNewConnection(this.socket, connectionName);
             log.debug("Connection processed");
         }
     }
 
     Socket createRawConnection() {
-        return new Socket("localhost", this._port)
+        return new Socket("localhost", this.port)
     }
 
     def processNewConnection(Socket socket, String connectionName) {
@@ -188,13 +191,13 @@ class DeproxyEndpoint {
     def shutdown() {
         log.debug "shutting down"
 
-        log.debug("Shutting down ${_name}")
+        log.debug("Shutting down ${this.name}")
         if (serverThread) {
             serverThread.interrupt()
         }
         if (serverSocket)
             serverSocket.close()
-        log.debug("Finished shutting down ${_name}")
+        log.debug("Finished shutting down ${this.name}")
     }
 
 
@@ -241,7 +244,7 @@ class DeproxyEndpoint {
 
                 log.debug "the request has a request id: ${Deproxy.REQUEST_ID_HEADER_NAME}=${requestId}"
 
-                messageChain = _deproxy.getMessageChain(requestId)
+                messageChain = this.deproxy.getMessageChain(requestId)
 
             } else {
 
@@ -266,21 +269,21 @@ class DeproxyEndpoint {
 
             } else if (messageChain &&
                     messageChain.handlers &&
-                    messageChain.handlers.containsKey(this._name)) {
+                    messageChain.handlers.containsKey(this.name)) {
 
-                handler = messageChain.handlers[this._name]
+                handler = messageChain.handlers[this.name]
 
             } else if (messageChain && messageChain.defaultHandler) {
 
                 handler = messageChain.defaultHandler
 
-            } else if (_defaultHandler) {
+            } else if (this.defaultHandler) {
 
-                handler = _defaultHandler
+                handler = this.defaultHandler
 
-            } else if (_deproxy._defaultHandler) {
+            } else if (this.deproxy.defaultHandler) {
 
-                handler = _deproxy._defaultHandler
+                handler = this.deproxy.defaultHandler
 
             } else {
 
@@ -372,7 +375,7 @@ class DeproxyEndpoint {
             if (messageChain) {
                 messageChain.addHandling(handling)
             } else {
-                _deproxy.addOrphanedHandling(handling)
+                this.deproxy.addOrphanedHandling(handling)
             }
 
             sendResponse(outStream, response, context)

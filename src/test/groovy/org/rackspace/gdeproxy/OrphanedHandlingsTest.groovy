@@ -36,7 +36,7 @@ class OrphanedHandlingsTest {
 
         MessageChain mc
         def t = Thread.start {
-            mc = this.deproxy.makeRequest(url: "http://localhost:${this.endpoint._port}/",
+            mc = this.deproxy.makeRequest(url: "http://localhost:${this.endpoint.port}/",
                                           defaultHandler: handler)
         }
 
@@ -48,7 +48,7 @@ class OrphanedHandlingsTest {
 
         MessageChain otherClientMc
         otherClientMc = this.otherClient.makeRequest(
-                "http://localhost:${this.endpoint._port}/")
+                "http://localhost:${this.endpoint.port}/")
 
         t.join()
 

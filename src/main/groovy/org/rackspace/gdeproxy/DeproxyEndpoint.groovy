@@ -25,15 +25,8 @@ class DeproxyEndpoint {
     protected ServerSocket serverSocket;
     protected SystemClock clock = new SystemClock();
 
-    public DeproxyEndpoint(Deproxy deproxy, int port, String name) {
-        this(deproxy, port, name, "localhost");
-    }
-
-    public DeproxyEndpoint(Deproxy deproxy, int port, String name, String hostname) {
-        this(deproxy, port, name, hostname, null);
-    }
-
-    public DeproxyEndpoint(Deproxy deproxy, int port, String name, String hostname, Object defaultHandler) {
+    public DeproxyEndpoint(Deproxy deproxy, int port, String name,
+                           String hostname="localhost", Object defaultHandler=null) {
         //        """
         //Initialize a DeproxyEndpoint
         //

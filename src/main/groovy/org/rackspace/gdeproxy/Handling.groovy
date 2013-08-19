@@ -11,12 +11,12 @@ class Handling {
     Response response
     String connection
 
-  public Handling(DeproxyEndpoint endpoint, Request request, Response response, String connection) {
-    this.endpoint = endpoint;
-    this.request = request;
-    this.response = response;
-      this.connection = connection;
-  }
+    public Handling(DeproxyEndpoint endpoint, Request request, Response response, String connection) {
+        this.endpoint = endpoint;
+        this.request = request;
+        this.response = response;
+        this.connection = connection;
+    }
 
     String toString() {
         sprintf('Handling(endpoint=%s, request=%s, response=%s, connection=%s)',

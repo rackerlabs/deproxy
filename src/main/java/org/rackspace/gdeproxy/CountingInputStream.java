@@ -8,29 +8,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- *
  * @author richard-sartor
  */
 public class CountingInputStream extends InputStream {
 
-  public int Count = 0;
-  InputStream _source;
+    public int Count = 0;
+    InputStream _source;
 
-  public CountingInputStream(InputStream source) {
-    super();
-    _source = source;
-  }
-
-  @Override
-  public int read() throws IOException {
-    int c = _source.read();
-
-    if (c >= 0) {
-      Count++;
+    public CountingInputStream(InputStream source) {
+        super();
+        _source = source;
     }
 
-    return c;
-  }
+    @Override
+    public int read() throws IOException {
+        int c = _source.read();
+
+        if (c >= 0) {
+            Count++;
+        }
+
+        return c;
+    }
 
 
 }

@@ -18,6 +18,11 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+import xml.etree.ElementTree as ET
+def get_version():
+    root = ET.parse('../pom.xml')
+    return root.findtext('{http://maven.apache.org/POM/4.0.0}version')
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -48,7 +53,7 @@ copyright = u'2013, izrik'
 # built documents.
 #
 # The short X.Y version.
-version = '0.15'
+version = get_version()
 # The full version, including alpha/beta/rc tags.
 release = version
 

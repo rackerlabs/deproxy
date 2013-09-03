@@ -27,17 +27,20 @@ public class PortFinder {
         while (_currentPort < 65536) {
             try {
                 def url = String.format("http://localhost:%d/", _currentPort)
-                log.debug "Trying " + url
-                url.toURL().getText()
+                log.debug "Trying ${_currentPort}"
+                Socket socket = new Socket("localhost", _currentPort)
             } catch (java.net.ConnectException e) {
                 log.debug "Didn't connect, using this one"
                 _currentPort++
                 return _currentPort - 1
             } catch (SocketException e) {
                 // ignore the exception
-                log.debug "Got a SocketException: " + e.toString();
+                log.warn "Got a SocketException: " + e.toString();
+            } catch (IOException e) {
+                // ignore the exception
+                log.warn "Got a IOException: " + e.toString();
             } catch (Exception e) {
-                log.debug "Got an Exception: " + e.toString();
+                log.warn "Got an Exception: " + e.toString();
                 throw e
             }
 

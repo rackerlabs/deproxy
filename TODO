@@ -1,18 +1,46 @@
 Clean up code
-    remove python in comments
-    re-indent everything to 4-space indentation granularity
+    PortFinder, esp. fields
+    convert docstrings to javadoc
+    explicit types where beneficial
+        message chains
+        addEndpoint, etc
+        ClientConnector
+        handlers
+    rename setUp to setup and tearDown to cleanup in spock unit tests
+
+port route
+un-ignore or get rid of ignored tests
+port all unit tests
+add to default request headers test
 
 update docs
-    code samples are still in python; they need to be converted to groovy
+    old functionality needs to documented
+        object model
+            request
+            response
+            handling
+            message chains
     new functionality has been added, needs to be documented
+        client connectors
+            bare
+            default
+        http message utility classes
+            BodyReader
+            BodyWriter
+            HeaderReader
+            HeaderWriter
+            LineReader
+        diagnostic utility classes
+            LocalSocketPair
+            PortFinder
+            StaticTcpServer
 
 distinction between message body and transfer-encoded message body, between
         the request/response and the bytes-on-the-wire
 compression (content coding)
     will likely require changes to the object model
 
-
-no particular order:
+rfc 2616 § 3.6 in BodyReader.readBody #2 --> return 501
 
 super-easy assertions on message chains, handlings, requests, and responses - for use by importers
 extract classes for handling http version 0.9, 1.0, and 1.1

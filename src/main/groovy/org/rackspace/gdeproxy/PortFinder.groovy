@@ -13,26 +13,26 @@ import groovy.util.logging.Log4j;
 @Log4j
 public class PortFinder {
 
-    def _basePort = 10000
-    def _currentPort = null
+    def basePort = 10000
+    def currentPort = null
 
     def getNextOpenPort(start=null, int sleepTime=100) {
 
         if (start != null) {
-            _currentPort = start
-        } else if (_currentPort == null) {
-            _currentPort = _basePort
+            currentPort = start
+        } else if (currentPort == null) {
+            currentPort = basePort
         }
 
-        while (_currentPort < 65536) {
+        while (currentPort < 65536) {
             try {
-                def url = String.format("http://localhost:%d/", _currentPort)
-                log.debug "Trying ${_currentPort}"
-                Socket socket = new Socket("localhost", _currentPort)
+                def url = String.format("http://localhost:%d/", currentPort)
+                log.debug "Trying ${currentPort}"
+                Socket socket = new Socket("localhost", currentPort)
             } catch (java.net.ConnectException e) {
                 log.debug "Didn't connect, using this one"
-                _currentPort++
-                return _currentPort - 1
+                currentPort++
+                return currentPort - 1
             } catch (SocketException e) {
                 // ignore the exception
                 log.warn "Got a SocketException: " + e.toString();
@@ -47,7 +47,7 @@ public class PortFinder {
             Thread.sleep(sleepTime)
             log.debug "Connected"
 
-            _currentPort++
+            currentPort++
         }
 
         throw new RuntimeException("Ran out of ports")

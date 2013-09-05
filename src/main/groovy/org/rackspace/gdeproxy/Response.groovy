@@ -1,12 +1,12 @@
 package org.rackspace.gdeproxy
 
-class Response {
 
-    /*
-     * A simple HTTP Response, with status code, status message, headers, and
-     * body.
-     *
-     */
+/**
+ * A simple HTTP Response, with status code, status message, headers, and
+ * body.
+ *
+ */
+class Response {
 
     String code
     String message

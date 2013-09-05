@@ -1,6 +1,5 @@
 package org.rackspace.gdeproxy
 
-
 /**
  * A simple HTTP Response, with status code, status message, headers, and
  * body.

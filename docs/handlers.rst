@@ -109,17 +109,21 @@ which a handler is chosen for it is defined so:
            a key, but does have the endpoint's *name* as a key, then use the
            associated value of the name as the handler.
         c. otherwise, continue below
+
     2. If the call to ``makeRequest`` didn't have a ``handlers`` argument or
        if the servicing endpoint was not found therein, but the call to
        ``makeRequest`` *did* include a ``defaultHandler`` argument, use that
        as the handler.
+
     3. If the incoming request cannot be tied to a particular message chain,
        but the servicing endpoint's ``defaultHandler`` attribute is not
        `None`, then use the value of that attribute as the handler.
+
     4. If the servicing endpoint's ``defaultHandler`` is None, but the parent
        ``Deproxy`` object's ``defaultHandler`` attribute is not `None`, then
        use that as the handler.
-    5. Otherwise, use ``deproxy.simpleHandler`` as a last resort.
+
+    5. Otherwise, use ``simpleHandler`` as a last resort.
 
 
 Built-in Handlers
@@ -196,7 +200,7 @@ ways to define additional handlers.
     *This handler is not currently implemented.*
     This is actually a factory function that returns a handler. The handler
     forwards all requests to the specified host via HTTP or HTTPS, as indicated
-    by the scheme parameter. The deproxy parameter is a deproxy.Deproxy object,
+    by the scheme parameter. The deproxy parameter is a Deproxy object,
     which is used only as an HTTP/S client. The response returned from the
     handler is the response returned from the specified host.
 

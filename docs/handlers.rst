@@ -254,16 +254,14 @@ returns a ``Response`` object will do.
     //  body=Some other body
     // )
 
-Default Response Headers
+Handler Context
 ========================
 
-By default, an endpoint will add the 'Server' and 'Date' headers on all
-out-bound responses. This can be turned off in custom handlers by returning a
-2-value tuple, with the first value being the `Response` object (as usual) and
-the second value being `True` or `False` to indicate whether the default
-response headers should or should not be added, respectively. This can be
-useful for testing how a proxy responds to a misbehaving origin server.
-::
+If you define a handler with two parameters, then second will be given a
+HandlerContext object, which has fields used for giving directives back to
+the endpoint about how the Response should be sent. For example, you could
+set the sendDefaultResponseHeaders field to false, to tell the endpoint not
+to add default response headers to the response.::
 
     def customHandler = { request, context ->
 
@@ -284,7 +282,54 @@ useful for testing how a proxy responds to a misbehaving origin server.
     //  body=
     // )
 
-Additionally, any response from a handler that has a response body will have
-an additional ``Content-Length`` header added to it, giving the length of the
-response body. If this is turned off, the client/proxy may not be able to
-correctly read the response body.
+Additionally, you can set the usedChunkedTransferEncoding field to true, to
+tell the endpoint to use chunked transfer coding to send the body to the
+recipient in chunks.
+
+
+Default Response Headers
+========================
+
+By default, an endpoint will add a number of headers on all out-bound
+responses. This behavior can be turned off in custom handlers by setting the
+HandlerContext's sendDefaultResponseHeaders field to false (it is true by
+default). This can be useful for testing how a proxy responds to a
+misbehaving origin server. Each of the following headers is added if it has
+not already been explicitly added by the hadnler, and subject to certain
+conditions (e.g., presence of a response body):
+
+- Server
+    The identifying information of the server software, "gdeproxy" followed
+    by the version number.
+
+- Date
+    The date and time at which the response was returned by the handler, in
+    RFC 1123 format.
+
+- Content-Type
+    If the response contains a body, then the endpoint will try to guess. If
+    the body is of type String, then it will add a Content-Type header with a
+    value of "text/plain". If the body is of type byte[], it will use a value
+    of "application/octet-stream". If the response does not contain a body,
+    then this header will not be added.
+
+- Transfer-Encoding
+    If the response has a body, and the usedChunkedTransferEncoding field is
+    true, this header will have a value of "chunked". If it has a body but
+    usedChunkedTransferEncoding is false, the header will have a value of
+    "identity". If there is no body, then this header will not be added.
+
+- Content-Length
+    If the response has a body, and the usedChunkedTransferEncoding field is
+    false, then this header will have a value equal to the decimal count of
+    octets in the body. If the body is a String, then the length is the number
+    of bytes after encoding as ASCII. If the body is of type byte[], then the
+    length is just the number of bytes in the array. If the response has a
+    body, but usedChunkedTransferEncoding is true, then this field is not
+    added. If the response does not have a body, then this header will be
+    added with a value of "0".
+
+Note: If the response has a body, and sendDefaultResponseHeaders is set to
+false, and the handler doesn't explicitly set the Transfer-Encoding header or
+the Content-Length header, then the client/proxy may not be able to correctly
+read the response body.

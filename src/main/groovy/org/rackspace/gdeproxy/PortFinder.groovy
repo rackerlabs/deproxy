@@ -13,15 +13,21 @@ import groovy.util.logging.Log4j;
 @Log4j
 public class PortFinder {
 
-    def basePort = 10000
-    def currentPort = null
+    public PortFinder(start=null) {
+
+        if (start == null) {
+            start = 10000
+        }
+
+        currentPort = start
+    }
+
+    int currentPort
 
     def getNextOpenPort(start=null, int sleepTime=100) {
 
         if (start != null) {
             currentPort = start
-        } else if (currentPort == null) {
-            currentPort = basePort
         }
 
         while (currentPort < 65536) {

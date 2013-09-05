@@ -15,6 +15,8 @@ class Response {
 
     /**
      *
+     * Creates a Response object
+     *
      * @param code A numerical status code. This doesn't have to be a valid
      * HTTP status code; for example, values >= 600 are acceptable also, as
      * are non-numbers.

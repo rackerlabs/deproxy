@@ -24,10 +24,21 @@ public class PortFinder {
 
     int currentPort
 
-    def getNextOpenPort(start=null, int sleepTime=100) {
+    int getNextOpenPort(Map params=[:]) {
 
-        if (start != null) {
-            currentPort = start
+        def newStartPort = params?.newStartPort ?: null
+        int sleepTime = params?.sleepTime ?: 100
+
+        return getNextOpenPort(newStartPort, sleepTime)
+    }
+    int getNextOpenPort(int newStartPort) {
+
+        return getNextOpenPort(newStartPort, 100)
+    }
+    int getNextOpenPort(newStartPort, int sleepTime) {
+
+        if (newStartPort != null) {
+            currentPort = newStartPort
         }
 
         while (currentPort < 65536) {

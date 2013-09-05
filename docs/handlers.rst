@@ -200,12 +200,14 @@ ways to define additional handlers.
     which is used only as an HTTP/S client. The response returned from the
     handler is the response returned from the specified host.
 
+
 Custom Handlers
 ===============
 
 You can define your own handlers and pass them as the ``handler`` parameter to
-makeRequest. Any callable that accepts a single ``request`` parameter and
-returns a ``Response`` object will do.
+makeRequest. Any method or closure that accepts a request parameter and
+returns a ``Response`` object will do. Methods can be instance or static.
+Closures can be stored or inline.
 ::
 
 
@@ -253,6 +255,7 @@ returns a ``Response`` object will do.
     //      Deproxy-Request-ID: 8d46b115-d7ec-4505-b5ba-dc61c60a0518],
     //  body=Some other body
     // )
+
 
 Handler Context
 ========================

@@ -1,6 +1,6 @@
-===============
+================
  Using GDeproxy
-===============
+================
 
 To use gdeproxy in your unit tests:
 

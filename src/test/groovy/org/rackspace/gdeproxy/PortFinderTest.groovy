@@ -47,4 +47,22 @@ class PortFinderTest extends Specification {
         t.interrupt()
         t.join(1000)
     }
+
+    def "when instantiating without parameter, should have the default"() {
+
+        when:
+        def pf2 = new PortFinder()
+
+        then:
+        pf2.currentPort == 10000
+    }
+
+    def "when instantiating with parameter, should have the given value"() {
+
+        when:
+        def pf2 = new PortFinder(23456)
+
+        then:
+        pf2.currentPort == 23456
+    }
 }

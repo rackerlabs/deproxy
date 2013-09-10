@@ -13,8 +13,6 @@ un-ignore or get rid of ignored tests
 port all unit tests
 add to default request headers test
 
-test PortFinder multi-threaded
-
 update docs
     old functionality needs to documented
         object model

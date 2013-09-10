@@ -13,6 +13,8 @@ import groovy.util.logging.Log4j;
 @Log4j
 public class PortFinder {
 
+    public static final PortFinder Singleton = new PortFinder()
+
     public PortFinder(start=null) {
 
         if (start == null) {

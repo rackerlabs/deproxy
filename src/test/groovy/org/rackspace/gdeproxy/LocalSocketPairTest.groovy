@@ -91,8 +91,8 @@ class LocalSocketPairTest {
 
         def (Socket client, Socket server) = LocalSocketPair.createLocalSocketPair(pf)
 
-        assertEquals(pf._currentPort - 1, client.port)
-        assertEquals(pf._currentPort - 1, server.localPort)
+        assertEquals(pf.currentPort - 1, client.port)
+        assertEquals(pf.currentPort - 1, server.localPort)
 
 
 

@@ -13,26 +13,43 @@ import groovy.util.logging.Log4j;
 @Log4j
 public class PortFinder {
 
-    def _basePort = 10000
-    def _currentPort = null
+    public PortFinder(start=null) {
 
-    def getNextOpenPort(start=null, int sleepTime=100) {
-
-        if (start != null) {
-            _currentPort = start
-        } else if (_currentPort == null) {
-            _currentPort = _basePort
+        if (start == null) {
+            start = 10000
         }
 
-        while (_currentPort < 65536) {
+        currentPort = start
+    }
+
+    int currentPort
+
+    int getNextOpenPort(Map params=[:]) {
+
+        def newStartPort = params?.newStartPort ?: null
+        int sleepTime = params?.sleepTime ?: 100
+
+        return getNextOpenPort(newStartPort, sleepTime)
+    }
+    int getNextOpenPort(int newStartPort) {
+
+        return getNextOpenPort(newStartPort, 100)
+    }
+    int getNextOpenPort(newStartPort, int sleepTime) {
+
+        if (newStartPort != null) {
+            currentPort = newStartPort
+        }
+
+        while (currentPort < 65536) {
             try {
-                def url = String.format("http://localhost:%d/", _currentPort)
-                log.debug "Trying ${_currentPort}"
-                Socket socket = new Socket("localhost", _currentPort)
+                def url = String.format("http://localhost:%d/", currentPort)
+                log.debug "Trying ${currentPort}"
+                Socket socket = new Socket("localhost", currentPort)
             } catch (java.net.ConnectException e) {
                 log.debug "Didn't connect, using this one"
-                _currentPort++
-                return _currentPort - 1
+                currentPort++
+                return currentPort - 1
             } catch (SocketException e) {
                 // ignore the exception
                 log.warn "Got a SocketException: " + e.toString();
@@ -47,7 +64,7 @@ public class PortFinder {
             Thread.sleep(sleepTime)
             log.debug "Connected"
 
-            _currentPort++
+            currentPort++
         }
 
         throw new RuntimeException("Ran out of ports")

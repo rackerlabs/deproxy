@@ -13,6 +13,8 @@ import groovy.util.logging.Log4j;
 @Log4j
 public class PortFinder {
 
+    public static final PortFinder Singleton = new PortFinder()
+
     public PortFinder(start=null) {
 
         if (start == null) {
@@ -35,7 +37,7 @@ public class PortFinder {
 
         return getNextOpenPort(newStartPort, 100)
     }
-    int getNextOpenPort(newStartPort, int sleepTime) {
+    synchronized int getNextOpenPort(newStartPort, int sleepTime) {
 
         if (newStartPort != null) {
             currentPort = newStartPort

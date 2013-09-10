@@ -1,6 +1,4 @@
 Clean up code
-    PortFinder, esp. fields
-    convert docstrings to javadoc
     explicit types where beneficial
         message chains
         addEndpoint, etc

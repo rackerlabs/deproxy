@@ -84,9 +84,14 @@ This is the next paragraph.
 
         String length = Integer.toHexString(body.length());
 
+        (client, server) = LocalSocketPair.createLocalSocketPair()
+        client.soTimeout = 5000
+        server.soTimeout = 5000
+
+        def port = (server.localPort == 80 ? "" : ":${server.localPort}")
         String requestString = ("GET / HTTP/1.1\r\n" +
                 "Transfer-Encoding: chunked\r\n" +
-                "Host: localhost\r\n" +
+                "Host: localhost${port}\r\n" +
                 "Accept: */*\r\n" +
                 "Accept-Encoding: identity\r\n" +
                 "User-Agent: ${Deproxy.VERSION_STRING}\r\n" +
@@ -100,10 +105,6 @@ This is the next paragraph.
                 "Server: StaticTcpServer\r\n" +
                 "Content-Length: 0\r\n" +
                 "\r\n")
-
-        (client, server) = LocalSocketPair.createLocalSocketPair()
-        client.soTimeout = 5000
-        server.soTimeout = 5000
 
         String serverSideRequest
 

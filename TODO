@@ -8,6 +8,12 @@ Clean up code
         handlers
     rename setUp to setup and tearDown to cleanup in spock unit tests
 
+add tests for Host request header in DefaultClientConnector
+    Host: localhost         (http 80)
+    Host: localhost:12345   (http 12345)
+    Host: localhost         (https 443)
+    Host: localhost:12345   (https 12345)
+
 port route
 un-ignore or get rid of ignored tests
 port all unit tests

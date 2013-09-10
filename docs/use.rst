@@ -1,63 +1,82 @@
-===============
- Using Deproxy
-===============
+================
+ Using GDeproxy
+================
 
-To use deproxy in your unit tests:
+To use gdeproxy in your unit tests:
 
-  1. In the TestCase's setUp method, create a Deproxy object and endpoint(s), and configure your proxy to forward requests to the endpoint's port.
-  2. In the actual test method, use the make_request method to send a request to the proxy, and get a message chain back.
-  3. Still in the text method, make assertions against the returned message chain.
-  4. In the tearDown method, shutdown the Deproxy object by calling shutdown_all_endpoints.
+  1. In the test class's setup method, create a Deproxy object and endpoint(s), and configure your proxy to forward requests to the endpoint's port.
+  2. In the actual test method, use the makeRequest method to send a request to the proxy, and get a message chain back.
+  3. Still in the test method, make assertions against the returned message chain.
+  4. In the cleanup method, shutdown the Deproxy object by calling shutdown().
 
-Here's a code example of a unit test that tests the fictional the_proxy module::
+Here's a code example of a unit test that tests the fictional theProxy library::
 
-    import unittest
-    import deproxy
-    import the_proxy
+    import org.theProxy.*
+    import org.rackspace.gdeproxy.*
+    import org.junit.*
+    import static org.junit.Assert.*
 
-    class TestTheProxy(unittest.TestCase):
+    class TestTheProxy {
 
-        def setUp(self):
-            self.deproxy = deproxy.Deproxy()
-            self.end_point = self.deproxy.add_endpoint(port=9999)
+        Deproxy deproxy
+        DeproxyEndpoint endpoint
+        TheProxy theProxy
 
-            # Set up the proxy to listen on port 8080, forwarding requests to
-            # localhost:9999, to add an "X-Request" header to requests and an
-            # "X-Response" header to responses.
-            self.the_proxy = the_proxy.TheProxy()
-            self.the_proxy.port = 8080
-            self.the_proxy.target_hostname = 'localhost'
-            self.the_proxy.target_port = 9999
-            self.the_proxy.request_ops.add(
-                the_proxy.add_header(name='X-Request',
-                                     value='This is a request'))
-            self.the_proxy.response_ops.add(
-                the_proxy.add_header(name='X-Response',
-                                     value='This is a response'))
+        @Before
+        void setup() {
 
-        def test_the_proxy(self):
-            mc = self.deproxy.make_request(method='GET',
-                                           url='http://localhost:8080/')
+            deproxy = new Deproxy()
+            endpoint = deproxy.addEndpoint(9999)
 
-            self.assertEqual(mc.received_response.code, '200',
-                             msg='Must return 200')
+            // Set up the proxy to listen on port 8080, forwarding requests to
+            // localhost:9999
+            theProxy = new TheProxy()
+            theProxy.port = 8080
+            theProxy.targetHostname = "localhost"
+            theProxy.targetPort = 9999
 
-            self.assertEqual(len(mc.handlings), 1,
-                             msg='The request must reach the origin server '
-                                 'exactly once.')
+            // Set up the proxy to add an X-Request header to requests
+            theProxy.requestOperations.add(
+                addHeaderOperation(name:  "X-Request",
+                                   value: "This is a request"))
 
-            self.assertTrue('X-Request' in mc.handlings[0].request.headers,
-                            msg="No X-Request header in forwarded request.")
+            // Set up the proxy to add an X-Response header to responses
+            theProxy.responseOperations.add(
+                addHeaderOperation(name:  "X-Response",
+                                   value: "This is a response"))
+        }
 
-            self.assertTrue('X-Response' in mc.received_response.headers,
-                            msg="No X-Response header in forwarded response.")
+        @Test
+        void testTheProxy() {
 
-        def tearDown(self):
-            if self.the_proxy is not None:
-                self.the_proxy.shutdown()
-            if self.deproxy is not None:
-                self.deproxy.shutdown_all_endpoints()
+            def mc = deproxy.makeRequest(method: "GET",
+                                         url: "http://localhost:8080/")
 
-    if __name__ == '__main__':
-        unittest.main()
+            // the endpoint returns a 200 by default
+            assertEquals("200", mc.receivedResponse.code)
 
+            // the request reached the endpoint once
+            assertEquals(1, mc.handlings.size())
+
+            // the X-Request header was not sent, but was added by the proxy and
+            // received by the endpoint
+            assertFalse(mc.sentRequest.headers.contains("X-Request"))
+            assertTrue(mc.handlings[0].request.headers.contains("X-Request"))
+
+            // the X-Response header was not sent by the endpoint, but was added
+            // by the proxy and received by the client
+            assertFalse(mc.handlings[0].response.headers.contains("X-Response"))
+            assertTrue(mc.receivedResponse.headers.contains("X-Response"))
+        }
+
+        @After
+        void cleanup() {
+
+            if (theProxy) {
+                theProxy.shutdown()
+            }
+            if (deproxy) {
+                deproxy.shutdown()
+            }
+        }
+    }

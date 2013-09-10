@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# deproxy documentation build configuration file, created by
-# sphinx-quickstart on Mon Apr 15 16:14:10 2013.
+# gdeproxy documentation build configuration file, created by
+# sphinx-quickstart on Fri Aug 30 16:27:24 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -16,8 +16,12 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
-import deproxy
+#sys.path.insert(0, os.path.abspath('.'))
+
+import xml.etree.ElementTree as ET
+def get_version():
+    root = ET.parse('../pom.xml')
+    return root.findtext('{http://maven.apache.org/POM/4.0.0}version')
 
 # -- General configuration -----------------------------------------------------
 
@@ -41,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'deproxy'
+project = u'gdeproxy'
 copyright = u'2013, izrik'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -49,7 +53,7 @@ copyright = u'2013, izrik'
 # built documents.
 #
 # The short X.Y version.
-version = deproxy.__version__
+version = get_version()
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -165,7 +169,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'deproxydoc'
+htmlhelp_basename = 'gdeproxydoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -184,7 +188,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'deproxy.tex', u'deproxy Documentation',
+  ('index', 'gdeproxy.tex', u'gdeproxy Documentation',
    u'izrik', 'manual'),
 ]
 
@@ -214,7 +218,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'deproxy', u'deproxy Documentation',
+    ('index', 'gdeproxy', u'gdeproxy Documentation',
      [u'izrik'], 1)
 ]
 
@@ -228,8 +232,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'deproxy', u'deproxy Documentation',
-   u'izrik', 'deproxy', 'One line description of project.',
+  ('index', 'gdeproxy', u'gdeproxy Documentation',
+   u'izrik', 'gdeproxy', 'One line description of project.',
    'Miscellaneous'),
 ]
 

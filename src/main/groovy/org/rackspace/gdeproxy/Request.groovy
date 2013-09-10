@@ -2,6 +2,7 @@ package org.rackspace.gdeproxy
 
 /**
  * A simple HTTP Request, with method, path, headers, and body.
+ *
  */
 class Request {
 
@@ -10,21 +11,21 @@ class Request {
     HeaderCollection headers
     def body
 
+    /**
+     *
+     * Creates a Request object
+     *
+     * @param method The HTTP method to use, such as 'GET', 'POST', or 'PUT'.
+     * @param path The path of the resource requested, without host info,
+     * e.g. "/path/to/resource"
+     * @param headers An optional collection of name/value pairs, either a
+     * map, like "['name': 'value']", or a HeaderCollection. Defaults to an
+     * empty map.
+     * @param body An optional request body. Defaults to the empty string.
+     * Both strings and byte arrays are acceptable. All other types are
+     * toString'd.
+     */
     public Request(method, path, headers=[:], body=null) {
-        """Parameters:
-
-        method - The HTTP method to use, such as 'GET', 'POST', or 'PUT'.
-
-        path - The relative path of the resource requested.
-
-        headers - An optional collection of name/value pairs, either a mapping
-            object like ``['name': 'value']``, or a HeaderCollection.
-            Defaults to an empty map.
-
-        body - An optional request body. Defaults to the empty string. Both
-            strings and byte arrays are acceptable. All other types are
-            toString'd.
-        """
 
         if (body == null) {
             body = ""

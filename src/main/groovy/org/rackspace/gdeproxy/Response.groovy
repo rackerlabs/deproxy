@@ -1,39 +1,36 @@
 package org.rackspace.gdeproxy
 
+/**
+ * A simple HTTP Response, with status code, status message, headers, and
+ * body.
+ *
+ */
 class Response {
-
-    /*
-     * A simple HTTP Response, with status code, status message, headers, and
-     * body.
-     *
-     */
 
     String code
     String message
     HeaderCollection headers
     def body
 
+    /**
+     *
+     * Creates a Response object
+     *
+     * @param code A numerical status code. This doesn't have to be a valid
+     * HTTP status code; for example, values >= 600 are acceptable also, as
+     * are non-numbers.
+     * @param message An optional message to go along with the status code. If
+     * null, a suitable default will be provided based on the given status
+     * code. If code is not a valid HTTP status code, then the default is
+     * the empty string.
+     * @param headers An optional collection of name/value pairs, either a
+     * map, like "['name': 'value']", or a HeaderCollection. Defaults to an
+     * empty map.
+     * @param body An optional request body. Defaults to the empty string.
+     * Both strings and byte arrays are acceptable. All other types are
+     * toString'd.
+     */
     public Response(code, message=null, headers=null, body=null) {
-
-        """Parameters:
-
-        code - A numerical status code. This doesn't have to be a valid HTTP
-            status code; for example, values >= 600 are acceptable also, as
-            are non-numbers.
-
-        message - An optional message to go along with the status code. If
-            null, a suitable default will be provided based on the given
-            status code. If ``code`` is not a valid HTTP status code, then
-            the default is the empty string.
-
-        headers - An optional collection of name/value pairs, either a mapping
-            object like ``['name': 'value']``, or a HeaderCollection. Defaults
-            to an empty map.
-
-        body - An optional request body. Defaults to the empty string. Both
-            strings and byte arrays are acceptable. All other types are
-            toString'd.
-        """
 
         code = code.toString()
 

@@ -1,18 +1,8 @@
 package org.rackspace.gdeproxy;
 
-import groovy.lang.Closure;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author izrik
- * 
+ *
  *         <p/>
  *         A collection class for HTTP Headers. This class combines aspects of a list
  *         and a map. Lookup is always case-insenitive. A key can be added multiple
@@ -55,11 +45,11 @@ class HeaderCollection {
     }
 
     public Object each(Closure closure) {
-        return DefaultGroovyMethods.each(_headers, closure);
+        return _headers.each(closure);
     }
 
     public Object eachWithIndex(Closure closure) {
-        return DefaultGroovyMethods.eachWithIndex(_headers, closure);
+        return _headers.eachWithIndex(closure);
     }
 
     public int size() {

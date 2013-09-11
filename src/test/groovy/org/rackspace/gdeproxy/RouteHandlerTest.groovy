@@ -1,16 +1,58 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.rackspace.gdeproxy
 
-/**
- *
- * @author richard-sartor
- */
-class RouteHandlerTest {
+import spock.lang.Ignore
+import spock.lang.Specification
 
+class RouteHandlerTest extends Specification {
+
+    Deproxy deproxy
+    int port
+
+    def setup() {
+        PortFinder pf = new PortFinder()
+        port = pf.getNextOpenPort()
+
+        deproxy = new Deproxy()
+        deproxy.addEndpoint(port, "server", "localhost", this.&handler)
+    }
+
+    Response handler(Request request) {
+
+        return new Response(606, "Spoiler", null, "Snape Kills Dumbledore!")
+    }
+
+    def testRoute() {
+
+        given: "set up the route handler and the request"
+        def router = Handlers.Route("localhost", port)
+        Request request = new Request("METHOD", "/path/to/resource", ["Name": "Value"], "this is the body")
+
+        when: "sending the request via the router"
+        Response response = router(request)
+
+        then: "the request is served by the DeproxyEndpoint and handler"
+        response.code == "606"
+        response.message == "Spoiler"
+        response.body == "Snape Kills Dumbledore!"
+    }
+
+    @Ignore
+    def testRouteHttps() {
+
+    }
+
+    @Ignore
+    def testRouteConnector() {
+
+    }
+
+    def cleanup() {
+
+        if (deproxy) {
+            deproxy.shutdown()
+        }
+    }
 }
 
 

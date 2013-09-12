@@ -52,7 +52,7 @@ class Handlers {
             request2.headers.add("Host", "${host}:${port}")
 
             RequestParams params = new RequestParams()
-            Response response = connector.sendRequest(request, https, host, port, params)
+            Response response = connector.sendRequest(request2, https, host, port, params)
 
             return response
         }

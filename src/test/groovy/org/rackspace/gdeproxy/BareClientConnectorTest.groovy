@@ -46,6 +46,7 @@ class BareClientConnectorTest {
 
         def t = Thread.startDaemon("response") {
 
+            // TODO: replace this with StaticTcpServer
             byte[] bytes = new byte[requestString.length()]
             int n = 0;
             while (n < bytes.length) {

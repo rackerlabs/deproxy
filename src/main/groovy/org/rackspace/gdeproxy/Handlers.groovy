@@ -57,6 +57,5 @@ class Handlers {
             return response
         }
     }
-
 }
 

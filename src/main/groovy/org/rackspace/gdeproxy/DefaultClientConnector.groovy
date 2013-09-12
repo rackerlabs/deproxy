@@ -54,15 +54,7 @@ class DefaultClientConnector extends BareClientConnector {
             }
 
             if (!request.headers.contains("Host")){
-                if ((https && port != 443) ||
-                        (!https && port != 80)) {
-
-                    request.headers.add("Host", "${host}:${port}")
-
-                } else {
-
-                    request.headers.add("Host", host)
-                }
+                request.headers.add("Host", Header.CreateHostHeaderValue(host, port, https))
             }
             if (!request.headers.contains("Accept")){
                 request.headers.add("Accept", "*/*")

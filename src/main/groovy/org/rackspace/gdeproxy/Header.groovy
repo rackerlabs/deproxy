@@ -26,5 +26,18 @@ public class Header {
     public String toString() {
         return this.name + ": " + this.value;
     }
+
+    public static String CreateHostHeaderValue(String host, int port, https=false) {
+
+        if ((https && port != 443) ||
+                (!https && port != 80)) {
+
+            return "${host}:${port}"
+
+        } else {
+
+            return host
+        }
+    }
 }
 

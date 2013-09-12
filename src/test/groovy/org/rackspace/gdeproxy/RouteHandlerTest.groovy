@@ -39,11 +39,42 @@ class RouteHandlerTest extends Specification {
 
     @Ignore
     def testRouteHttps() {
-
+        // DeproxyEndpoint doesn't yet support HTTPS
     }
 
-    @Ignore
     def testRouteConnector() {
+
+        given: "set up the connector, route handler, and the request"
+
+        ClientConnector connector = { Request request, boolean https, host, port, RequestParams params ->
+
+            // this custom connector sends the request and adds a single
+            // custom header to the response
+
+            Response response = (new BareClientConnector()).sendRequest(request, https, host, port, params)
+
+            response.headers.add("CustomConnector", "true")
+
+            return response
+
+        } as ClientConnector
+
+        def router = Handlers.Route("localhost", port, false, connector)
+        Request request = new Request("METHOD", "/path/to/resource", ["Name": "Value"], "this is the body")
+
+
+
+        when: "sending the request via the router"
+        Response response = router(request)
+
+        then: "the request is served by the DeproxyEndpoint and handler"
+        response.code == "606"
+        response.message == "Spoiler"
+        response.body == "Snape Kills Dumbledore!"
+
+        and: "the response is modified by the connector"
+        response.headers.contains("CustomConnector")
+        response.headers["CustomConnector"] == "true"
 
     }
 

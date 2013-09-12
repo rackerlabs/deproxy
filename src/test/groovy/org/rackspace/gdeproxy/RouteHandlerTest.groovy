@@ -37,6 +37,60 @@ class RouteHandlerTest extends Specification {
         response.body == "Snape Kills Dumbledore!"
     }
 
+    def testRouteServerSideRequest() {
+
+        given: "define the expected request string, and the string to return from the fake server"
+        String requestString = ("METHOD /path/to/resource HTTP/1.1\r\n" +
+                "Name: Value\r\n" +
+                "Content-Length: 0\r\n" +
+                "Host: localhost:${port}\r\n" +
+                "\r\n")
+        String responseString = ("HTTP/1.1 606 Spoiler\r\n" +
+                "Server: StaticTcpServer\r\n" +
+                "Content-Length: 0\r\n" +
+                "\r\n")
+
+        and: "set up the fake server"
+        def (Socket client, Socket server) = LocalSocketPair.createLocalSocketPair()
+        client.soTimeout = 2000 // in milliseconds
+        server.soTimeout = 2000
+        String serverSideRequest;
+        def t = Thread.startDaemon("response") {
+            serverSideRequest = StaticTcpServer.handleOneRequest(server, responseString, requestString.length())
+        }
+
+        and: "set up the connector for Route to use"
+        BareClientConnector connector = new BareClientConnector(client)
+
+        and: "set up the router and request"
+        def router = Handlers.Route("localhost", port, false, connector)
+        Request request = new Request(
+                "METHOD",
+                "/path/to/resource",
+                ["Name": "Value", "Content-Length": "0"])
+
+
+
+        when: "sending the request via the router"
+        Response response = router(request)
+
+        and: "wait for the thread to assign the variable"
+        t.join()
+
+        then: "the request that the fake server received is what we expected"
+        serverSideRequest == requestString
+
+        and: "the request is served by the StaticTcpServer"
+        response.code == "606"
+        response.message == "Spoiler"
+        response.headers.size() == 2
+        response.headers.contains("Server")
+        response.headers["Server"] == "StaticTcpServer"
+        response.headers.contains("Content-Length")
+        response.headers["Content-Length"] == "0"
+    }
+
+
     @Ignore
     def testRouteHttps() {
         // DeproxyEndpoint doesn't yet support HTTPS
@@ -86,21 +140,3 @@ class RouteHandlerTest extends Specification {
     }
 }
 
-
-//class TestRoute(unittest.TestCase):
-//    def setUp(self):
-//        self.deproxy_port = get_next_deproxy_port()
-//        self.deproxy = deproxy.Deproxy()
-//        self.end_point = self.deproxy.add_endpoint(self.deproxy_port)
-//
-//    def tearDown(self):
-//        self.deproxy.shutdown_all_endpoints()
-//
-//    def test_route(self):
-//        handler = deproxy.route('http', 'httpbin.org', self.deproxy)
-//        mc = self.deproxy.make_request('http://localhost:%i/' %
-//                                       self.deproxy_port,
-//                                       default_handler=handler)
-//        self.assertEquals(int(mc.received_response.code), 200)
-//
-//

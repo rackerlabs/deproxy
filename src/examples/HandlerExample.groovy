@@ -151,6 +151,24 @@ class HandlerExample extends Specification {
         // ]
 
 
+
+        mc = deproxy.makeRequest(url: 'http://localhost:9994/ip',
+                defaultHandler: Handlers.Route("httpbin.org", 80))
+        println mc.receivedResponse.headers
+        // [
+        //  Date: Thu, 12 Sep 2013 18:19:25 GMT,
+        //  Server: gunicorn/0.17.4,
+        //  X-Cache: MISS from [ ... ],
+        //  Connection: Keep-Alive,
+        //  Content-Type: application/json,
+        //  Content-Length: 45,
+        //  Access-Control-Allow-Origin: *,
+        //  Deproxy-Request-ID: 6c5b0741-87dc-456b-ae2f-87201efcf6e3
+        // ]
+
+
+
+
         expect:
         1 == 1
     }

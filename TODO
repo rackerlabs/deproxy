@@ -6,10 +6,10 @@ Clean up code
         handlers
     rename setUp to setup and tearDown to cleanup in spock unit tests
 
-port route
 un-ignore or get rid of ignored tests
 port all unit tests
 add to default request headers test
+test StaticTcpServer
 
 update docs
     old functionality needs to documented
@@ -53,11 +53,17 @@ add endpoint parameter to handler functions, so we know who handled the request 
 clean endpoint failure, e.g. if address already in use
     shouldn't get added to _endpoints list
     thread(s) should be shut down
-option on route to be transparent or not (see http rfc) ?
-    route should use the conforming client connector above
-    not sure which server connector to use
 
 server-side https
+    DeproxyEndpoint
+        test
+        createRawConnection
+            test
+    LocalSocketPair https
+        test
+    StaticTcpServer https
+        shouldn't need any code as it just takes a socket
+        test
 test https
 test route https
 extensive tests for uri's paths and query parameters

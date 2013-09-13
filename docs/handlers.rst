@@ -4,7 +4,7 @@
 
 Handlers are the things that turn requests into responses. A given call to
 makeRequest can take a ``handler`` argument that will be called for each
-request that reaches an endpoint. Deproxy includes a number of built-in
+request that reaches an endpoint. GDeproxy includes a number of built-in
 handlers for some of the most common use cases. Also, you can define your own
 handlers.
 ::
@@ -129,9 +129,9 @@ which a handler is chosen for it is defined so:
 Built-in Handlers
 =================
 
-The following handlers are a part of the deproxy module. They can be used to
-address a small number of potential use cases. They also demonstrate effective
-ways to define additional handlers.
+The following handlers are built into gdeproxy. They can be used to address a
+number of common use cases. They also demonstrate effective ways to define
+additional handlers.
 
 - simpleHandler
     The last-resort handler used if none is specified. It returns a response
@@ -197,12 +197,27 @@ ways to define additional handlers.
         // ]
 
 - route(scheme, host, deproxy)
-    *This handler is not currently implemented.*
     This is actually a factory function that returns a handler. The handler
-    forwards all requests to the specified host via HTTP or HTTPS, as indicated
-    by the scheme parameter. The deproxy parameter is a Deproxy object,
-    which is used only as an HTTP/S client. The response returned from the
-    handler is the response returned from the specified host.
+    forwards all requests to the specified host on the specified port. The
+    only modification it makes to the outgoing request is to change the
+    Host header to the host and port that it's routing to. You can also tell
+    it to use HTTPS [* not yet implemented *], and specify a custom client
+    connector. The response returned from the handler is the response returned
+    from the specified host.
+
+        mc = deproxy.makeRequest(url: 'http://localhost:9994/ip',
+                defaultHandler: Handlers.Route("httpbin.org", 80))
+        println mc.receivedResponse.headers
+        // [
+        //  Date: Thu, 12 Sep 2013 18:19:25 GMT,
+        //  Server: gunicorn/0.17.4,
+        //  X-Cache: MISS from [ ... ],
+        //  Connection: Keep-Alive,
+        //  Content-Type: application/json,
+        //  Content-Length: 45,
+        //  Access-Control-Allow-Origin: *,
+        //  Deproxy-Request-ID: 6c5b0741-87dc-456b-ae2f-87201efcf6e3
+        // ]
 
 
 Custom Handlers

@@ -6,6 +6,17 @@ History
 0.16 (in progress)
 ++++++++++++++++++
 
+- Cleaned up the code. Removed all of the interleaved-python-code-in-comments.
+- Cleaned up the documentation. Converted all code samples from python to
+  groovy.
+- Improved PortFinder. Made it so that it tries to open a socket connection,
+  instead of making a full HTTP request, which caused occasionally exceptions.
+  Also added a singleton, so that multiple consumers can use the same
+  PortFinder and not clash.
+- Ported the Route built-in handler.
+- Fixed a bug where the port wasn't being added to the Host header as per RFC
+  2616 § 14.23
+
 
 0.15 (2013-08-19)
 ++++++++++++++++++

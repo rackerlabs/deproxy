@@ -6,7 +6,7 @@ class HttpResponseMessage {
      * Table mapping response codes to messages
      * See RFC 2616.
      */
-    static def messagesByResponseCode = [
+    static Map<String, String> messagesByResponseCode = [
             "100": 'Continue',
             "101": 'Switching Protocols',
             "200": 'OK',
@@ -53,7 +53,7 @@ class HttpResponseMessage {
      * Table mapping response codes to default bodies
      * See RFC 2616.
      */
-    def defaultBodiesByResponseCode = [
+    static Map<String, String> defaultBodiesByResponseCode = [
             "100": 'Request received, please continue',
             "101": 'Switching to new protocol; obey Upgrade header',
             "200": 'Request fulfilled, document follows',

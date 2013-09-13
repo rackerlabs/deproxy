@@ -31,4 +31,55 @@ class StaticTcpServer {
 
         return serverSideRequest
     }
+
+    def static handleOneRequestTimeout(Socket socket, String responseString, int timeoutMillis) {
+
+        int oldTimeout = socket.soTimeout
+        long startTimeMillis = System.currentTimeMillis()
+
+        List<Byte> bytes = []
+
+        try {
+
+            socket.soTimeout = 100
+
+            while (true) {
+                try {
+
+                    def value = socket.inputStream.read()
+                    if (value >= 0) {
+                        bytes.add(value as byte)
+                    }
+
+                } catch (SocketTimeoutException ignored) {
+
+                    long currentTimeMillis = System.currentTimeMillis()
+
+                    if (currentTimeMillis >= startTimeMillis + timeoutMillis) {
+                        break;
+                    }
+                }
+            }
+
+        } finally {
+
+            if (socket &&
+                    !socket.isClosed()) {
+                socket.soTimeout = oldTimeout
+            }
+        }
+
+
+        ByteBuffer bb = ByteBuffer.wrap(bytes as byte[])
+        CharBuffer cb = Charset.forName("US-ASCII").decode(bb)
+        def serverSideRequest = cb.toString()
+
+
+        byte[] bytesOut = new byte[responseString.length()]
+        Charset.forName("US-ASCII").encode(responseString).get(bytesOut)
+        socket.outputStream.write(bytesOut)
+        socket.outputStream.flush()
+
+        return serverSideRequest
+    }
 }

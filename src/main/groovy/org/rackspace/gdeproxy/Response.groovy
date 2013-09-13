@@ -30,7 +30,7 @@ class Response {
      * Both strings and byte arrays are acceptable. All other types are
      * toString'd.
      */
-    public Response(code, message=null, headers=null, body=null) {
+    public Response(code, String message=null, headers=null, body=null) {
 
         code = code.toString()
 
@@ -54,7 +54,7 @@ class Response {
         }
 
         this.code = code
-        this.message = message.toString()
+        this.message = message
         this.headers = new HeaderCollection(headers)
         this.body = body
     }

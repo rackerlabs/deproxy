@@ -44,12 +44,12 @@ class HeaderCollection {
         return false;
     }
 
-    public Object each(Closure closure) {
-        return _headers.each(closure);
+    public void each(Closure closure) {
+        _headers.each(closure);
     }
 
-    public Object eachWithIndex(Closure closure) {
-        return _headers.eachWithIndex(closure);
+    public void eachWithIndex(Closure closure) {
+        _headers.eachWithIndex(closure);
     }
 
     public int size() {

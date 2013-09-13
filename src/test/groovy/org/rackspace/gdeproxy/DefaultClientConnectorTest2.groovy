@@ -11,22 +11,22 @@ class DefaultClientConnectorTest2 extends Specification {
     @Unroll("when we call sendRequest with https=#https, #host, and #port, we should get Host: #expectedValue")
     void testConstructorWithSocketParameter() {
 
-        given:
-        String responseString = ("HTTP/1.1 200 OK\r\n" +
-                "Server: StaticTcpServer\r\n" +
-                "Content-Length: 0\r\n" +
-                "\r\n")
-
+        given: "a client socket and a server socket"
         (client, server) = LocalSocketPair.createLocalSocketPair()
 
         client.soTimeout = 100 // in milliseconds
         server.soTimeout = 2000
 
+        and: "a DefaultClientConnector using the provided client socket"
         DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+
+        and: "a simple request and basic request params"
         Request request = new Request("GET", "/")
         RequestParams params = [sendDefaultRequestHeaders : true] as RequestParams
 
-        when:
+
+
+        when: "we send the request through the connector"
         try {
 
             // we're explicitly setting the https, host, and port parameters.
@@ -43,11 +43,13 @@ class DefaultClientConnectorTest2 extends Specification {
             // request from the server side of the socket.
         }
 
+        and: "read the request that the connector sent from the server-side socket"
         String requestLine = LineReader.readLine(server.inputStream)
         HeaderCollection headers = HeaderCollection.fromStream(server.inputStream)
 
 
-        then:
+
+        then: "it formats the request correctly and has a Host header with the right value"
         requestLine == "GET / HTTP/1.1"
         headers.contains("Host")
         headers["Host"] == expectedValue

@@ -19,35 +19,33 @@ class DefaultClientConnectorTest2 extends Specification {
 
         (client, server) = LocalSocketPair.createLocalSocketPair()
 
-        client.soTimeout = 2000 // in milliseconds
+        client.soTimeout = 100 // in milliseconds
         server.soTimeout = 2000
-
-        String serverSideRequest;
 
         DefaultClientConnector clientConnector = new DefaultClientConnector(client)
         Request request = new Request("GET", "/")
         RequestParams params = [sendDefaultRequestHeaders : true] as RequestParams
 
-        def t = Thread.startDaemon("response") {
-            serverSideRequest = StaticTcpServer.handleOneRequestTimeout(server, responseString, 200)
+        when:
+        try {
+
+            // we're explicitly setting the https, host, and port parameters.
+            // the connector was created with a client socket, however. it
+            // will use the socket instead of trying to open a new connection,
+            // and just use the parameters for the Host header.
+            Response response = clientConnector.sendRequest(request, https, host, port, params)
+
+        } catch (SocketTimeoutException ignored) {
+
+            // we're expecting the connector to send the request, and then
+            // wait for a server response. since there is no server in this
+            // case, it will timeout while waiting. then we just read the
+            // request from the server side of the socket.
         }
 
-        // we're explicitly setting the https, host, and port parameters.
-        // the connector was created with a client socket, however.
-        // it will use the socket instead of trying to open a new connection,
-        // and just use the parameters for the Host header.
-        Response response = clientConnector.sendRequest(request, https, host, port, params)
-        t.join()
+        String requestLine = LineReader.readLine(server.inputStream)
+        HeaderCollection headers = HeaderCollection.fromStream(server.inputStream)
 
-        expect:
-        serverSideRequest != null
-        serverSideRequest != ""
-        serverSideRequest instanceof String
-
-        when:
-        StringReader reader = new StringReader(serverSideRequest)
-        String requestLine = LineReader.readLine(reader)
-        HeaderCollection headers = HeaderCollection.fromReadable(reader)
 
         then:
         requestLine == "GET / HTTP/1.1"

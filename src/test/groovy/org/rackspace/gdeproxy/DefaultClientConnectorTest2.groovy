@@ -9,7 +9,7 @@ class DefaultClientConnectorTest2 extends Specification {
     Socket server
 
     @Unroll("when we call sendRequest with https=#https, #host, and #port, we should get Host: #expectedValue")
-    void testConstructorWithSocketParameter() {
+    void testHostHeader() {
 
         given: "a client socket and a server socket"
         (client, server) = LocalSocketPair.createLocalSocketPair()

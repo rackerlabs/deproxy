@@ -2,6 +2,8 @@ package org.rackspace.gdeproxy
 
 import spock.lang.Specification
 
+import java.util.concurrent.CountDownLatch
+
 /**
  * Created with IntelliJ IDEA.
  * User: izrik
@@ -64,5 +66,35 @@ class PortFinderTest extends Specification {
 
         then:
         pf2.currentPort == 23456
+    }
+
+    def "when using the singleton among multiple threads, should be thread-safe"() {
+
+        def prevCurrentPort = PortFinder.Singleton.currentPort
+
+        List<Thread> threads = []
+        CountDownLatch startSignal = new CountDownLatch(1)
+        def listLock = new Object()
+        def ports = []
+
+        for (i in 0..100) {
+            threads.add(Thread.startDaemon {
+                startSignal.await()
+                int port = PortFinder.Singleton.getNextOpenPort()
+                synchronized(listLock) {
+                    ports.add(port)
+                }
+            })
+        }
+
+        startSignal.countDown()
+
+        for (th in threads) {
+            th.join()
+        }
+
+        expect:
+        PortFinder.Singleton.currentPort == prevCurrentPort + threads.size()
+        ports.unique().size() == threads.size()
     }
 }

@@ -65,8 +65,8 @@ class Deproxy {
             headers=null,
             requestBody="",
             defaultHandler=null,
-            handlers=null,
-            addDefaultHeaders=true,
+            Map handlers=null,
+            boolean addDefaultHeaders=true,
             boolean chunked=false,
             ClientConnector clientConnector=null) {
 
@@ -136,7 +136,7 @@ class Deproxy {
         return messageChain
     }
 
-    def addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
+    DeproxyEndpoint addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
 
         def endpoint = null
 
@@ -154,7 +154,7 @@ class Deproxy {
         }
     }
 
-    def _removeEndpoint(DeproxyEndpoint endpoint) {
+    boolean  _removeEndpoint(DeproxyEndpoint endpoint) {
 
         synchronized (this.endpointLock) {
 
@@ -166,7 +166,7 @@ class Deproxy {
         }
     }
 
-    def shutdown() {
+    void shutdown() {
 
         synchronized (this.endpointLock) {
             for (e in this.endpoints) {
@@ -176,7 +176,7 @@ class Deproxy {
         }
     }
 
-    def addMessageChain(String requestId, MessageChain messageChain) {
+    void addMessageChain(String requestId, MessageChain messageChain) {
 
         synchronized (this.messageChainsLock) {
 
@@ -184,7 +184,7 @@ class Deproxy {
         }
     }
 
-    def removeMessageChain(String requestId) {
+    void removeMessageChain(String requestId) {
 
         synchronized (this.messageChainsLock) {
 
@@ -192,7 +192,7 @@ class Deproxy {
         }
     }
 
-    def getMessageChain(String requestId) {
+    MessageChain getMessageChain(String requestId) {
 
         synchronized (this.messageChainsLock) {
 
@@ -207,7 +207,7 @@ class Deproxy {
         }
     }
 
-    def addOrphanedHandling(Handling handling) {
+    void addOrphanedHandling(Handling handling) {
 
         synchronized (this.messageChainsLock) {
 

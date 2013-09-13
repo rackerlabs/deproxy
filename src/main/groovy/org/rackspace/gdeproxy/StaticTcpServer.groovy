@@ -11,7 +11,7 @@ import java.nio.charset.Charset
  */
 class StaticTcpServer {
 
-    def static handleOneRequest(Socket socket, String responseString, int requestLength) {
+    static String handleOneRequest(Socket socket, String responseString, int requestLength) {
 
         byte[] bytes = new byte[requestLength]
         int n = 0;
@@ -21,7 +21,7 @@ class StaticTcpServer {
         }
         ByteBuffer bb = ByteBuffer.wrap(bytes)
         CharBuffer cb = Charset.forName("US-ASCII").decode(bb)
-        def serverSideRequest = cb.toString()
+        String serverSideRequest = cb.toString()
 
 
         bytes = new byte[responseString.length()]

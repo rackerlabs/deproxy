@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
  */
 class DeproxyShutdownTest {
 
+    Deproxy deproxy
+
     @Test
     void testShutdown() {
 
@@ -28,7 +30,7 @@ class DeproxyShutdownTest {
         def port1 = pf.getNextOpenPort();
         def port2 = pf.getNextOpenPort();
 
-        def deproxy = new Deproxy();
+        deproxy = new Deproxy();
 
         def e1 = deproxy.addEndpoint(port1)
         def e2 = deproxy.addEndpoint(port2)
@@ -53,6 +55,14 @@ class DeproxyShutdownTest {
 
         } catch (IOException e) {
             Assert.fail("addEndpoint threw an exception")
+        }
+    }
+
+    @After
+    void tearDown() {
+
+        if (deproxy) {
+            deproxy.shutdown()
         }
     }
 }

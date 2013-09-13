@@ -11,26 +11,24 @@ class MessageChain {
     Request sentRequest
     Response receivedResponse
     def defaultHandler
-    def handlers = [:]
+    Map handlers = [:]
     List<Handling> handlings = []
     List<Handling> orphanedHandlings = []
 
     protected def lock = new Object()
 
-    public MessageChain(defaultHandler = null, handlers = null) {
+    public MessageChain(defaultHandler = null, Map handlers = null) {
         this.defaultHandler = defaultHandler
         this.handlers = handlers
-    this.defaultHandler = defaultHandler;
-    this.handlers = handlers;
     }
 
-    def addHandling(handling) {
+    void addHandling(Handling handling) {
         synchronized (this.lock) {
             this.handlings.add(handling)
         }
     }
 
-    def addOrphanedHandling(handling) {
+    void addOrphanedHandling(Handling handling) {
         synchronized (this.lock) {
             this.orphanedHandlings.add(handling)
         }

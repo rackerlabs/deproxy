@@ -10,13 +10,13 @@ class Handlers {
 
     // Handler function.
     // Returns a 200 OK Response, with no additional headers or response body.
-    static def simpleHandler(request) {
+    static Response simpleHandler(Request request) {
         return new Response(200, 'OK')
     }
 
     // Handler function.
     // Returns a 200 OK Response, with the same headers and body as the request.
-    static def echoHandler(request) {
+    static Response echoHandler(Request request) {
         return new Response(200, 'OK', request.headers, request.body)
     }
 

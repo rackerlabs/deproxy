@@ -25,7 +25,7 @@ class Request {
      * Both strings and byte arrays are acceptable. All other types are
      * toString'd.
      */
-    public Request(method, path, headers=[:], body=null) {
+    public Request(String method, String path, headers=[:], body=null) {
 
         if (body == null) {
             body = ""
@@ -34,8 +34,8 @@ class Request {
             body = body.toString()
         }
 
-        this.method = method.toString()
-        this.path = path.toString()
+        this.method = method
+        this.path = path
         this.headers = new HeaderCollection(headers)
         this.body = body
     }

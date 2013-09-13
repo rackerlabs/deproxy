@@ -10,7 +10,7 @@ import groovy.util.logging.Log4j
 
 @Log4j
 class HeaderWriter {
-    static def writeHeaders(OutputStream outStream, HeaderCollection headers) {
+    static void writeHeaders(OutputStream outStream, HeaderCollection headers) {
 
         PrintWriter writer = new PrintWriter(outStream)
 

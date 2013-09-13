@@ -148,7 +148,7 @@ class DeproxyEndpoint {
         return new Socket("localhost", this.port)
     }
 
-    def processNewConnection(Socket socket, String connectionName) {
+    void processNewConnection(Socket socket, String connectionName) {
 
         log.debug "processing new connection..."
         def reader;
@@ -196,7 +196,7 @@ class DeproxyEndpoint {
 
     }
 
-    def shutdown() {
+    void shutdown() {
         log.debug "shutting down"
 
         log.debug("Shutting down ${this.name}")
@@ -213,7 +213,7 @@ class DeproxyEndpoint {
         return serverSocket != null && !serverSocket.isClosed()
     }
 
-    def handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
+    boolean handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
 
         log.debug "Begin handleOneRequest"
         def closeConnection = false
@@ -476,7 +476,7 @@ class DeproxyEndpoint {
         ]
     }
 
-    def sendResponse(OutputStream outStream, Response response, HandlerContext context=null) {
+    void sendResponse(OutputStream outStream, Response response, HandlerContext context=null) {
 
         def writer = new PrintWriter(outStream, true);
 
@@ -497,7 +497,7 @@ class DeproxyEndpoint {
         log.debug("finished sending response")
     }
 
-    def datetimeString() {
+    String datetimeString() {
         // Return the current date and time formatted for a message header.
 
         Calendar calendar = Calendar.getInstance();

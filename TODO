@@ -1,6 +1,8 @@
 Clean up code
     rename setUp to setup and tearDown to cleanup in spock unit tests
 
+gradle
+
 expand test for default request headers, to include all of them, and also to include header values
 
 un-ignore or get rid of ignored tests

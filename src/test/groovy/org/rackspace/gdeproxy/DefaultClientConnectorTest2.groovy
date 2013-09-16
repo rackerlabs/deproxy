@@ -3,10 +3,52 @@ package org.rackspace.gdeproxy
 import spock.lang.Specification
 import spock.lang.Unroll
 
+
 class DefaultClientConnectorTest2 extends Specification {
 
     Socket client
     Socket server
+
+    void testConstructorWithSocketParameter() {
+
+        given: "a client socket and a server socket"
+        (client, server) = LocalSocketPair.createLocalSocketPair()
+
+        client.soTimeout = 100 // in milliseconds
+        server.soTimeout = 2000
+
+        and: "a DefaultClientConnector using the provided client socket"
+        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+
+        and: "a simple request"
+        Request request = new Request("GET", "/", ['Content-Length': "0"])
+
+        and: "request params that don't involve adding default headers"
+        RequestParams params = [sendDefaultRequestHeaders : false] as RequestParams
+
+
+        when: "we send the request through the connector"
+        try {
+
+            Response response = clientConnector.sendRequest(request, false, "localhost", server.getLocalPort(), params)
+
+        } catch (SocketTimeoutException ignored) {
+            // read times out, as expected
+        }
+
+        and: "read the request that the connector sent from the server-side socket"
+        String requestLine = LineReader.readLine(server.inputStream)
+        HeaderCollection headers = HeaderCollection.fromStream(server.inputStream)
+        String body = BodyReader.readBody(server.inputStream, headers)
+
+
+        then: "it formats the request correctly and only has the header we specified"
+        requestLine == "GET / HTTP/1.1"
+        headers.size() == 1
+        headers.contains("Content-Length")
+        headers["Content-Length"] == "0"
+        body == "" || body == null
+    }
 
     @Unroll("when we call sendRequest with https=#https, #host, and #port, we should get Host: #expectedValue")
     void testHostHeader() {

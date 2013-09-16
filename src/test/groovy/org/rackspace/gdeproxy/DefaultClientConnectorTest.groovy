@@ -4,7 +4,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 
-class DefaultClientConnectorTest2 extends Specification {
+class DefaultClientConnectorTest extends Specification {
 
     Socket client
     Socket server

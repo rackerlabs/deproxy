@@ -6,6 +6,11 @@ Clean up code
         handlers
     rename setUp to setup and tearDown to cleanup in spock unit tests
 
+change DefaultClientConnectorTest so that it doesn't require a server and thread
+convert DefaultClientConnectorTest to spock
+merge DefaultClientConnectorTest2 and DefaultRequestHeadersTest into DefaultClientConnectorTest
+expand test for default request headers, to include all of them, and also to include header values
+
 un-ignore or get rid of ignored tests
 port all unit tests
 add to default request headers test

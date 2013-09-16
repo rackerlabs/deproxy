@@ -151,6 +151,10 @@ class HeaderCollection {
 
         UnbufferedStreamReader reader = new UnbufferedStreamReader(inStream);
 
+        return fromReadable(reader)
+    }
+
+    public static HeaderCollection fromReadable(Readable reader) {
         HeaderCollection headers = new HeaderCollection();
         String line = LineReader.readLine(reader);
         while (line != null && !line.equals("") && !line.equals("\r\n")) {

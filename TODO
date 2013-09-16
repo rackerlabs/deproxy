@@ -1,19 +1,10 @@
 Clean up code
-    explicit types where beneficial
-        message chains
-        addEndpoint, etc
-        ClientConnector
-        handlers
     rename setUp to setup and tearDown to cleanup in spock unit tests
 
-change DefaultClientConnectorTest so that it doesn't require a server and thread
-convert DefaultClientConnectorTest to spock
-merge DefaultClientConnectorTest2 and DefaultRequestHeadersTest into DefaultClientConnectorTest
 expand test for default request headers, to include all of them, and also to include header values
 
 un-ignore or get rid of ignored tests
 port all unit tests
-add to default request headers test
 test StaticTcpServer
 
 update docs
@@ -38,6 +29,8 @@ update docs
             PortFinder
             StaticTcpServer
 
+move apache stuff to a separate folder/subpackage
+
 distinction between message body and transfer-encoded message body, between
         the request/response and the bytes-on-the-wire
 compression (content coding)
@@ -48,10 +41,10 @@ rfc 2616 § 3.6 in BodyReader.readBody #2 --> return 501
 super-easy assertions on message chains, handlings, requests, and responses - for use by importers
 extract classes for handling http version 0.9, 1.0, and 1.1
     extract client connector -> Conforming vs. Bare
-        create a new client connector or update an existing one to be fully complient with RFC 2616
+        create a new client connector or update an existing one to be fully compliant with RFC 2616
     extract server connector -> Conforming vs. Bare
-        HandlerContext
-        2-parameter handlers
+        parseRequest and sendResponse
+        clarify handler stuff, so that we can use explicit typing of handlers
 add endpoint parameter to handler functions, so we know who handled the request ?
     no use-case for this yet
 

@@ -3,7 +3,11 @@
 History
 -------
 
-0.16 (in progress)
+0.17 (in progress)
+++++++++++++++++++
+
+
+0.16 (2013-09-16)
 ++++++++++++++++++
 
 - Cleaned up the code. Removed all of the interleaved-python-code-in-comments.

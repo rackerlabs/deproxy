@@ -201,29 +201,31 @@ Instead, what the endpoint will do is add the Handling to *all* active MessageCh
                                      |Service |  <-- Will create four orphaned Handlings total,
                                      |________|       one per request per MC
 
+ Each client request will result in a MessageChain with:
+   The initial client request to the proxy
+   Two orphaned Handlings, one for each originating client request
+   One normal Handling for the request that makes it to the server
+   The final response that the client receives from the proxy
 
 
 
 Connections
 -----------
 
-This effectively comprises a chain of messages, aka a MessageChain.
+HTTP applications typically have support for persistent connections, which allow for multiple HTTP transactions using the same TCP connection.
+In GDeproxy, when an endpoint receives a new connection, the connection is given a unique id. All Handling objects created by that endpoint from that TCP connection are tagged with the connection's id value.
+If we want to test whether or not the proxy is using connection pooling, for example, we could simply make two identical calls to makeRequest. Assuming that the requests are forwarded by the proxy to the server and is re-using connections, the ``MessageChain`` objects that we get back will each have a single ``Handling`` object and both ``Handling`` objects will have the same ``connection`` value. If the proxy is not re-using connections, then the two ``Handling`` objects will have different ``connection`` values.
+::
+
+  ________                           ________                           ________
+ |        |  ---> 1. Request  --->  |        |  ---> 2. Request  --->  |        |
+ | Client |  <--- 4. Response <---  | Proxy  |  <--- 3. Response <---  | Server |
+ |________|  ---> 5. Request  --->  |________|  ---> 6. Request  --->  |________|
+             <--- 8. Response <---              <--- 7. Response <---
+
+ # 2, 3, 6, and 7 use the same TCP connection
+ Each MessageChain should have one Handling, and both Handlings
+   should have the same value for the connection field.
 
 
-
-Request and Response - the two basic building block of an HTTP transaction.
-
-Request - Method, path, headers, body
-Response - Code, message, headers, body
-
-Handling - a pair of Request and Response,
-a reference to the endpoint that handled the request, and the identifier of the connection used by the endpoint.
-
-Message chain
-the initial request made from the client side
-the final response received at the client side
-the defaultHandler to use
-the mapping of per-endpoint handlers to use
-a collection of all handlings associated with the initial request
-a collection of all orphaned handlings served by all endpoints while the request was active
 

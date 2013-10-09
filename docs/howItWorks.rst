@@ -121,7 +121,6 @@ Orphaned Handlings
 In order to
 GDeproxy keeps track of separate MessageChains as a result of separate calls to makeRequest.
 This is even the case when making simultaneous calls on different threads.
-
 ::
 
 
@@ -142,8 +141,65 @@ This is even the case when making simultaneous calls on different threads.
 
 In such a situation, there needs to be a way to distinguish which requests are associated with which MessageChains when they reach the server.
 Depending on the timing, the second request made might reach the server first.
-In order to keep track, makeRequest adds a special header (Deproxy-Request-ID) with a unique identifier to each outgoing request, and associates it with the MessageChain for that request.
+In order to keep track, makeRequest adds a special tracking header (Deproxy-Request-ID) with a unique identifier to each outgoing request, and associates it with the MessageChain for that request.
 Typically, a proxy won't remove such a header from the request unless configured to do so, so this a reasonable safe way to keep track.
+When the request reaches the endpoint, the tracking header value is used to get the associated MessageChain for the originating call to makeRequest, and a Handling object is added to the list.
+::
+
+  ________
+ |        |  --->  1. Request  -------------.
+ | Client |                                 |
+ |________|  <---  11.Response <-------.    |
+                                       |    |
+                                       |    |
+                                       |    |
+                                       |    v
+  ________                            ________                           ________
+ |        |  --->  2. Request  --->  |        |  ---> 7. Request  --->  |        |
+ | Client |                          | Proxy  |  ---> 8. Request  --->  | Server |
+ |________|  <---  12.Response <---  |________|  <--- 9. Response <---  |________|
+                                                 <--- 10.Response <---
+                                       ||  ^^
+                            3. Request ||  ||  5. Response
+                            4. Request vv  ||  6. Response
+                                      ________
+                                     |  Aux.  |
+                                     |Service |
+                                     |________|
+
+
+A problem arises, however, in cases where a request reaches an endpoint without the tracking header.
+This could happen a number of ways:
+
+ - The proxy might be configured to remove all but a certain predetermined white-list of headers
+ - The proxy might be initiating a new request to an auxiliary service, which wouldn't retain the tracking header
+ - A completely unrelated request might have reached the endpoint from another source
+
+Whatever the cause, it represents a problem for us, because it's not possible to tie the Handling to a particular MessageChain without the tracking header.
+We call this an *orphaned* Handling.
+Instead, what the endpoint will do is add the Handling to *all* active MessageChains as an orphaned Handling.
+::
+
+  ________
+ |        |  --->  1. Request  -------------.
+ | Client |                                 |
+ |________|  <---  11.Response <-------.    |     Deproxy-Request-ID present
+                                       |    |              |
+                                       |    |              |      Will create one handling per MC
+                                       |    |              |                |
+                                       |    v              v                v
+  ________                            ________                           ________
+ |        |  --->  2. Request  --->  |        |  ---> 7. Request  --->  |        |
+ | Client |                          | Proxy  |  ---> 8. Request  --->  | Server |
+ |________|  <---  12.Response <---  |________|  <--- 9. Response <---  |________|
+                                                 <--- 10.Response <---
+                                       ||  ^^
+  No Deproxy-Request-ID --> 3. Request ||  ||  5. Response
+  No Deproxy-Request-ID --> 4. Request vv  ||  6. Response
+                                      ________
+                                     |  Aux.  |
+                                     |Service |  <-- Will create four orphaned Handlings total,
+                                     |________|       one per request per MC
 
 
 

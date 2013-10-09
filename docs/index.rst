@@ -40,7 +40,7 @@ Likewise, if we don't have a copy of the response that the server originally sen
 But in the general case, we can't say for sure about other functional requirements.
 Additionally, if the proxy is required to prevent a request from even reaching the server (as in the case of invalid authentication credentials in the request) a test client cannot determine whether or not any such request was in fact forwarded, because all it sees is the error response from the proxy.
 For that, we'd need to be able see both sides of the exchange, and record all requests that made it to the server.
-And that is what a deproxy does. It de-proxifies the proxy.::
+And that is what a deproxy does. It de-proxifies the proxy::
 
   ________                     ________                    ________
  |        |  --->  req  --->  |        |  ---> req2 --->  |        |
@@ -66,6 +66,7 @@ Contents:
 
    use
    handlers
+   howItWorks
 
 
 Indices and tables

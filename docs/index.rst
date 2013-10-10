@@ -10,9 +10,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   howItWorks
    use
    handlers
-   howItWorks
 
 
 Indices and tables

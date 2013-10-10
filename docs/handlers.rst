@@ -203,7 +203,7 @@ additional handlers.
     Host header to the host and port that it's routing to. You can also tell
     it to use HTTPS [* not yet implemented *], and specify a custom client
     connector. The response returned from the handler is the response returned
-    from the specified host.
+    from the specified host.::
 
         mc = deproxy.makeRequest(url: 'http://localhost:9994/ip',
                 defaultHandler: Handlers.Route("httpbin.org", 80))

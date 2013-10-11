@@ -201,7 +201,7 @@ additional handlers.
     forwards all requests to the specified host on the specified port. The
     only modification it makes to the outgoing request is to change the
     Host header to the host and port that it's routing to. You can also tell
-    it to use HTTPS [* not yet implemented *], and specify a custom client
+    it to use HTTPS [*not yet implemented*\], and specify a custom client
     connector. The response returned from the handler is the response returned
     from the specified host.::
 

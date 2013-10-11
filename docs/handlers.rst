@@ -6,7 +6,7 @@
 ==========
 
 Handlers are the things that turn requests into responses. A given call to
-makeRequest can take a ``handler`` argument that will be called for each
+makeRequest_ can take a ``handler`` argument that will be called for each
 request that reaches an endpoint. GDeproxy includes a number of built-in
 handlers for some of the most common use cases. Also, you can define your own
 handlers.

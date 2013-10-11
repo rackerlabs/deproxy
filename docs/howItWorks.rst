@@ -1,3 +1,6 @@
+
+.. include:: global.rst.inc
+
 ==============
  How It Works
 ==============
@@ -19,10 +22,11 @@ request to a server.::
  |________|  <---  2. Response <---  |________|
 
 In this instance, all we have to keep track of is the request sent and the
-response received. Simple enough, right? So simple, in fact, that we wouldn't
-even really need GDeproxy to test it. To test a server, all we would need to
+response received. To test a server, all we would need to
 do is use an HTTP client to send a request to the server, then compare what
 the server got back with what we expected.
+Simple enough, right?
+So simple, in fact, that we wouldn't even really need GDeproxy to test it.
 
 Handlings
 ---------
@@ -44,12 +48,12 @@ Now things are getting interesting.
 If our goal is to test the behavior of the proxy and the modifications it
 makes to requests, responses, or both, then we have to keep track of more
 information. Not only that, we need to distinguish between two
-Request/Response exchanges. We can create a DeproxyEndpoint to represent the
-server, and make requests to the proxy using the Deproxy.makeRequest method.
+Request/Response exchanges. We can create a DeproxyEndpoint_ to represent the
+server, and make requests to the proxy using the makeRequest_ method.
 When the endpoint receives a request from the proxy, it will return a
 response. We say that it "handles" the request. Both the request the endpoint
 receives and the response it sends back are collected into something called a
-Handling. A handling represents the request/response pair at the server side
+Handling_. A handling represents the request/response pair at the server side
 of the equation. So, the call to makeRequest should return:
 
 - the sent request
@@ -59,7 +63,7 @@ of the equation. So, the call to makeRequest should return:
 But to have a more complete model, we should consider additional cases.
 
 
-Here's another situation in which Handlings prove useful::
+Here's another situation in which the Handling concept proves helpful::
 
   ________                            ________
  |        |  --->  1. Request  --->  |        |
@@ -108,18 +112,18 @@ Now we have to keep track of more than one request coming from the proxy, and mo
 Moreover, the proxy might have to make multiple requests to the auxiliary service. Or there could be multiple auxiliary servers that the proxy must coordinate with, each doing something different.
 In order to test the proxy's behavior in all of these situations, we need to keep track of a lot more stuff.
 Ultimately, what we need is a comprehensive record of everything that happens as a result of the original request the client made.
-We call that a MessageChain.
+We call that a MessageChain_.
 Everything from the client to the proxy to the auxiliary services to the end server and back again is stored in a single, easy-to-assert object.
 
-We can simulate the auxiliary service using a second DeproxyEndpoint in addition to the first.
+We can simulate the auxiliary service using a second DeproxyEndpoint_ in addition to the first.
 That endpoint can be made to return canned responses to the proxy's authentication requests.
-All handlings from both endpoints will be stored in a single MessageChain object, which makeRequest returns back to its caller.
+All handlings from both endpoints will be stored in a single MessageChain_ object, which makeRequest_ returns back to its caller.
 
 Orphaned Handlings
 ------------------
 
 In order to
-GDeproxy keeps track of separate MessageChains as a result of separate calls to makeRequest.
+GDeproxy keeps track of separate MessageChain_\s as a result of separate calls to makeRequest_.
 This is even the case when making simultaneous calls on different threads.
 ::
 
@@ -139,11 +143,11 @@ This is even the case when making simultaneous calls on different threads.
                                                  <--- 6. Response <---
 
 
-In such a situation, there needs to be a way to distinguish which requests are associated with which MessageChains when they reach the server.
+In such a situation, there needs to be a way to distinguish which requests are associated with which MessageChain_\s when they reach the server.
 Depending on the timing, the second request made might reach the server first.
-In order to keep track, makeRequest adds a special tracking header (Deproxy-Request-ID) with a unique identifier to each outgoing request, and associates it with the MessageChain for that request.
-Typically, a proxy won't remove such a header from the request unless configured to do so, so this a reasonable safe way to keep track.
-When the request reaches the endpoint, the tracking header value is used to get the associated MessageChain for the originating call to makeRequest, and a Handling object is added to the list.
+In order to keep track, makeRequest_ adds a special tracking header (Deproxy-Request-ID) with a unique identifier to each outgoing request, and associates it with the MessageChain_ for that request.
+Typically, a proxy won't remove such a header from the request unless configured to do so, so this a reasonably safe way to keep track.
+When the request reaches the endpoint, the tracking header value is used to get the associated MessageChain_ for the originating call to makeRequest_, and a Handling_ object is added to the list.
 ::
 
   ________
@@ -175,17 +179,17 @@ This could happen a number of ways:
  - The proxy might be initiating a new request to an auxiliary service, which wouldn't retain the tracking header
  - A completely unrelated request might have reached the endpoint from another source
 
-Whatever the cause, it represents a problem for us, because it's not possible to tie the Handling to a particular MessageChain without the tracking header.
-We call this an *orphaned* Handling.
-Instead, what the endpoint will do is add the Handling to *all* active MessageChains as an orphaned Handling.
+Whatever the cause, it represents a problem for us, because it's not possible to tie the Handling to a particular MessageChain_ without the tracking header.
+We call this an *orphaned* handling, and store it in the MessageChain_'s orphanedHandlings_ field.
+Instead, what the endpoint will do is add the Handling_ to *all* active MessageChain_\s as an orphaned handling.
 ::
 
   ________
  |        |  --->  1. Request  -------------.
- | Client |                                 |
- |________|  <---  11.Response <-------.    |     Deproxy-Request-ID present
-                                       |    |              |
-                                       |    |              |      Will create one handling per MC
+ | Client |                                 |     Deproxy-Request-ID present
+ |________|  <---  11.Response <-------.    |              |
+                                       |    |              |      Will create one
+                                       |    |              |      handling per MC
                                        |    |              |                |
                                        |    v              v                v
   ________                            ________                           ________
@@ -198,14 +202,16 @@ Instead, what the endpoint will do is add the Handling to *all* active MessageCh
   No Deproxy-Request-ID --> 4. Request vv  ||  6. Response
                                       ________
                                      |  Aux.  |
-                                     |Service |  <-- Will create four orphaned Handlings total,
-                                     |________|       one per request per MC
+                                     |Service |  <-- Will create four orphaned
+                                     |________|        Handlings total, one
+                                                       per request per MC
 
- Each client request will result in a MessageChain with:
-   The initial client request to the proxy
-   Two orphaned Handlings, one for each originating client request
-   One normal Handling for the request that makes it to the server
-   The final response that the client receives from the proxy
+
+ Each client Request will result in a MessageChain with:
+   The initial client Request to the proxy
+   Two orphaned Handlings, one for each originating client Request
+   One normal Handling for the Request that makes it to the server
+   The final Response that the client receives from the proxy
 
 
 
@@ -213,8 +219,8 @@ Connections
 -----------
 
 HTTP applications typically have support for persistent connections, which allow for multiple HTTP transactions using the same TCP connection.
-In GDeproxy, when an endpoint receives a new connection, the connection is given a unique id. All Handling objects created by that endpoint from that TCP connection are tagged with the connection's id value.
-If we want to test whether or not the proxy is using connection pooling, for example, we could simply make two identical calls to makeRequest. Assuming that the requests are forwarded by the proxy to the server and is re-using connections, the ``MessageChain`` objects that we get back will each have a single ``Handling`` object and both ``Handling`` objects will have the same ``connection`` value. If the proxy is not re-using connections, then the two ``Handling`` objects will have different ``connection`` values.
+In GDeproxy, when an endpoint receives a new connection, the connection is given a unique id. All Handling_ objects created by that endpoint from that TCP connection are tagged with the connection's id value.
+If we want to test whether or not the proxy is using connection pooling, for example, we could simply make two identical calls to makeRequest_. Assuming that the requests are forwarded by the proxy to the server and is re-using connections, the MessageChain_\s that we get back will each have a single Handling_ object and both Handling_ objects will have the same ``connection`` value. If the proxy is not re-using connections, then the two Handling_ objects will have different ``connection`` values.
 ::
 
   ________                           ________                           ________

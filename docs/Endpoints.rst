@@ -1,6 +1,8 @@
 
 .. include:: global.rst.inc
 
+.. _Endpoints:
+
 ===========
  Endpoints
 ===========

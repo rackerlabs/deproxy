@@ -48,7 +48,7 @@ Handlers can be specified in multiple ways, depending on your needs.
   by any endpoint on that object. This covers every request coming in, whether
   it is originally initiated by some call to ``makeRequest`` (simply called a
   'handling') or by some other client (called an 'orphaned handling' because it
-  isn't tied to any single message chain).::
+  isn't tied to any single message chain). ::
 
     def echoServer = new Deproxy(Handlers.&echoHandler)
     println echoServer.defaultHandler
@@ -56,7 +56,7 @@ Handlers can be specified in multiple ways, depending on your needs.
 
 - Passing a handler as the ``defaultHandler`` parameter to ``addEndpoint``
   will set the handler to be used for every request that the created endpoint
-  receives, whether normal or orphaned.::
+  receives, whether normal or orphaned. ::
 
     def deproxy = new Deproxy()
     println deproxy.defaultHandler
@@ -71,7 +71,7 @@ Handlers can be specified in multiple ways, depending on your needs.
   will set the handler used for every request associated with the message
   chain, no matter which endpoint receives it. This does not affect orphaned
   requests from non-deproxy clients, or requests that lose their
-  ``Deproxy-Request-ID`` header for some reason.::
+  ``Deproxy-Request-ID`` header for some reason. ::
 
     def mc = deproxy.makeRequest(url: 'http://localhost:9998/',
             defaultHandler: Handlers.&simpleHandler)
@@ -80,7 +80,7 @@ Handlers can be specified in multiple ways, depending on your needs.
   ``makeRequest`` will specify specific handlers to be used for specific
   endpoints for all requests received associated with the message chain. This
   does not affect orphaned requests. The mapping object must have endpoint
-  objects (or their names) as keys, and the handlers as values.::
+  objects (or their names) as keys, and the handlers as values. ::
 
     def deproxy = new Deproxy()
     def endpoint1 = deproxy.addEndpoint(9997, 'endpoint-1')
@@ -139,7 +139,7 @@ additional handlers.
 - `simpleHandler`_
     The last-resort handler used if none is specified. It returns a response
     with a 200 status code, an empty response body, and only the basic Date,
-    Server, and request id headers.::
+    Server, and request id headers. ::
 
         mc = deproxy.makeRequest(url: 'http://localhost:9994/',
                 defaultHandler: Handlers.&simpleHandler)
@@ -177,7 +177,7 @@ additional handlers.
     This is actually a factory function that returns a handler. Give it a
     time-out in seconds and a second handler function, and it will return a
     handler that will wait the desired amount of time before calling the second
-    handler.::
+    handler. ::
 
         mc = deproxy.makeRequest(url: 'http://localhost:9994/',
                 defaultHandler: Handlers.Delay(3000))
@@ -212,7 +212,7 @@ additional handlers.
     Host header to the host and port that it's routing to. You can also tell
     it to use HTTPS [*not yet implemented*\], and specify a custom client
     connector. The response returned from the handler is the response returned
-    from the specified host.::
+    from the specified host. ::
 
         mc = deproxy.makeRequest(url: 'http://localhost:9994/ip',
                 defaultHandler: Handlers.Route("httpbin.org", 80))
@@ -293,7 +293,7 @@ If you define a handler with two parameters, then second will be given a
 HandlerContext object, which has fields used for giving directives back to
 the endpoint about how the Response should be sent. For example, you could
 set the sendDefaultResponseHeaders field to false, to tell the endpoint not
-to add default response headers to the response.::
+to add default response headers to the response. ::
 
     def customHandler = { request, context ->
 

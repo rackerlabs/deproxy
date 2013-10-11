@@ -166,7 +166,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- `delay(timeout, nextHandler) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Delay(int,%20def)>`_
+- `Delay(timeout, nextHandler) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Delay(int,%20def)>`_
     This is actually a factory function that returns a handler. Give it a
     time-out in seconds and a second handler function, and it will return a
     handler that will wait the desired amount of time before calling the second
@@ -196,7 +196,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- `route(scheme, host, deproxy) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)>`_
+- `Route(scheme, host, deproxy) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)>`_
     This is actually a factory function that returns a handler. The handler
     forwards all requests to the specified host on the specified port. The
     only modification it makes to the outgoing request is to change the

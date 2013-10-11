@@ -5,13 +5,33 @@
  How It Works
 ==============
 
-Request/Response
-----------------
-
 GDeproxy is intended to test complex HTTP proxies, rather than just clients or
 servers. For this reason, it deals with more than just HTTP requests and
 responses. An entire complex system of HTTP components can be involved, and
 GDeproxy keeps track of them all.
+What follows is a description of various scenarios and how to test them using GDeproxy.
+
+Deproxy
+-------
+
+At the heart of the system is the Deproxy_ class. It acts as both the client and server on opposite sides of a proxy to be tested: ::
+
+  ________                     ________                    ________
+ |        |  --->  req  --->  |        |  ---> req2 --->  |        |
+ |   (C)  |                   | Proxy  |                  |   (S)  |
+ |        |  <---  resp2 <--  |________|  <--- resp <---  |        |
+ |        |                                               |        |
+ |        |_______________________________________________|        |
+ |                                                                 |
+ |                             Deproxy                             |
+ |_________________________________________________________________|
+
+You can use this in your test code by creating an instance of the Deproxy_ class, potentially adding one or more endpoints (about which, more :ref:`here <Endpoints>`), and then calling the makeRequest_ method to initiate an HTTP request from the client side to the proxy.
+makeRequest_ allows you to craft a custom request, including the HTTP method, headers, and request body to send. You can also indicate how the server-side should respond and what additional complex behavior the client-side should exhibit (e.g. re-using connections).
+
+
+Request/Response
+----------------
 
 We'll start by describing the simplest possible arrangement: a client makes a
 request to a server.::
@@ -34,10 +54,12 @@ Simply, create a Deproxy_ and then call it's makeRequest_ method, specifying the
 It will create a Request_ object, and send it over the wire.
 Then, it will receive a response from the server, and convert it into a Response_ object.
 Each of these classes stores basic information about HTTP messages;
+
  - Request_ stores a ``method`` and a ``path``, both as strings.
  - Response_ stores a ``code`` and a ``message``, both as strings.
  - Both classes store a collection of headers. This collection stores headers as name/value pairs, in the order that they travel across the wire. You can also do by-name lookup, which is case-insensitive.
  - Both classes store an optional message body. The message body will be either a string or an array of ``byte``\s, depending on whether GDeproxy could figure out what kind of data it is.
+
 The Request_ sent and the Response_ recieved will be returned back to you from makeRequest_, along with a bunch of other stuff.
 Then you can make assertions on the request and response as in any unit test.
 That's client/server testing in a nutshell.
@@ -51,6 +73,7 @@ Next, let's consider a situation with more moving parts.::
  |        |  --->  1. Request  --->  |        |  ---> 2. Request  --->  |        |
  | Client |                          | Proxy  |                         | Server |
  |________|  <---  4. Response <---  |________|  <--- 3. Response <---  |________|
+
 
 Now things are getting interesting.
 

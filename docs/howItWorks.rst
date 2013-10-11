@@ -239,7 +239,7 @@ Instead, what the endpoint will do is add the Handling_ to *all* active MessageC
   No Deproxy-Request-ID --> 4. Request vv  ||  6. Response
                                       ________
                                      |  Aux.  |
-                                     |Service |  <-- Will create four orphaned
+                                     |Service |  <-- Will result in four orphaned
                                      |________|        Handlings total, one
                                                        per request per MC
 

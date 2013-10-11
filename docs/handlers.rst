@@ -1,3 +1,6 @@
+
+.. include:: global.rst.inc
+
 ==========
  Handlers
 ==========
@@ -133,7 +136,7 @@ The following handlers are built into gdeproxy. They can be used to address a
 number of common use cases. They also demonstrate effective ways to define
 additional handlers.
 
-- `simpleHandler <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#simpleHandler(org.rackspace.gdeproxy.Request)>`_
+- `simpleHandler`_
     The last-resort handler used if none is specified. It returns a response
     with a 200 status code, an empty response body, and only the basic Date,
     Server, and request id headers.::
@@ -148,7 +151,9 @@ additional handlers.
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
         // ]
 
-- `echoHandler <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#echoHandler(org.rackspace.gdeproxy.Request)>`_
+.. _simpleHandler: simple-builtin-handler_
+
+- `echoHandler`_
     Returns a response with a 200 status code, and copies the request body and
     request headers.::
 
@@ -166,7 +171,9 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- `Delay(timeout, nextHandler) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Delay(int,%20def)>`_
+.. _echoHandler: echo-builtin-handler_
+
+- `Delay(timeout, nextHandler)`_
     This is actually a factory function that returns a handler. Give it a
     time-out in seconds and a second handler function, and it will return a
     handler that will wait the desired amount of time before calling the second
@@ -196,7 +203,9 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- `Route(scheme, host, deproxy) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)>`_
+.. _Delay(timeout, nextHandler): delay-builtin-handler_
+
+- `Route(scheme, host, deproxy)`_
     This is actually a factory function that returns a handler. The handler
     forwards all requests to the specified host on the specified port. The
     only modification it makes to the outgoing request is to change the
@@ -219,6 +228,7 @@ additional handlers.
         //  Deproxy-Request-ID: 6c5b0741-87dc-456b-ae2f-87201efcf6e3
         // ]
 
+.. _Route(scheme, host, deproxy): route-builtin-handler_
 
 Custom Handlers
 ===============

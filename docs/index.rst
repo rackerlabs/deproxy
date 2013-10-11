@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 2
 
    howItWorks
+   Endpoints
    use
    handlers
 

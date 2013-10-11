@@ -30,6 +30,7 @@ update docs
             LocalSocketPair
             PortFinder
             StaticTcpServer
+    need new logo
 
 move apache stuff to a separate folder/subpackage
 

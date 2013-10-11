@@ -21,12 +21,26 @@ request to a server.::
  | Client |                          | Server |
  |________|  <---  2. Response <---  |________|
 
+
 In this instance, all we have to keep track of is the request sent and the
 response received. To test a server, all we would need to
 do is use an HTTP client to send a request to the server, then compare what
 the server got back with what we expected.
 Simple enough, right?
 So simple, in fact, that we wouldn't even really need GDeproxy to test it.
+
+Nevertheless, GDeproxy contains the facilities to do so.
+Simply, create a Deproxy_ and then call it's makeRequest_ method, specifying the URL of the server.
+It will create a Request_ object, and send it over the wire.
+Then, it will receive a response from the server, and convert it into a Response_ object.
+Each of these classes stores basic information about HTTP messages;
+ - Request_ stores a ``method`` and a ``path``, both as strings.
+ - Response_ stores a ``code`` and a ``message``, both as strings.
+ - Both classes store a collection of headers. This collection stores headers as name/value pairs, in the order that they travel across the wire. You can also do by-name lookup, which is case-insensitive.
+ - Both classes store an optional message body. The message body will be either a string or an array of ``byte``\s, depending on whether GDeproxy could figure out what kind of data it is.
+The Request_ sent and the Response_ recieved will be returned back to you from makeRequest_, along with a bunch of other stuff.
+Then you can make assertions on the request and response as in any unit test.
+That's client/server testing in a nutshell.
 
 Handlings
 ---------

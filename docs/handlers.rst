@@ -133,7 +133,7 @@ The following handlers are built into gdeproxy. They can be used to address a
 number of common use cases. They also demonstrate effective ways to define
 additional handlers.
 
-- `simpleHandler <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html>`_
+- `simpleHandler <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#simpleHandler(org.rackspace.gdeproxy.Request)>`_
     The last-resort handler used if none is specified. It returns a response
     with a 200 status code, an empty response body, and only the basic Date,
     Server, and request id headers.::
@@ -148,7 +148,7 @@ additional handlers.
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
         // ]
 
-- echoHandler `groovydoc here <../../groovydoc/org/rackspace/gdeproxy/Handlers.html>`_
+- `echoHandler <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#echoHandler(org.rackspace.gdeproxy.Request)>`_
     Returns a response with a 200 status code, and copies the request body and
     request headers.::
 
@@ -166,7 +166,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- delay(timeout, nextHandler) :download:`groovydoc here <groovydoc/org/rackspace/gdeproxy/Handlers.html>`
+- `delay(timeout, nextHandler) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Delay(int,%20def)>`_
     This is actually a factory function that returns a handler. Give it a
     time-out in seconds and a second handler function, and it will return a
     handler that will wait the desired amount of time before calling the second
@@ -196,7 +196,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-- route(scheme, host, deproxy) :doc:`../../groovydoc/org/rackspace/gdeproxy/Handlers.html`
+- `route(scheme, host, deproxy) <_static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)>`_
     This is actually a factory function that returns a handler. The handler
     forwards all requests to the specified host on the specified port. The
     only modification it makes to the outgoing request is to change the

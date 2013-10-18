@@ -206,6 +206,22 @@ But why this round-about way of doing it? Why not just configure the proxy to se
 The real advantage to this method is that the requests go through an endpoint, so the Request_ and Response_ get captured and attached to a MessageChain_.
 When makeRequest_ returns, we can make assertions against those requests and responses, which would be entirely invisible to us if the proxy had sent them directly.
 
+::
+
+    Deproxy deproxy = new Deproxy()
+
+    def endpoint = deproxy.addEndpoint(9999,
+            defaultHandler: Handlers.Route("real.server.example.com"))
+
+    def authService = deproxy.addEndpoint(7777,
+            defaultHandler: Handlers.Route("real.auth.service.example.com"))
+
+    def theProxy = new TheProxy(port: 8080,
+                                targetHostname: "localhost",
+                                targetPort: 9999,
+                                authServiceHostname: "localhost",
+                                authServicePort: 7777)
+
 
 Endpoint Lifecycle
 ------------------

@@ -20,4 +20,19 @@
 .. _Handling: _static/groovydoc/org/rackspace/gdeproxy/Handling.html
 
 .. _MessageChain: _static/groovydoc/org/rackspace/gdeproxy/MessageChain.html
+.. _handlings: _static/groovydoc/org/rackspace/gdeproxy/MessageChain.html#handlings
 .. _orphanedHandlings: _static/groovydoc/org/rackspace/gdeproxy/MessageChain.html#orphanedHandlings
+
+.. _ClientConnector: _static/groovydoc/org/rackspace/gdeproxy/ClientConnector.html
+.. _sendRequest: _static/groovydoc/org/rackspace/gdeproxy/ClientConnector.html#sendRequest(org.rackspace.gdeproxy.Request,%20boolean,%20def,%20def,%20org.rackspace.gdeproxy.RequestParams)
+.. _BareClientConnector: _static/groovydoc/org/rackspace/gdeproxy/BareClientConnector.html
+.. _DefaultClientConnector: _static/groovydoc/org/rackspace/gdeproxy/DefaultClientConnector.html
+
+.. _RequestParams: _static/groovydoc/org/rackspace/gdeproxy/RequestParams.html
+.. _sendDefaultRequestHeaders: _static/groovydoc/org/rackspace/gdeproxy/RequestParams.html#sendDefaultRequestHeaders
+.. _usedChunkedTransferEncoding_req: _static/groovydoc/org/rackspace/gdeproxy/RequestParams.html#usedChunkedTransferEncoding
+
+.. _HandlerContext: _static/groovydoc/org/rackspace/gdeproxy/HandlerContext.html
+.. _sendDefaultResponseHeaders: _static/groovydoc/org/rackspace/gdeproxy/HandlerContext.html#sendDefaultResponseHeaders
+.. _usedChunkedTransferEncoding_resp: _static/groovydoc/org/rackspace/gdeproxy/HandlerContext.html#usedChunkedTransferEncoding
+

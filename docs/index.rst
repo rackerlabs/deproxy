@@ -14,6 +14,7 @@ Contents:
    use
    endpoints
    handlers
+   connectors
 
 
 Indices and tables

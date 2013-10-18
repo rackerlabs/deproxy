@@ -175,6 +175,38 @@ This is simple enough to simulate by creating multiple endpoint objects, and con
     assert mc.handlings[0].endpoint == endpoint3
 
 
+Routing
+-------
+
+Even more complex situations can be created using the Route_ built-in handler, to route requests to existing servers.
+::
+  ________          ________          ________        ________
+ |        |  --->  |        |  --->  |  Fake  | ---> |  Real  |
+ | Client |        | Proxy  |        | Server |      | Server |
+ |________|  <---  |________|  <---  |________| <--- |________|
+
+                     |    ^
+                     v    |
+                    ________
+                   |Fake Aux|
+                   |Service |
+                   |________|
+
+                     |    ^
+                     v    |
+                    ________
+                   |Real Aux|
+                   |Service |
+                   |________|
+
+
+This will work for requests from the proxy to an auxiliary service, or from the client/proxy to the server.
+It can save us the trouble of implementing our own handlers to simulate the server or auxiliary service.
+But why this round-about way of doing it? Why not just configure the proxy to send requests to those locations directly?
+The real advantage to this method is that the requests go through an endpoint, so the Request_ and Response_ get captured and attached to a MessageChain_.
+When makeRequest_ returns, we can make assertions against those requests and responses, which would be entirely invisible to us if the proxy had sent them directly.
+
+
 Endpoint Lifecycle
 ------------------
 

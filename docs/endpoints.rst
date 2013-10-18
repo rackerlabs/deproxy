@@ -175,10 +175,17 @@ This is simple enough to simulate by creating multiple endpoint objects, and con
     assert mc.handlings[0].endpoint == endpoint3
 
 
+Endpoint Lifecycle
+------------------
 
-Misc.
-=============
+1. When an endpoint is created, it opens a socket on the designated port and spawns a thread to listen for connections to that socket.
+2. Whenever a new connection is made, the listener thread will spawn a new handler thread.
+3. The handler thread will proceed to service HTTP request, like so:
+    a. First the incoming request is read from the socket, and parsed into a Request_ object.
+    b. The endpoint will examine the request headers for a ``Deproxy-Request-ID`` header, and then try to match it to an existing MessageChain_ (created before in a call to makeRequest_).
+    c. The endpoint will then determine which handler to use (see :ref:`Handler Resolution Procedure <handlerResolutionProcedure>`), and pass the Request object to the handler to get a Response_ object.
+    d. If there is a MessageChain_ associated with the request, a Handling_ will be created and attached to the message chain. Otherwise, it will be attached to the orphanedHandlings list of all active message chains.
+    e. The endpoint will then send the response back to the sender.
+    f. Finally, if the handler indicated that the connection should be close (by setting the ``Connection`` header to ``close``), then the endpoint will exit the loop and close the connection. Otherwise, it will return to step ``a.`` above.
+4. When shutdown_ is called on a parent Deproxy_ object, all of its endpoints will be shutdown. Their listener threads will stop listening, and no longer receive any new connections. Any long-running handler threads will continue to run until finished or the JVM terminates, whichever comes first.
 
-- Threading
-- Persistent connections / connection re-use
-- Ports

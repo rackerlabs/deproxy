@@ -96,6 +96,8 @@ Handlers can be specified in multiple ways, depending on your needs.
             ])
 
 
+.. _handlerResolutionProcedure :
+
 Handler Resolution Procedure
 ----------------------------
 

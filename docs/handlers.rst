@@ -331,7 +331,7 @@ responses. This behavior can be turned off in custom handlers by setting the
 HandlerContext's sendDefaultResponseHeaders field to false (it is true by
 default). This can be useful for testing how a proxy responds to a
 misbehaving origin server. Each of the following headers is added if it has
-not already been explicitly added by the hadnler, and subject to certain
+not already been explicitly added by the handler, and subject to certain
 conditions (e.g., presence of a response body):
 
 - Server

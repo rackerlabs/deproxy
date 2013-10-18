@@ -29,10 +29,8 @@ In the simplest case, a proxy sits in between the client and a server.
 
 
 Since we're testing the proxy, we want to be able to control the responses that the server sends in reaction to requests from the proxy.
-We can simulate the
-the case of a single client, proxy and server
-
-endpoint takes the place of the server
+We can simulate the server using a single DeproxyEndpoint.
+By default, the endpoint will simply return 200 OK responses, unless it is given a different handler upon creation.
 
 
 ::
@@ -41,7 +39,9 @@ endpoint takes the place of the server
 
     DeproxyEndpoint endpoint = deproxy.addEndpoint(9999)
 
-    def theProxy = new TheProxy(port: 8080, targetHostname: "localhost", targetPort: 9999)
+    def theProxy = new TheProxy(port: 8080,
+                                targetHostname: "localhost",
+                                targetPort: 9999)
 
     def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource")
 
@@ -54,8 +54,8 @@ endpoint takes the place of the server
 How To: Auxiliary Service
 -------------------------
 
-Auxiliary service, e.g. for authentication
-two endpoints, one for server and one for aux service
+A more complicated case is when the proxy has to call out to some auxiliary service for additional information.
+
 ::
 
   ________                         ________                        ________
@@ -71,6 +71,14 @@ two endpoints, one for server and one for aux service
                                   |Service |
                                   |________|
 
+An excellent example would be an authentication system.
+The client sends the request to the proxy and includes credentials.
+In order to determine if the credentials are valid, the proxy makes a separate HTTP request to the auth service, which then responds with yea or nay.
+Depending on whether the credentials are valid or not, the proxy will either forward the request on to the server, or return an error back to the client.
+
+In this setup, we can simulate both the server and the auxiliary service with DeproxyEndpoint objects.
+The endpoint representing the auth service would have to be given a custom handler, that could interpret and respond to the authentication requests that the proxy makes according to whatever contract is necessary.
+
 ::
 
     Deproxy deproxy = new Deproxy()
@@ -80,11 +88,14 @@ two endpoints, one for server and one for aux service
     def authResponder = new AuthResponder()
     def authService = deproxy.addEndpoint(7777, defaultHandler: authResponder.handler)
 
-    def theProxy = new TheProxy(port: 8080, targetHostname: "localhost", targetPort: 9999)
-    theProxy.setAuthenticationService(hostname: "localhost", port: "7777)
-    theProxy.authenticateClientRequests = true
+    def theProxy = new TheProxy(port: 8080,
+                                targetHostname: "localhost",
+                                targetPort: 9999,
+                                authServiceHostname: "localhost",
+                                authServicePort: 7777)
 
-    def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource", headers: ['X-User': 'valid-user'])
+    def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource",
+                                 headers: ['X-User': 'valid-user'])
 
     assert mc.receivedResponse.code == "200"
     assert mc.handlings.size() == 1
@@ -92,7 +103,8 @@ two endpoints, one for server and one for aux service
     assert mc.orphanedHandlings.size() == 1
     assert mc.orphanedHandlings[0].endpoint == authService
 
-    def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource", headers: ['X-User': 'invalid-user'])
+    def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource",
+                                 headers: ['X-User': 'invalid-user'])
 
     assert mc.receivedResponse.code == "403"
     assert mc.handlings.size() == 0
@@ -104,8 +116,8 @@ two endpoints, one for server and one for aux service
 How To: Multiple Servers
 ------------------------
 
-Multiple servers, e.g. load balancing or versioning
-one endpoint for each server
+Sometimes, a proxy might be set up in front of multiple servers.
+
 ::
 
                                                                    ________
@@ -125,6 +137,8 @@ one endpoint for each server
                                     |                             | Server3|
                                     `------------- Response <---  |________|
 
+This might be the case, for example, if it is acting as a load balancer, or providing access to different versions of a ReST api based on uri.
+This is simple enough to simulate by creating multiple endpoint objects, and configuring the proxy to forward client requests to them.
 
 
 ::
@@ -140,7 +154,7 @@ one endpoint for each server
                                     ['hostname': "localhost", port: 9999],
                                     ['hostname': "localhost", port: 9998],
                                     ['hostname': "localhost", port: 9997]],
-                                loadBanaceBehavior: Behavior.RoundRobin)
+                                loadBalanceBehavior: Behavior.RoundRobin)
 
     def mc = deproxy.makeRequest(url: "http://localhost:8080/path/to/resource")
 
@@ -165,6 +179,6 @@ one endpoint for each server
 Misc.
 =============
 
-Threading
-Persistent connections / connection re-use
-Ports
+- Threading
+- Persistent connections / connection re-use
+- Ports

@@ -6,6 +6,7 @@
 
 .. _Deproxy: _static/groovydoc/org/rackspace/gdeproxy/Deproxy.html
 .. _makeRequest: _static/groovydoc/org/rackspace/gdeproxy/Deproxy.html#makeRequest(java.lang.String,%20java.lang.String,%20def,%20def,%20def,%20java.util.Map,%20boolean,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)
+.. _addEndpoint: _static/groovydoc/org/rackspace/gdeproxy/Deproxy.html#addEndpoint(int,%20java.lang.String,%20java.lang.String,%20def)
 
 .. _DeproxyEndpoint: _static/groovydoc/org/rackspace/gdeproxy/DeproxyEndpoint.html
 

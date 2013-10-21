@@ -2,7 +2,7 @@
 GDeproxy
 ========
 
-GDeproxy (or "gDeproxy" or "gdeproxy") is a tool for performing functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
+GDeproxy (or "gDeproxy" or "gdeproxy") is a tool for performing hgih-level, black-box, functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
 
 Testing normal client/server interaction is relatively straight-forward: Use a specialized test client to send requests to the server, and compare the response that the server returns to what it ought to return.::
 

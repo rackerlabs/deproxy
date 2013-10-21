@@ -173,106 +173,55 @@ Therefore, there's a handling in the MessageChain_, but ``receivedResponse`` is 
 Default Request Headers
 =======================
 
-sendDefaultRequestHeaders_
-
-usedChunkedTransferEncoding_req_
-
-::
-
-        if (params.sendDefaultRequestHeaders) {
-
-            if (request.body) {
-
-                if (params.usedChunkedTransferEncoding) {
-
-                        request.headers.add("Transfer-Encoding", "chunked")
-                            request.headers["Transfer-Encoding"] == "identity") {
-
-                    def length
-                    String contentType
-                    if (request.body instanceof String) {
-                        length = request.body.length()
-                        contentType = "text/plain"
-                    } else if (request.body instanceof byte[]) {
-                        length = request.body.length
-                        contentType = "application/octet-stream"
-                    } else {
-                        throw new UnsupportedOperationException("Unknown data type in requestBody")
-                    }
-
-                    if (length > 0) {
-                        if (!request.headers.contains("Content-Length")) {
-                            request.headers.add("Content-Length", length)
-                        }
-                        if (!request.headers.contains("Content-Type")) {
-                            request.headers.add("Content-Type", contentType)
-                        }
-                    }
-                }
-            }
-
-                request.headers.add("Host", Header.CreateHostHeaderValue(host, port, https))
-            }
-                request.headers.add("Accept", "*/*")
-            }
-                request.headers.add("Accept-Encoding", "identity")
-            }
-            if (!request.headers.contains("User-Agent")){
-            }
-        }
-
-
-
-
-By default, an endpoint will add a number of headers on all out-bound
-responses. This behavior can be turned off in custom handlers by setting the
-HandlerContext's sendDefaultResponseHeaders field to false (it is true by
-default). This can be useful for testing how a proxy responds to a
-misbehaving origin server. Each of the following headers is added if it has
-not already been explicitly added by the handler, and subject to certain
-conditions (e.g., presence of a response body):
+By default, the DefaultClientConector will add a number of headers on all out-bound requests.
+This behavior can be turned off by setting the ``addDefaultHeaders`` parameter to makeRequest_ to false (it is true by default).
+This can be useful for testing how a proxy responds to a misbehaving client.
+Each of the following headers is added if it has not already been explicitly added by the caller, and subject to certain conditions (e.g., presence of a response body):
 
 - Host
+    This value is taken from the ``hostname`` parameter passed to the connector.
+    If the port given is not the default for the specified uri scheme (80 for http, 443 for https), then the port number will be appended to the hostname.
+    E.g., ``localhost:9999``, ``example.com``
 
 - User-Agent
-    The identifying information of the server software, "gdeproxy" followed
-    by the version number.
+    The identifying information of the client software, "gdeproxy" followed by the version number.
 
 - Accept
-    */*
-    The date and time at which the response was returned by the handler, in
-    RFC 1123 format.
+    If not already present, this header is added with a value of ``*/*``.
 
 - Accept-Encoding
-    identity
-    The date and time at which the response was returned by the handler, in
-    RFC 1123 format.
+    If not already present, this header is added with a value of ``identity``.
 
 - Content-Type
     If the request contains a body, then the connector will try to guess. If
     the body is of type ``String``, then it will add a Content-Type header with a
-    value of "text/plain". If the body is of type ``byte[]``, it will use a value
-    of "application/octet-stream". If the request does not contain a body,
+    value of ``text/plain``. If the body is of type ``byte[]``, it will use a value
+    of ``application/octet-stream``. If the request does not contain a body,
     then this header will not be added.
 
 - Transfer-Encoding
-    If the request has a body, and `usedChunkedTransferEncoding <usedChunkedTransferEncoding_req_>` is
-    true, this header will have a value of "chunked". If it has a body but
-    `usedChunkedTransferEncoding <usedChunkedTransferEncoding_r_>` is false, the header will have a value of
-    "identity". If there is no body, then this header will not be added.
+    If the request has a body, and usedChunkedTransferEncoding_ is
+    true, this header will have a value of ``chunked``. If it has a body but
+    usedChunkedTransferEncoding_ is false, the header will have a value of
+    ``identity``. If there is no body, then this header will not be added.
+
+.. _usedChunkedTransferEncoding: usedChunkedTransferEncoding_req_
 
 - Content-Length
-    If the request has a body, and the `usedChunkedTransferEncoding <usedChunkedTransferEncoding_req_>` is
+    If the request has a body, and the usedChunkedTransferEncoding_ is
     false, then this header will have a value equal to the decimal count of
     octets in the body. If the body is a ``String``, then the length is the number
     of bytes after encoding as ASCII. If the body is of type ``byte[]``, then the
     length is just the number of bytes in the array. If the request has a
-    body, but `usedChunkedTransferEncoding <usedChunkedTransferEncoding_req_>` is true, then this field is not
+    body, but usedChunkedTransferEncoding_ is true, then this field is not
     added. If the request does not have a body, then this header will be
-    added with a value of "0".
+    added with a value of ``0``.
 
 
 Note: If the request has a body, and sendDefaultRequestHeaders_ is set to
 false, and the handler doesn't explicitly set the Transfer-Encoding header or
 the Content-Length header, then the client/proxy may not be able to correctly
 read the request body.
+
+Note: If the request does not have a Host header, rfc-compliant servers and
+proxies will reject it with a 400 response.

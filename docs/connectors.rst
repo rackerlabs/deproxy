@@ -8,6 +8,7 @@
 ===================
 
 GDeproxy uses *client connectors* to provide fine-grained control over how a client will send a Request_ object to a destination and receive a Response_ object.
+makeRequest_ already gives you the ability to craft an exact HTTP request. Connectors go the next step and specify how sockets are created, and transfer bytes to/from the socket.
 By default, makeRequest_ will use a DefaultClientConnector_\, which will simply open a socket, write the request to the socket, and read a response from the socket.
 Also, it can optionally add some default headers to the request before sending.
 

@@ -10,16 +10,7 @@ port all unit tests
 test StaticTcpServer
 
 update docs
-    old functionality needs to documented
-        object model
-            request
-            response
-            handling
-            message chains
     new functionality has been added, needs to be documented
-        client connectors
-            bare
-            default
         http message utility classes
             BodyReader
             BodyWriter

@@ -2,7 +2,7 @@
 GDeproxy
 ========
 
-GDeproxy (or "gDeproxy" or "gdeproxy") is a tool for performing functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
+GDeproxy (or "gDeproxy" or "gdeproxy") is a tool for performing hgih-level, black-box, functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
 
 Testing normal client/server interaction is relatively straight-forward: Use a specialized test client to send requests to the server, and compare the response that the server returns to what it ought to return.::
 
@@ -21,7 +21,7 @@ Proxies sit in-between an HTTP client (e.g. novaclient) and an HTTP server (e.g.
 
 A proxy can modify either the incoming request to the server, or the outgoing response to the client, or both. In addition, it may handle the request itself (e.g. in the case of caching or authenication), and prevent it from reaching the server in the first place.
 The functionality and positioning of the proxy provides more of a challenge to functionality testing.
-The traditional model is not enough. 
+The traditional model is not enough.
 Because a test client only sees one side of the transaction, it can't make definitive determinations about the server's side of it. ::
 
   ________                     ________                    ________
@@ -35,7 +35,7 @@ Likewise, if we don't have a copy of the response that the server originally sen
 But in the general case, we can't say for sure about other functional requirements.
 Additionally, if the proxy is required to prevent a request from even reaching the server (as in the case of invalid authentication credentials in the request) a test client cannot determine whether or not any such request was in fact forwarded, because all it sees is the error response from the proxy.
 For that, we'd need to be able see both sides of the exchange, and record all requests that made it to the server.
-And that is what a deproxy does. It de-proxifies the proxy.::
+And that is what a deproxy does. It de-proxifies the proxy::
 
   ________                     ________                    ________
  |        |  --->  req  --->  |        |  ---> req2 --->  |        |

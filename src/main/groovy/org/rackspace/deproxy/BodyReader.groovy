@@ -58,7 +58,7 @@ class BodyReader {
                 // connection. A server MUST NOT send transfer-codings to an HTTP/1.0
                 // client.
 
-                log.error "Non-identity transfer encoding, not yet supported in GDeproxy.  Unable to read response body."
+                log.error "Non-identity transfer encoding, not yet supported in deproxy.  Unable to read response body."
                 return null
             }
         }

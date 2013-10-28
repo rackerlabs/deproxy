@@ -12,7 +12,7 @@ class Deproxy {
 
     public static final String REQUEST_ID_HEADER_NAME = "Deproxy-Request-ID";
     public static final String VERSION = getVersion()
-    public static final String VERSION_STRING = String.format("gdeproxy %s", VERSION);
+    public static final String VERSION_STRING = String.format("deproxy %s", VERSION);
 
     public def defaultHandler = null
     public def defaultClientConnector

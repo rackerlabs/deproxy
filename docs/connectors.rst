@@ -185,7 +185,7 @@ Each of the following headers is added if it has not already been explicitly add
     E.g., ``localhost:9999``, ``example.com``
 
 - User-Agent
-    The identifying information of the client software, "gdeproxy" followed by the version number.
+    The identifying information of the client software, "deproxy" followed by the version number.
 
 - Accept
     If not already present, this header is added with a value of ``*/*``.

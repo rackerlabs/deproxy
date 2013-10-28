@@ -20,7 +20,7 @@ class HandlerExample extends Specification {
         def mc = deproxy.makeRequest('http://localhost:9999/')
         println mc.receivedResponse.headers
         // [
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:20:56 GMT,
         //  Content-Length: 0,
         //  Deproxy-Request-ID: 60e2a2bd-a179-4b50-a8c4-8d5b73d0218a
@@ -35,8 +35,8 @@ class HandlerExample extends Specification {
         //  Host: localhost,
         //  Accept: */*,
         //  Accept-Encoding: identity,
-        //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  User-Agent: deproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:20:56 GMT,
         //  Content-Length: 0
         // ]
@@ -99,7 +99,7 @@ class HandlerExample extends Specification {
                 defaultHandler: Handlers.&simpleHandler)
         println mc.receivedResponse.headers
         // [
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0,
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
@@ -115,8 +115,8 @@ class HandlerExample extends Specification {
         //  Host: localhost,
         //  Accept: */*,
         //  Accept-Encoding: identity,
-        //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  User-Agent: deproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0
         // ]
@@ -128,7 +128,7 @@ class HandlerExample extends Specification {
                 defaultHandler: Handlers.Delay(3000))
         println mc.receivedResponse.headers
         // [
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:47 GMT,
         //  Content-Length: 0,
         //  Deproxy-Request-ID: cb92db72-fb53-46c6-b143-d884af5f536d
@@ -144,8 +144,8 @@ class HandlerExample extends Specification {
         //  Host: localhost,
         //  Accept: */*,
         //  Accept-Encoding: identity,
-        //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  User-Agent: deproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:50 GMT,
         //  Content-Length: 0
         // ]
@@ -189,7 +189,7 @@ class HandlerExample extends Specification {
         //  code=606,
         //  message=Spoiler,
         //  headers=[
-        //      Server: gdeproxy 0.16-SNAPSHOT,
+        //      Server: deproxy 0.16-SNAPSHOT,
         //      Date: Wed, 04 Sep 2013 17:00:19 GMT,
         //      Content-Length: 22,
         //      Content-Type: text/plain,
@@ -212,7 +212,7 @@ class HandlerExample extends Specification {
         //  message=Something Else,
         //  headers=[
         //      Custom-Header: Value,
-        //      Server: gdeproxy 0.16-SNAPSHOT,
+        //      Server: deproxy 0.16-SNAPSHOT,
         //      Date: Wed, 04 Sep 2013 17:00:19 GMT,
         //      Content-Length: 15,
         //      Content-Type: text/plain,

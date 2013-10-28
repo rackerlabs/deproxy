@@ -5,11 +5,11 @@
  How It Works
 ==============
 
-GDeproxy is intended to test complex HTTP proxies, rather than just clients or
+Deproxy is intended to test complex HTTP proxies, rather than just clients or
 servers. For this reason, it deals with more than just HTTP requests and
 responses. An entire complex system of HTTP components can be involved, and
-GDeproxy keeps track of them all.
-What follows is a description of various scenarios and how to test them using GDeproxy.
+Deproxy keeps track of them all.
+What follows is a description of various scenarios and how to test them using Deproxy.
 
 Deproxy
 -------
@@ -47,9 +47,9 @@ response received. To test a server, all we would need to
 do is use an HTTP client to send a request to the server, then compare what
 the server got back with what we expected.
 Simple enough, right?
-So simple, in fact, that we wouldn't even really need GDeproxy to test it.
+So simple, in fact, that we wouldn't even really need Deproxy to test it.
 
-Nevertheless, GDeproxy contains the facilities to do so.
+Nevertheless, Deproxy contains the facilities to do so.
 Simply, create a Deproxy_ and then call it's makeRequest_ method, specifying the URL of the server.
 It will create a Request_ object, and send it over the wire.
 Then, it will receive a response from the server, and convert it into a Response_ object.
@@ -58,7 +58,7 @@ Each of these classes stores basic information about HTTP messages;
  - Request_ stores a ``method`` and a ``path``, both as strings.
  - Response_ stores a ``code`` and a ``message``, both as strings.
  - Both classes store a collection of headers. This collection stores headers as name/value pairs, in the order that they travel across the wire. You can also do by-name lookup, which is case-insensitive.
- - Both classes store an optional message body. The message body will be either a string or an array of ``byte``\s, depending on whether GDeproxy could figure out what kind of data it is.
+ - Both classes store an optional message body. The message body will be either a string or an array of ``byte``\s, depending on whether Deproxy could figure out what kind of data it is.
 
 The Request_ sent and the Response_ recieved will be returned back to you from makeRequest_, along with a bunch of other stuff.
 Then you can make assertions on the request and response as in any unit test.
@@ -160,7 +160,7 @@ Orphaned Handlings
 ------------------
 
 In order to
-GDeproxy keeps track of separate MessageChain_\s as a result of separate calls to makeRequest_.
+Deproxy keeps track of separate MessageChain_\s as a result of separate calls to makeRequest_.
 This is even the case when making simultaneous calls on different threads.
 ::
 
@@ -256,7 +256,7 @@ Connections
 -----------
 
 HTTP applications typically have support for persistent connections, which allow for multiple HTTP transactions using the same TCP connection.
-In GDeproxy, when an endpoint receives a new connection, the connection is given a unique id. All Handling_ objects created by that endpoint from that TCP connection are tagged with the connection's id value.
+In Deproxy, when an endpoint receives a new connection, the connection is given a unique id. All Handling_ objects created by that endpoint from that TCP connection are tagged with the connection's id value.
 If we want to test whether or not the proxy is using connection pooling, for example, we could simply make two identical calls to makeRequest_. Assuming that the requests are forwarded by the proxy to the server and is re-using connections, the MessageChain_\s that we get back will each have a single Handling_ object and both Handling_ objects will have the same ``connection`` value. If the proxy is not re-using connections, then the two Handling_ objects will have different ``connection`` values.
 ::
 

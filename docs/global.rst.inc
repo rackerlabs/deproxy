@@ -1,6 +1,6 @@
 
-.. _builtin-handler-simpleHandler: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#simpleHandler(org.rackspace.gdeproxy.Request)
-.. _builtin-handler-echoHandler: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#echoHandler(org.rackspace.gdeproxy.Request)
+.. _builtin-handler-simpleHandler: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#simpleHandler(org.rackspace.deproxy.Request)
+.. _builtin-handler-echoHandler: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#echoHandler(org.rackspace.deproxy.Request)
 .. _builtin-handler-Delay: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Delay(int,%20def)
 .. _builtin-handler-Route: _static/groovydoc/org/rackspace/gdeproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.gdeproxy.ClientConnector)
 
@@ -24,7 +24,7 @@
 .. _orphanedHandlings: _static/groovydoc/org/rackspace/gdeproxy/MessageChain.html#orphanedHandlings
 
 .. _ClientConnector: _static/groovydoc/org/rackspace/gdeproxy/ClientConnector.html
-.. _sendRequest: _static/groovydoc/org/rackspace/gdeproxy/ClientConnector.html#sendRequest(org.rackspace.gdeproxy.Request,%20boolean,%20def,%20def,%20org.rackspace.gdeproxy.RequestParams)
+.. _sendRequest: _static/groovydoc/org/rackspace/gdeproxy/ClientConnector.html#sendRequest(org.rackspace.deproxy.Request,%20boolean,%20def,%20def,%20org.rackspace.gdeproxy.RequestParams)
 .. _BareClientConnector: _static/groovydoc/org/rackspace/gdeproxy/BareClientConnector.html
 .. _DefaultClientConnector: _static/groovydoc/org/rackspace/gdeproxy/DefaultClientConnector.html
 

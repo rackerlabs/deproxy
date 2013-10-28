@@ -12,7 +12,7 @@ To use gdeproxy in your unit tests:
 Here's a code example of a unit test that tests the fictional theProxy library::
 
     import org.theProxy.*
-    import org.rackspace.gdeproxy.*
+    import org.rackspace.deproxy.*
     import org.junit.*
     import static org.junit.Assert.*
 

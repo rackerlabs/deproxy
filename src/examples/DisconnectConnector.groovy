@@ -1,11 +1,11 @@
-package org.rackspace.gdeproxy.examples
+package org.rackspace.deproxy.examples
 
-import org.rackspace.gdeproxy.BodyWriter
-import org.rackspace.gdeproxy.ClientConnector
-import org.rackspace.gdeproxy.HeaderWriter
-import org.rackspace.gdeproxy.Request
-import org.rackspace.gdeproxy.RequestParams
-import org.rackspace.gdeproxy.Response
+import org.rackspace.deproxy.BodyWriter
+import org.rackspace.deproxy.ClientConnector
+import org.rackspace.deproxy.HeaderWriter
+import org.rackspace.deproxy.Request
+import org.rackspace.deproxy.RequestParams
+import org.rackspace.deproxy.Response
 
 import java.util.concurrent.CountDownLatch
 

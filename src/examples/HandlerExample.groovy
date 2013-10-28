@@ -1,9 +1,9 @@
-package org.rackspace.gdeproxy.examples
+package org.rackspace.deproxy.examples
 
-import org.rackspace.gdeproxy.Deproxy
-import org.rackspace.gdeproxy.Handlers
-import org.rackspace.gdeproxy.MessageChain
-import org.rackspace.gdeproxy.Response
+import org.rackspace.deproxy.Deproxy
+import org.rackspace.deproxy.Handlers
+import org.rackspace.deproxy.MessageChain
+import org.rackspace.deproxy.Response
 import spock.lang.Specification
 
 /**

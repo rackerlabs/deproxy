@@ -133,6 +133,10 @@ class HeaderCollection {
         return getFirstValue(name);
     }
 
+    public Header getAt(int index) {
+        return _headers[index]
+    }
+
     public String getFirstValue(String name) {
         return getFirstValue(name, null);
     }

@@ -701,4 +701,156 @@ class HeaderCollectionConstructorsTest extends Specification {
         hc[8].name == "n9"
         hc[8].value == "v9"
     }
+
+    def "re-use list argument"() {
+
+        given:
+        def list = [ new Header("n1", "v1"), new Header("n2", "v2") ]
+
+        when:
+        HeaderCollection hc = new HeaderCollection(list, "n3: v3", list)
+
+        then:
+        hc != null
+        hc.size() == 5
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+        hc[2].name == "n3"
+        hc[2].value == "v3"
+        hc[3].name == "n1"
+        hc[3].value == "v1"
+        hc[4].name == "n2"
+        hc[4].value == "v2"
+
+    }
+
+    def "cycle list argument"() {
+
+        given:
+        def list = [ new Header("n1", "v1"), new Header("n2", "v2") ]
+        list.add(list)
+
+        when:
+        HeaderCollection hc = new HeaderCollection(list)
+
+        then:
+        hc != null
+        hc.size() == 2
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+
+    }
+
+    def "re-use map argument"() {
+
+        given:
+        def map = [ n1: "v1", n2: "v2" ]
+
+        when:
+        HeaderCollection hc = new HeaderCollection(map, "n3: v3", map)
+
+        then:
+        hc != null
+        hc.size() == 5
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+        hc[2].name == "n3"
+        hc[2].value == "v3"
+        hc[3].name == "n1"
+        hc[3].value == "v1"
+        hc[4].name == "n2"
+        hc[4].value == "v2"
+
+    }
+
+    def "cycle map argument as name"() {
+
+        given:
+        def map = [ n1: "v1", n2: "v2" ]
+        def extras = [ (map): "v3" ]
+        map.putAll(extras)
+
+        when:
+        HeaderCollection hc = new HeaderCollection(map)
+
+        then:
+        hc != null
+        hc.size() == 3
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+        hc[2].name == ""
+        hc[2].value == "v3"
+
+    }
+
+    def "cycle map argument as value"() {
+
+        given:
+        def map = [ n1: "v1", n2: "v2", n3: "v3" ]
+        map["n3"] = map
+
+        when:
+        HeaderCollection hc = new HeaderCollection(map)
+
+        then:
+        hc != null
+        hc.size() == 3
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+        hc[2].name == "n3"
+        hc[2].value == map.toString()
+
+    }
+
+    def "re-use array argument"() {
+
+        given:
+        Object[] arr = [ new Header("n1", "v1"), new Header("n2", "v2") ]
+
+        when:
+        HeaderCollection hc = new HeaderCollection(arr, "n3: v3", arr)
+
+        then:
+        hc != null
+        hc.size() == 5
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+        hc[2].name == "n3"
+        hc[2].value == "v3"
+        hc[3].name == "n1"
+        hc[3].value == "v1"
+        hc[4].name == "n2"
+        hc[4].value == "v2"
+
+    }
+
+    def "cycle array argument"() {
+
+        given:
+        Object[] arr = [ new Header("n1", "v1"), new Header("n2", "v2"), null ]
+        arr[2] = arr
+
+        when:
+        HeaderCollection hc = new HeaderCollection(arr)
+
+        then:
+        hc != null
+        hc.size() == 2
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "v2"
+    }
 }

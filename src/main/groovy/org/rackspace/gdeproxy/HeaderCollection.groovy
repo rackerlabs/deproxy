@@ -13,24 +13,61 @@ class HeaderCollection {
 
     List<Header> _headers = new ArrayList<Header>();
 
-    HeaderCollection() {
+    HeaderCollection(Object... headers=null) {
+
+        this.initWith(headers)
     }
 
-    HeaderCollection(Map<? extends Object, ? extends Object> map) {
-        for (Map.Entry entry : map.entrySet()) {
-            _headers.add(new Header(entry.getKey().toString(), entry.getValue().toString()));
-        }
-    }
+    protected void initWith(initObject) {
 
-    HeaderCollection(List<Header> list) {
-        for (Header header : list) {
-            _headers.add(header);
-        }
-    }
+        // TODO: prevent cycles in the object graph from causing infinite recursion
 
-    HeaderCollection(HeaderCollection headers) {
-        for (Header header : headers._headers) {
-            _headers.add(new Header(header.name, header.value));
+        if (initObject == null) return;
+
+        if (initObject instanceof Map) {
+
+            for (entry in initObject.entrySet()) {
+
+                initWith(
+                        new Header(
+                                entry.key?.toString() ?: "",
+                                entry.value?.toString() ?: ""));
+            }
+
+        } else if (initObject instanceof List) {
+
+            for (item in initObject) {
+
+                initWith(item)
+            }
+
+        } else if (initObject.class.isArray()) {
+
+            initWith(initObject as List)
+
+        } else if (initObject instanceof HeaderCollection) {
+
+            for (Header header : initObject._headers) {
+
+                initWith(header)
+            }
+
+        } else if (initObject instanceof Header) {
+
+            // copy the header name and value. don't just add the reference
+            _headers.add(new Header(initObject.name, initObject.value));
+
+        } else if (initObject instanceof String) {
+
+            def parts = initObject.split(':', 2)
+            String name = parts[0].trim()
+            String value = (parts.length > 1 ? parts[1].trim() : "")
+
+            initWith(new Header(name, value))
+
+        } else {
+
+            initWith(initObject.toString())
         }
     }
 

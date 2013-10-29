@@ -84,22 +84,7 @@ class Deproxy {
 
         log.debug "begin makeRequest"
 
-        def data
-        if (headers == null) {
-            headers = new HeaderCollection()
-        } else if (headers instanceof Map) {
-            data = new HeaderCollection()
-            for (String key : headers.keySet()) {
-                data.add(key, headers[key])
-            }
-            headers = data
-        } else if (headers instanceof HeaderCollection) {
-            data = new HeaderCollection()
-            for (Header header : headers) {
-                data.add(header.name, header.value)
-            }
-            headers = data
-        }
+        headers = new HeaderCollection(headers)
 
         if (!clientConnector) {
             clientConnector = this.defaultClientConnector;

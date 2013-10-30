@@ -14,8 +14,8 @@ package org.rackspace.deproxy;
  */
 public class Header {
 
-    public String name;
-    public String value;
+    final String name;
+    final String value;
 
     public Header(String name, String value) {
         this.name = name;

@@ -18,38 +18,42 @@ class HeaderCollection {
         this.initWith(headers)
     }
 
-    protected void initWith(initObject) {
-
-        // TODO: prevent cycles in the object graph from causing infinite recursion
+    protected void initWith(initObject, List visited=[]) {
 
         if (initObject == null) return;
+
+        if (containsReference(visited, initObject)) { return }
+        visited.add(initObject)
 
         if (initObject instanceof Map) {
 
             for (entry in initObject.entrySet()) {
 
+                def key = ( containsReference(visited, entry.key) ? "" : entry.key )
+
                 initWith(
                         new Header(
-                                entry.key?.toString() ?: "",
-                                entry.value?.toString() ?: ""));
+                                key?.toString() ?: "",
+                                entry.value?.toString() ?: ""),
+                visited);
             }
 
         } else if (initObject instanceof List) {
 
             for (item in initObject) {
 
-                initWith(item)
+                initWith(item, visited)
             }
 
         } else if (initObject.class.isArray()) {
 
-            initWith(initObject as List)
+            initWith(initObject as List, visited)
 
         } else if (initObject instanceof HeaderCollection) {
 
             for (Header header : initObject._headers) {
 
-                initWith(header)
+                initWith(header, visited)
             }
 
         } else if (initObject instanceof Header) {
@@ -63,12 +67,30 @@ class HeaderCollection {
             String name = parts[0].trim()
             String value = (parts.length > 1 ? parts[1].trim() : "")
 
-            initWith(new Header(name, value))
+            initWith(new Header(name, value), visited)
 
         } else {
 
-            initWith(initObject.toString())
+            initWith(initObject.toString(), visited)
         }
+
+        visited.remove(initObject)
+    }
+
+    static boolean containsReference(List list, Object item) {
+
+        // test reference equality using ".is()", instead of value equality with ".equals()"
+        // value equality tests may invoke equals or hashcode and inadvertently trigger infinite recursion
+        // it's slower than hashing, but it works reliably and won't crash
+
+        for (value in list) {
+
+            if (value.is(item)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     boolean contains(String name) {

@@ -1,8 +1,8 @@
 =========================
- Using GDeproxy in Tests
+ Using Deproxy in Tests
 =========================
 
-To use gdeproxy in your unit tests:
+To use deproxy in your unit tests:
 
   1. In the test class's setup method, create a Deproxy object and endpoint(s), and configure your proxy to forward requests to the endpoint's port.
   2. In the actual test method, use the makeRequest method to send a request to the proxy, and get a message chain back.
@@ -12,7 +12,7 @@ To use gdeproxy in your unit tests:
 Here's a code example of a unit test that tests the fictional theProxy library::
 
     import org.theProxy.*
-    import org.rackspace.gdeproxy.*
+    import org.rackspace.deproxy.*
     import org.junit.*
     import static org.junit.Assert.*
 

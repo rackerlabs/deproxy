@@ -9,7 +9,7 @@
 
 Handlers are the things that turn requests into responses. A given call to
 makeRequest_ can take a ``handler`` argument that will be called for each
-request that reaches an endpoint. GDeproxy includes a number of built-in
+request that reaches an endpoint. Deproxy includes a number of built-in
 handlers for some of the most common use cases. Also, you can define your own
 handlers.
 ::
@@ -19,7 +19,7 @@ handlers.
     def mc = deproxy.makeRequest('http://localhost:9999/')
     println mc.receivedResponse.headers
     // [
-    //  Server: gdeproxy 0.16-SNAPSHOT,
+    //  Server: deproxy 0.16-SNAPSHOT,
     //  Date: Wed, 04 Sep 2013 16:20:56 GMT,
     //  Content-Length: 0,
     //  Deproxy-Request-ID: 60e2a2bd-a179-4b50-a8c4-8d5b73d0218a
@@ -33,8 +33,8 @@ handlers.
     //  Host: localhost,
     //  Accept: */*,
     //  Accept-Encoding: identity,
-    //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-    //  Server: gdeproxy 0.16-SNAPSHOT,
+    //  User-Agent: deproxy 0.16-SNAPSHOT,
+    //  Server: deproxy 0.16-SNAPSHOT,
     //  Date: Wed, 04 Sep 2013 16:20:56 GMT,
     //  Content-Length: 0
     // ]
@@ -136,7 +136,7 @@ which a handler is chosen for it is defined so:
 Built-in Handlers
 =================
 
-The following handlers are built into gdeproxy. They can be used to address a
+The following handlers are built into deproxy. They can be used to address a
 number of common use cases. They also demonstrate effective ways to define
 additional handlers.
 
@@ -149,7 +149,7 @@ additional handlers.
                 defaultHandler: Handlers.&simpleHandler)
         println mc.receivedResponse.headers
         // [
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0,
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
@@ -169,8 +169,8 @@ additional handlers.
         //  Host: localhost,
         //  Accept: */*,
         //  Accept-Encoding: identity,
-        //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  User-Agent: deproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0
         // ]
@@ -187,7 +187,7 @@ additional handlers.
                 defaultHandler: Handlers.Delay(3000))
         println mc.receivedResponse.headers
         // [
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:47 GMT,
         //  Content-Length: 0,
         //  Deproxy-Request-ID: cb92db72-fb53-46c6-b143-d884af5f536d
@@ -201,8 +201,8 @@ additional handlers.
         //  Host: localhost,
         //  Accept: */*,
         //  Accept-Encoding: identity,
-        //  User-Agent: gdeproxy 0.16-SNAPSHOT,
-        //  Server: gdeproxy 0.16-SNAPSHOT,
+        //  User-Agent: deproxy 0.16-SNAPSHOT,
+        //  Server: deproxy 0.16-SNAPSHOT,
         //  Date: Wed, 04 Sep 2013 16:45:50 GMT,
         //  Content-Length: 0
         // ]
@@ -258,7 +258,7 @@ Closures can be stored or inline.
     //  code=606,
     //  message=Spoiler,
     //  headers=[
-    //      Server: gdeproxy 0.16-SNAPSHOT,
+    //      Server: deproxy 0.16-SNAPSHOT,
     //      Date: Wed, 04 Sep 2013 17:00:19 GMT,
     //      Content-Length: 22,
     //      Content-Type: text/plain,
@@ -281,7 +281,7 @@ Closures can be stored or inline.
     //  message=Something Else,
     //  headers=[
     //      Custom-Header: Value,
-    //      Server: gdeproxy 0.16-SNAPSHOT,
+    //      Server: deproxy 0.16-SNAPSHOT,
     //      Date: Wed, 04 Sep 2013 17:00:19 GMT,
     //      Content-Length: 15,
     //      Content-Type: text/plain,
@@ -335,7 +335,7 @@ not already been explicitly added by the handler, and subject to certain
 conditions (e.g., presence of a response body):
 
 - Server
-    The identifying information of the server software, "gdeproxy" followed
+    The identifying information of the server software, "deproxy" followed
     by the version number.
 
 - Date

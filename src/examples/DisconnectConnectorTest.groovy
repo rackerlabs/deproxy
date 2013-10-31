@@ -1,7 +1,7 @@
-package org.rackspace.gdeproxy.examples
+package org.rackspace.deproxy.examples
 
 import org.junit.Test
-import org.rackspace.gdeproxy.Deproxy
+import org.rackspace.deproxy.Deproxy
 
 class DisconnectConnectorTest {
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# gdeproxy documentation build configuration file, created by
-# sphinx-quickstart on Fri Aug 30 16:27:24 2013.
+# deproxy documentation build configuration file, created by
+# sphinx-quickstart on Mon Oct 28 14:12:39 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'gdeproxy'
+project = u'deproxy'
 copyright = u'2013, izrik'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -175,7 +175,7 @@ html_sidebars = {
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'gdeproxydoc'
+htmlhelp_basename = 'deproxydoc'
 
 sys.path.append(os.path.abspath('_themes'))
 html_theme_path = ['_themes']
@@ -198,7 +198,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'gdeproxy.tex', u'gdeproxy Documentation',
+  ('index', 'deproxy.tex', u'deproxy Documentation',
    u'izrik', 'manual'),
 ]
 
@@ -228,7 +228,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'gdeproxy', u'gdeproxy Documentation',
+    ('index', 'deproxy', u'deproxy Documentation',
      [u'izrik'], 1)
 ]
 
@@ -242,8 +242,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'gdeproxy', u'gdeproxy Documentation',
-   u'izrik', 'gdeproxy', 'One line description of project.',
+  ('index', 'deproxy', u'deproxy Documentation',
+   u'izrik', 'deproxy', 'One line description of project.',
    'Miscellaneous'),
 ]
 

@@ -1,8 +1,8 @@
 ========
-GDeproxy
+deproxy
 ========
 
-GDeproxy (or "gDeproxy" or "gdeproxy") is a tool for performing hgih-level, black-box, functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
+deproxy (or "Deproxy") is a tool for performing high-level, black-box, functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
 
 Testing normal client/server interaction is relatively straight-forward: Use a specialized test client to send requests to the server, and compare the response that the server returns to what it ought to return.::
 
@@ -51,5 +51,5 @@ A deproxy acts as both the client and the server, and the proxy it is testing wi
 Any requests received by the server side are matched up with the requests that started them.
 A call to a deproxy's makeRequest method will return the request that the client side sent, the request that the server side received, the response that the server side sent, and the response that the client side received. In this way, we can conclusively prove whether or not the proxy modified requests and responses correctly. We can even conclusively show when no request makes it to the server in the first place, because the receivedRequest and sentResponse fields will be null.
 
-But this is just scratching the surface. The `org.rackspace.gdeproxy` module contains additional tools and utilities for custom server responses, mocking, testing multiple endpoints, and more.
+But this is just scratching the surface. The `org.rackspace.deproxy` package contains additional tools and utilities for custom server responses, mocking, testing multiple endpoints, and more.
 

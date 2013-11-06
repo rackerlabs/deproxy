@@ -49,6 +49,7 @@ class Deproxy {
         return makeRequest(
                 params?.url,
                 params?.method ?: "GET",
+                params?.path ?: "",
                 params?.headers,
                 params?.requestBody ?: "",
                 params?.defaultHandler,
@@ -62,6 +63,7 @@ class Deproxy {
     public MessageChain makeRequest(
             String url,
             String method="GET",
+            String path="",
             headers=null,
             requestBody="",
             defaultHandler=null,
@@ -69,6 +71,12 @@ class Deproxy {
             boolean addDefaultHeaders=true,
             boolean chunked=false,
             ClientConnector clientConnector=null) {
+
+        // url --> https host port path
+        // https host port --> connection
+        // method path headers requestBody --> request
+
+        // specifying the path param overrides the path in the url param
 
         log.debug "begin makeRequest"
 
@@ -102,15 +110,21 @@ class Deproxy {
         def messageChain = new MessageChain(defaultHandler, handlers)
         addMessageChain(requestId, messageChain)
 
-
-        def uri = new URI(url)
-        def host = uri.host
-        def port = uri.port
-        boolean https = (uri.scheme == 'https');
-        URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
-        def path = uri2.relativize(uri).toString()
-        if (!path.startsWith("/")) {
-            path = "/" + path
+        boolean https = false
+        String host = ""
+        int port = 80
+        if (url) {
+            def uri = new URI(url)
+            host = uri.host
+            port = uri.port
+            https = (uri.scheme == 'https');
+            if (!path) {
+                URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
+                path = uri2.relativize(uri).toString()
+                if (!path.startsWith("/")) {
+                    path = "/" + path
+                }
+            }
         }
 
 

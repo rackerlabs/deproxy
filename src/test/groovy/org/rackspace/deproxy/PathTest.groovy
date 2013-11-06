@@ -51,6 +51,24 @@ class PathTest extends Specification {
         "/path/" | "?name=value" | "/path/?name=value"
     }
 
+    def "'path' parameter should override the path in 'url'"() {
+
+        when: "send a request with an explicit path param"
+        def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath", path: "/parampath")
+
+        then: "the path in the sent request should be that of the path param"
+        mc.sentRequest.path == "/parampath"
+    }
+
+    def "path parameter should allow otherwise invalid characters"() {
+
+        when: "send a request with an explicit path param with invalid characters"
+        def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath", path: "/parampath?query=value@%")
+
+        then: "the path in the sent request should be that of the path param"
+        mc.sentRequest.path == "/parampath?query=value@%"
+    }
+
     // TODO: Test for non-ascii characters, illegal characters, escaping, etc.
 
     def cleanup() {

@@ -29,7 +29,7 @@ Parameters
         boolean chunked=false,
         ClientConnector clientConnector=null) { ... }
 
-- ``url`` - The URL of the request to be made. This will be broken up into scheme, host, port, and path (and query parameter) components. The host, and port will be passed to the client connector to be used to make the connection, and the path will form part of the Request_ object. Parts of this can be overriden by other parameters.
+- ``url`` - The URL of the request to be made. This will be broken up into scheme, host, port, and path (and query parameter) components. The host, and port will be passed to the client connector to be used to make the connection, and the path will form part of the Request_ object. Parts of this can be overriden by other parameters. This parameter gets passed to `java.net.URI <http://docs.oracle.com/javase/7/docs/api/java/net/URI.html>`_, so it must be a valid uri, with no bad characters. If you need to send invalid data in the request for testing purposes, use the ``host`` and ``path`` parameters.
 - ``host`` - The host to which the request will be sent. If both ``host`` and ``url`` are given, ``host`` will override the host component of ``url``.
 - ``port`` - The port to which the request will be sent. If both ``port`` and ``url`` are given, ``port`` will override any host component of ``url``.
 - ``method`` - The HTTP method of the Request_ object. This is typically ``GET``, ``POST``, ``PUT``, or some other method defined in `RFC 2616 § 5.1.1 <http://tools.ietf.org/html/rfc2616#section-5.1.1>`_ and `RFC 2616 § 9 <http://tools.ietf.org/html/rfc2616#section-9>`_ . However, deproxy will allow any string, to test custom extension methods and invalid methods. The default is ``GET``.

@@ -8,7 +8,7 @@ import spock.lang.Unroll
  * User: izrik
  *
  */
-class PathTest extends Specification {
+class makeRequestParamsTest extends Specification {
 
     static PortFinder pf = new PortFinder()
 

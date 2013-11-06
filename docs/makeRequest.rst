@@ -53,6 +53,7 @@ Named Parameters
 makeRequest_ has a special override to handle named parameters.
 The following are equivalent:
 ::
+
     deproxy.makeRequest("http://example.com/resource?name=value", null, null, "GET")
 
     deproxy.makeRequest(url: "http://example.com/resource?name=value", method: "GET")

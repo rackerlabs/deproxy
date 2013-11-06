@@ -115,11 +115,20 @@ class Deproxy {
         addMessageChain(requestId, messageChain)
 
         boolean https = false
-        if (url) {
+        if ((!host || !path || port == null) && url) {
+
             def uri = new URI(url)
-            host = uri.host
-            port = uri.port
+
+            if (!host) {
+                host = uri.host
+            }
+
+            if (port == null) {
+                port = uri.port
+            }
+
             https = (uri.scheme == 'https');
+
             if (!path) {
                 URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
                 path = uri2.relativize(uri).toString()

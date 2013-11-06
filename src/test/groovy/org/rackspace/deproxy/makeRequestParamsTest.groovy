@@ -51,6 +51,84 @@ class makeRequestParamsTest extends Specification {
         "/path/" | "?name=value" | "/path/?name=value"
     }
 
+    def "host param: should override the host in url param"() {
+
+        given:
+        String hostValueAtConnector = null
+        def captureHostParam = {
+
+            request, https, host, port, params ->
+
+            // by overriding the client connector, we can record what host value it received and skip  an actual TCP connection
+
+            hostValueAtConnector = host
+            return new Response(200)
+
+        } as ClientConnector
+
+        def hostname = "example.com"
+
+        when: "send a request with an explicit path param"
+        def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath",
+                host: hostname,
+                clientConnector: captureHostParam)
+
+        then: "the host in the sent request (and in the Host header) should be that of the host param"
+        hostValueAtConnector == hostname
+    }
+
+    def "host param: should allow invalid characters"() {
+
+        given:
+        String hostValueAtConnector = null
+        def captureHostParam = {
+
+            request, https, host, port, params ->
+
+            // by overriding the client connector, we can record what host value it received and skip  an actual TCP connection
+
+            hostValueAtConnector = host
+            return new Response(200)
+
+        } as ClientConnector
+
+        def hostname = "!@#\$"
+
+        when: "send a request with an explicit path param"
+        def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath",
+                host: hostname,
+                clientConnector: captureHostParam)
+
+        then: "the host in the sent request (and in the Host header) should be that of the host param"
+        hostValueAtConnector == hostname
+    }
+
+    def "port param: should override the port in url param"() {
+
+        given:
+        int portValueAtConnector = null
+        def capturePortParam = {
+
+            request, https, host, port, params ->
+
+                // by overriding the client connector, we can record what port value it received and skip an actual TCP connection
+
+                portValueAtConnector = port
+                return new Response(200)
+
+        } as ClientConnector
+
+        int expectedPort = 12345
+
+        when: "send a request with an explicit path param"
+        def mc = this.deproxy.makeRequest(url: "http://localhost:8080/urlpath",
+                port: expectedPort,
+                clientConnector:  capturePortParam)
+
+        then: "the host in the sent request (and in the Host header) should be that of the host param"
+        portValueAtConnector == expectedPort
+    }
+
     def "path param: should override the path in 'url'"() {
 
         when: "send a request with an explicit path param"

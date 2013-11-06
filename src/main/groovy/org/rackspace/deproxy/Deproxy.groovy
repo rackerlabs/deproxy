@@ -48,6 +48,8 @@ class Deproxy {
     public MessageChain makeRequest(Map params) {
         return makeRequest(
                 params?.url,
+                params?.host ?: "",
+                params?.port,
                 params?.method ?: "GET",
                 params?.path ?: "",
                 params?.headers,
@@ -62,6 +64,8 @@ class Deproxy {
 
     public MessageChain makeRequest(
             String url,
+            String host="",
+            port=null,
             String method="GET",
             String path="",
             headers=null,
@@ -111,8 +115,6 @@ class Deproxy {
         addMessageChain(requestId, messageChain)
 
         boolean https = false
-        String host = ""
-        int port = 80
         if (url) {
             def uri = new URI(url)
             host = uri.host

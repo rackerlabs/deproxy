@@ -7,7 +7,7 @@
  Making Requests
 =================
 
-The makeRequest method is the primary means of sending requests to HTTP applications.
+The makeRequest_ method is the primary means of sending requests to HTTP applications.
 It prepares a Request_ object to be sent, constructs a MessageChain_ object to track the request and specify custom handlers, and passes the Request_ object to the ClientConnector_.
 
 Parameters

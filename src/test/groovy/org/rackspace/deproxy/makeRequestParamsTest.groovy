@@ -24,8 +24,8 @@ class makeRequestParamsTest extends Specification {
         this.deproxy.addEndpoint(this.port);
     }
 
-    @Unroll("Path and query parameter combos: \"#pathPart#queryPart\" -> \"#expectedResult\"")
-    def "Path and query parameter combos"() {
+    @Unroll("url param: path and query parameter combos: \"#pathPart#queryPart\" -> \"#expectedResult\"")
+    def "url param: path and query parameter combos"() {
 
         when: "making the request"
         def mc = this.deproxy.makeRequest(url: "${urlbase}${pathPart}${queryPart}")
@@ -51,7 +51,7 @@ class makeRequestParamsTest extends Specification {
         "/path/" | "?name=value" | "/path/?name=value"
     }
 
-    def "'path' parameter should override the path in 'url'"() {
+    def "path param: should override the path in 'url'"() {
 
         when: "send a request with an explicit path param"
         def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath", path: "/parampath")
@@ -60,7 +60,7 @@ class makeRequestParamsTest extends Specification {
         mc.sentRequest.path == "/parampath"
     }
 
-    def "path parameter should allow otherwise invalid characters"() {
+    def "path param: should allow otherwise invalid characters"() {
 
         when: "send a request with an explicit path param with invalid characters"
         def mc = this.deproxy.makeRequest(url: "${urlbase}/urlpath", path: "/parampath?query=value@%")

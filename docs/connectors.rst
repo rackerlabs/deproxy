@@ -171,6 +171,8 @@ And here's the test that uses it:
 So what should happen is that the server returns a response to the proxy, but that response never makes it back to the client.
 Therefore, there's a handling in the MessageChain_, but ``receivedResponse`` is null.
 
+.. _defaultRequestHeaders :
+
 Default Request Headers
 =======================
 

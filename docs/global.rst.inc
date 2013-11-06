@@ -17,6 +17,8 @@
 
 .. _Response: _static/groovydoc/org/rackspace/deproxy/Response.html
 
+.. _HeaderCollection: _static/groovydoc/org/rackspace/deproxy/HeaderCollection.html
+
 .. _Handling: _static/groovydoc/org/rackspace/deproxy/Handling.html
 
 .. _MessageChain: _static/groovydoc/org/rackspace/deproxy/MessageChain.html

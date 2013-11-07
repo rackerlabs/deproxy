@@ -7,7 +7,7 @@
 .. _Route: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.deproxy.ClientConnector)
 
 .. _Deproxy: _static/groovydoc/org/rackspace/deproxy/Deproxy.html
-.. _makeRequest: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#makeRequest(java.lang.String,%20java.lang.String,%20def,%20def,%20def,%20java.util.Map,%20boolean,%20boolean,%20org.rackspace.deproxy.ClientConnector)
+.. _makeRequest: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#makeRequest(java.lang.String,%20java.lang.String,%20def,%20java.lang.String,%20java.lang.String,%20def,%20def,%20def,%20java.util.Map,%20boolean,%20boolean,%20org.rackspace.deproxy.ClientConnector)
 .. _addEndpoint: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#addEndpoint(int,%20java.lang.String,%20java.lang.String,%20def)
 .. _shutdown: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#shutdown()
 
@@ -16,6 +16,8 @@
 .. _Request: _static/groovydoc/org/rackspace/deproxy/Request.html
 
 .. _Response: _static/groovydoc/org/rackspace/deproxy/Response.html
+
+.. _HeaderCollection: _static/groovydoc/org/rackspace/deproxy/HeaderCollection.html
 
 .. _Handling: _static/groovydoc/org/rackspace/deproxy/Handling.html
 

@@ -12,6 +12,7 @@ Contents:
 
    howItWorks
    use
+   makeRequest
    endpoints
    handlers
    connectors

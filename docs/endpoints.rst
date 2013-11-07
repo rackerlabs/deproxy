@@ -180,6 +180,7 @@ Routing
 
 Even more complex situations can be created using the Route_ built-in handler, to route requests to existing servers.
 ::
+
   ________          ________          ________        ________
  |        |  --->  |        |  --->  |  Fake  | ---> |  Real  |
  | Client |        | Proxy  |        | Server |      | Server |

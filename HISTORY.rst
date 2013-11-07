@@ -6,6 +6,8 @@ History
 0.17 (in progress)
 ++++++++++++++++++
 
+- makeRequest has new ``host``, ``port``, and ``path`` parameters. These may break some calls to makeRequest that use ordered parameters instead of named parameters.
+
 
 0.16 (2013-09-16)
 ++++++++++++++++++

@@ -48,7 +48,10 @@ class Deproxy {
     public MessageChain makeRequest(Map params) {
         return makeRequest(
                 params?.url,
+                params?.host ?: "",
+                params?.port,
                 params?.method ?: "GET",
+                params?.path ?: "",
                 params?.headers,
                 params?.requestBody ?: "",
                 params?.defaultHandler,
@@ -61,7 +64,10 @@ class Deproxy {
 
     public MessageChain makeRequest(
             String url,
+            String host="",
+            port=null,
             String method="GET",
+            String path="",
             headers=null,
             requestBody="",
             defaultHandler=null,
@@ -69,6 +75,12 @@ class Deproxy {
             boolean addDefaultHeaders=true,
             boolean chunked=false,
             ClientConnector clientConnector=null) {
+
+        // url --> https host port path
+        // https host port --> connection
+        // method path headers requestBody --> request
+
+        // specifying the path param overrides the path in the url param
 
         log.debug "begin makeRequest"
 
@@ -102,15 +114,28 @@ class Deproxy {
         def messageChain = new MessageChain(defaultHandler, handlers)
         addMessageChain(requestId, messageChain)
 
+        boolean https = false
+        if ((!host || !path || port == null) && url) {
 
-        def uri = new URI(url)
-        def host = uri.host
-        def port = uri.port
-        boolean https = (uri.scheme == 'https');
-        URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
-        def path = uri2.relativize(uri).toString()
-        if (!path.startsWith("/")) {
-            path = "/" + path
+            def uri = new URI(url)
+
+            if (!host) {
+                host = uri.host
+            }
+
+            if (port == null) {
+                port = uri.port
+            }
+
+            https = (uri.scheme == 'https');
+
+            if (!path) {
+                URI uri2 = new URI(uri.scheme, uri.authority, null, null, null)
+                path = uri2.relativize(uri).toString()
+                if (!path.startsWith("/")) {
+                    path = "/" + path
+                }
+            }
         }
 
 

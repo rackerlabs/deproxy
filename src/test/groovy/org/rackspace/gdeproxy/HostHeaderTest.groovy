@@ -37,7 +37,7 @@ class HostHeaderTest extends Specification {
     def testHostHeaderDefaultHttpsArgument() {
 
         expect:
-        Header.CreateHostHeaderValue(host, port) == expectedValue
+        HostHeader.CreateHostHeaderValue(host, port) == expectedValue
 
         where:
         host          | port  | expectedValue

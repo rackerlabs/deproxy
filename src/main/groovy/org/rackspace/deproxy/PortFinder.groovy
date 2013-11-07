@@ -21,6 +21,7 @@ public class PortFinder {
     }
 
     int currentPort
+    int skips = 0
 
     int getNextOpenPort(Map params=[:]) {
 
@@ -63,6 +64,7 @@ public class PortFinder {
             log.debug "Connected"
 
             currentPort++
+            skips++
         }
 
         throw new RuntimeException("Ran out of ports")

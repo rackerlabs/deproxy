@@ -50,6 +50,31 @@ class PortFinderTest extends Specification {
         t.join(1000)
     }
 
+    def "when a port number is already in use, increment the skips count"() {
+
+        given:
+        // create the listener socket
+        def listener = new ServerSocket(23456)
+        boolean stop = false
+        def t = Thread.startDaemon("get-socket") {
+            while (!stop) {
+                listener.accept()
+            }
+        }
+
+        when:
+        int port = pf.getNextOpenPort(23456)
+
+        then:
+        port == 23457
+        pf.skips == 1
+
+        cleanup:
+        stop = true
+        t.interrupt()
+        t.join(1000)
+    }
+
     def "when instantiating without parameter, should have the default"() {
 
         when:
@@ -94,7 +119,7 @@ class PortFinderTest extends Specification {
         }
 
         expect:
-        PortFinder.Singleton.currentPort == prevCurrentPort + threads.size()
+        PortFinder.Singleton.currentPort == prevCurrentPort + threads.size() + PortFinder.Singleton.skips
         ports.unique().size() == threads.size()
     }
 }

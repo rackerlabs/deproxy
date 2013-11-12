@@ -130,6 +130,22 @@ class HeaderCollectionConstructorsTest extends Specification {
 
     }
 
+    def "groovy string argument"() {
+
+        given:
+        def name = "n1"
+        def value = "v1"
+
+        when:
+        HeaderCollection hc = new HeaderCollection("${name}: ${value}")
+
+        then:
+        hc != null
+        hc.size() == 1
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+    }
+
     def "object argument"() {
 
         when:
@@ -402,6 +418,48 @@ class HeaderCollectionConstructorsTest extends Specification {
 
     }
 
+    def "map with groovy string key"() {
+
+        given:
+        def str = "asdf"
+
+        when:
+        HeaderCollection hc = new HeaderCollection([
+                n1: "v1",
+                ("this ${str} thing"): "v2",
+        ])
+
+        then:
+        hc != null
+        hc.size() == 2
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "this asdf thing"
+        hc[1].value == "v2"
+
+    }
+
+    def "map with groovy string value"() {
+
+        given:
+        def str = "zxcv"
+
+        when:
+        HeaderCollection hc = new HeaderCollection([
+                n1: "v1",
+                n2: "some ${str} value",
+        ])
+
+        then:
+        hc != null
+        hc.size() == 2
+        hc[0].name == "n1"
+        hc[0].value == "v1"
+        hc[1].name == "n2"
+        hc[1].value == "some zxcv value"
+
+    }
+
     def "another HeaderCollection as argument"() {
 
         given:
@@ -666,6 +724,8 @@ class HeaderCollectionConstructorsTest extends Specification {
         def hc1 = new HeaderCollection()
         hc1.add("n1", "v1")
         hc1.add("n2", "v2")
+        DummyObject dobj = new DummyObject(id: 10)
+        def str = "is a"
 
         when:
         HeaderCollection hc = new HeaderCollection(
@@ -676,12 +736,14 @@ class HeaderCollectionConstructorsTest extends Specification {
                                 [ n8: "v8"],
                                 hc1,
                         ],
-                        [ n9: "v9" ]
+                        [ n9: "v9" ],
+                        dobj,
+                        "Groovy: This ${str} groovy string"
                 ])
 
         then:
         hc != null
-        hc.size() == 9
+        hc.size() == 11
         hc[0].name == "n3"
         hc[0].value == "v3"
         hc[1].name == "n4"
@@ -700,6 +762,10 @@ class HeaderCollectionConstructorsTest extends Specification {
         hc[7].value == "v2"
         hc[8].name == "n9"
         hc[8].value == "v9"
+        hc[9].name == "dummy object, id = 10"
+        hc[9].value == ""
+        hc[10].name == "Groovy"
+        hc[10].value == "This is a groovy string"
     }
 
     def "re-use list argument"() {

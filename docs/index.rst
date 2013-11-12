@@ -16,6 +16,7 @@ Contents:
    endpoints
    handlers
    connectors
+   standardHeaders
 
 
 Indices and tables

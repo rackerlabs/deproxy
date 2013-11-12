@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.rackspace</groupId>
-    <artifactId>gdeproxy</artifactId>
-    <version>0.17-SNAPSHOT</version>
+    <artifactId>deproxy</artifactId>
+    <version>0.18-SNAPSHOT</version>
 
-    <name>GDeproxy</name>
+    <name>deproxy</name>
 
     <packaging>jar</packaging>
 
@@ -134,7 +134,7 @@
 
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/rackerlabs/gdeproxy.git</connection>
+        <connection>scm:git:ssh://git@github.com/rackerlabs/deproxy.git</connection>
     </scm>
 
     <repositories>

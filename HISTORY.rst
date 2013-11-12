@@ -3,8 +3,19 @@
 History
 -------
 
-0.17 (in progress)
+0.18 (in progress)
 ++++++++++++++++++
+
+
+0.17 (2013-11-07)
+++++++++++++++++++
+
+- Renamed the project from "gdeproxy" to "deproxy". the new project website
+  is at https://github.com/rackerlabs/deproxy
+- Docs! see http://deproxy.readthedocs.org
+- makeRequest has new ``host``, ``port``, and ``path`` parameters. These may
+  break some calls to makeRequest that use ordered parameters instead of
+  named parameters.
 
 
 0.16 (2013-09-16)

@@ -14,6 +14,15 @@ class HostHeader extends Header {
     final String host
     final def port
 
+    static final String alpha                = /(?x) ( [a-zA-Z] )/
+    static final String alphanum             = /(?x) ( [a-zA-Z\d] )/
+    static final String domainlabelPattern   = /(?x) ( ${alphanum} | ( ${alphanum} ( ${alphanum} | \- )* ${alphanum} ) )/
+    static final String toplabelPattern      = /(?x) ( ${alpha}  | ( ${alpha} ( ${alphanum} | \- )* ${alphanum} ) )/
+    static final String hostnamePattern      = /(?x) ( ${domainlabelPattern} \. )* ( ${toplabelPattern} ) (\.?) /
+    static final String IPv4addressPattern   = /(?x) ( [\d]+ \. [\d]+ \. [\d]+ \. [\d]+ ) /
+    static final String hostPattern          = /(?x) ( ${hostnamePattern} | ${IPv4addressPattern} )/
+    static final String portPattern          = /(?x) ( [\d]* )/
+
     public static String CreateHostHeaderValue(String host, port=null, https=null) {
 
         if (port != null &&
@@ -61,15 +70,6 @@ class HostHeader extends Header {
             host = value
             portStr = ''
         }
-
-        String alpha                = /(?x) ( [a-zA-Z] )/
-        String alphanum             = /(?x) ( [a-zA-Z\d] )/
-        String domainlabelPattern   = /(?x) ( ${alphanum} | ( ${alphanum} ( ${alphanum} | \- )* ${alphanum} ) )/
-        String toplabelPattern      = /(?x) ( ${alpha}  | ( ${alpha} ( ${alphanum} | \- )* ${alphanum} ) )/
-        String hostnamePattern      = /(?x) ( ${domainlabelPattern} \. )* ( ${toplabelPattern} ) (\.?) /
-        String IPv4addressPattern   = /(?x) ( [\d]+ \. [\d]+ \. [\d]+ \. [\d]+ ) /
-        String hostPattern          = /(?x) ( ${hostnamePattern} | ${IPv4addressPattern} )/
-        String portPattern          = /(?x) ( [\d]* )/
 
         if (!(host ==~ hostPattern)) {
             throw new IllegalArgumentException("The value provided does not contain a valid hostname")

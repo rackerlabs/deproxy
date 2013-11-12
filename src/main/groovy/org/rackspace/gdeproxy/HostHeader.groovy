@@ -29,13 +29,21 @@ class HostHeader extends Header {
             throw new IllegalArgumentException("The value provided does not contain a valid hostname")
         }
 
+        if (port != null &&
+                port instanceof String &&
+                !(port ==~ portPattern)) {
+
+            throw new IllegalArgumentException("The value provided contains an invalid port")
+        }
+
         return CreateHostHeaderValueNoCheck(host, port, https)
     }
 
     public static String CreateHostHeaderValueNoCheck(String host, port=null, https=null) {
 
         if (port != null &&
-                port instanceof Integer) {
+                (port instanceof Integer ||
+                 port instanceof String)) {
 
             return "${host}:${port}"
 
@@ -80,9 +88,6 @@ class HostHeader extends Header {
             portStr = ''
         }
 
-        if (!(portStr ==~ portPattern)) {
-            throw new IllegalArgumentException("The value provided contains an invalid port")
-        }
 
         if (portStr != null && portStr.length() > 0) {
             int port = portStr.toInteger()

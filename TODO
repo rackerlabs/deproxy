@@ -1,10 +1,6 @@
 bugs
 in DeproxyEndpoint.parseRequest, after calling BodyReader.readBody,
     if body is null, it should be reported in the log as null, instead of length 4
-in Deproxy.makeRequest(String, …),
-    when cleaning up the incoming headers parameter,
-        "for (Header header : headers)" is not iterating headers, just returning the collection
-        "for (String key : headers.keySet()) { data.add(key, headers[key])" doesn't handle groovy strings properly
 
 standard headers
     Accept

@@ -14,8 +14,8 @@ package org.rackspace.deproxy;
  */
 public class Header {
 
-    public String name;
-    public String value;
+    final String name;
+    final String value;
 
     public Header(String name, String value) {
         this.name = name;
@@ -25,19 +25,6 @@ public class Header {
     @Override
     public String toString() {
         return this.name + ": " + this.value;
-    }
-
-    public static String CreateHostHeaderValue(String host, int port, https=false) {
-
-        if ((https && port != 443) ||
-                (!https && port != 80)) {
-
-            return "${host}:${port}"
-
-        } else {
-
-            return host
-        }
     }
 }
 

@@ -13,25 +13,84 @@ class HeaderCollection {
 
     List<Header> _headers = new ArrayList<Header>();
 
-    HeaderCollection() {
+    HeaderCollection(Object... headers=null) {
+
+        this.initWith(headers)
     }
 
-    HeaderCollection(Map<? extends Object, ? extends Object> map) {
-        for (Map.Entry entry : map.entrySet()) {
-            _headers.add(new Header(entry.getKey().toString(), entry.getValue().toString()));
+    protected void initWith(initObject, List visited=[]) {
+
+        if (initObject == null) return;
+
+        if (containsReference(visited, initObject)) { return }
+        visited.add(initObject)
+
+        if (initObject instanceof Map) {
+
+            for (entry in initObject.entrySet()) {
+
+                def key = ( containsReference(visited, entry.key) ? "" : entry.key )
+
+                initWith(
+                        new Header(
+                                key?.toString() ?: "",
+                                entry.value?.toString() ?: ""),
+                visited);
+            }
+
+        } else if (initObject instanceof List) {
+
+            for (item in initObject) {
+
+                initWith(item, visited)
+            }
+
+        } else if (initObject.class.isArray()) {
+
+            initWith(initObject as List, visited)
+
+        } else if (initObject instanceof HeaderCollection) {
+
+            for (Header header : initObject._headers) {
+
+                initWith(header, visited)
+            }
+
+        } else if (initObject instanceof Header) {
+
+            // copy the header name and value. don't just add the reference
+            _headers.add(new Header(initObject.name, initObject.value));
+
+        } else if (initObject instanceof String) {
+
+            def parts = initObject.split(':', 2)
+            String name = parts[0].trim()
+            String value = (parts.length > 1 ? parts[1].trim() : "")
+
+            initWith(new Header(name, value), visited)
+
+        } else {
+
+            initWith(initObject.toString(), visited)
         }
+
+        visited.remove(initObject)
     }
 
-    HeaderCollection(List<Header> list) {
-        for (Header header : list) {
-            _headers.add(header);
-        }
-    }
+    static boolean containsReference(List list, Object item) {
 
-    HeaderCollection(HeaderCollection headers) {
-        for (Header header : headers._headers) {
-            _headers.add(new Header(header.name, header.value));
+        // test reference equality using ".is()", instead of value equality with ".equals()"
+        // value equality tests may invoke equals or hashcode and inadvertently trigger infinite recursion
+        // it's slower than hashing, but it works reliably and won't crash
+
+        for (value in list) {
+
+            if (value.is(item)) {
+                return true
+            }
         }
+
+        return false
     }
 
     boolean contains(String name) {
@@ -131,6 +190,10 @@ class HeaderCollection {
 
     public String getAt(String name) {
         return getFirstValue(name);
+    }
+
+    public Header getAt(int index) {
+        return _headers[index]
     }
 
     public String getFirstValue(String name) {

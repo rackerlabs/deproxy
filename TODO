@@ -12,6 +12,13 @@ Clean up code
 
 gradle
 
+replace RequestParams with proper object orientation in client connectors
+    DefaultClientConnector should have a nextConnector constructor parameters, instead of extending BareClientConnector
+    ChunkedTransferEncodingClientConnector
+        will require "distinction between message body and transfer-encoded message body" below
+        this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector
+            not necessarily; that describes DefaultClientConnector as well
+
 expand test for default request headers, to include all of them, and also to include header values
 
 un-ignore or get rid of ignored tests

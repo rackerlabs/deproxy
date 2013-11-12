@@ -62,8 +62,10 @@ class HostHeader extends Header {
             portStr = ''
         }
 
-        String domainlabelPattern   = /(?x) ( [\w\d] | ( [\w\d] ( [\w\d] | \- )* [\w\d] ) )/
-        String toplabelPattern      = /(?x) ( [\w]  | ( [\w] ( [\w\d] | \- )* [\w\d] ) )/
+        String alpha                = /(?x) ( [a-zA-Z] )/
+        String alphanum             = /(?x) ( [a-zA-Z\d] )/
+        String domainlabelPattern   = /(?x) ( ${alphanum} | ( ${alphanum} ( ${alphanum} | \- )* ${alphanum} ) )/
+        String toplabelPattern      = /(?x) ( ${alpha}  | ( ${alpha} ( ${alphanum} | \- )* ${alphanum} ) )/
         String hostnamePattern      = /(?x) ( ${domainlabelPattern} \. )* ( ${toplabelPattern} ) (\.?) /
         String IPv4addressPattern   = /(?x) ( [\d]+ \. [\d]+ \. [\d]+ \. [\d]+ ) /
         String hostPattern          = /(?x) ( ${hostnamePattern} | ${IPv4addressPattern} )/

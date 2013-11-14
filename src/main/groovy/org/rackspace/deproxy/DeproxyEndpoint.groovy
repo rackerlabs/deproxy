@@ -466,7 +466,16 @@ class DeproxyEndpoint {
 
         log.debug "reading the body"
         def body = BodyReader.readBody(inStream, headers)
-        String length = (body instanceof byte[] ? body.length : body.toString().length()).toString();
+
+        String length;
+        if (body == null) {
+            length = 0
+        } else if (body instanceof byte[]) {
+            length = body.length
+        } else {
+            length = body.toString().length()
+        }
+
         log.debug("Done reading body, length ${length}");
 
         log.debug "returning"

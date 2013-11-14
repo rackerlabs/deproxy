@@ -12,6 +12,8 @@ standard headers
     Proxy-Authorization, Range, Referer, Retry-After, Server, TE, Trailer,
     Transfer-Encoding, Upgrade, User-Agent, Vary, Via, Warning, WWW-Authenticate
 
+use an endpoint on a different machine, and send requests & responses back to the client machine somehow
+
 Clean up code
     rename setUp to setup and tearDown to cleanup in spock unit tests
 

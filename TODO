@@ -16,6 +16,7 @@ use an endpoint on a different machine, and send requests & responses back to th
 
 Clean up code
     rename setUp to setup and tearDown to cleanup in spock unit tests
+    rename DeproxyEndpoint to just Endpoint
 
 gradle
 

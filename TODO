@@ -2,36 +2,17 @@ bugs
 in DeproxyEndpoint.parseRequest, after calling BodyReader.readBody,
     if body is null, it should be reported in the log as null, instead of length 4
 
-standard headers
-    Accept, Accept-Charset, Accept-Encoding, Accept-Language, Accept-Ranges,
-    Age, Allow, Authorization, Cache-Control, Connection, Content-Encoding,
-    Content-Language, Content-Length, Content-Location, Content-MD5,
-    Content-Range, Content-Type, Date, ETag, Expect, Expires, From, If-Match,
-    If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since,
-    Last-Modified, Location, Max-Forwards, Pragma, Proxy-Authenticate,
-    Proxy-Authorization, Range, Referer, Retry-After, Server, TE, Trailer,
-    Transfer-Encoding, Upgrade, User-Agent, Vary, Via, Warning, WWW-Authenticate
-
-use an endpoint on a different machine, and send requests & responses back to the client machine somehow
 
 Clean up code
     rename setUp to setup and tearDown to cleanup in spock unit tests
     rename DeproxyEndpoint to just Endpoint
+    remove unused Handler interface
+    expand test for default request headers, to include all of them, and also to include header values
+    un-ignore or get rid of ignored tests
+    port all unit tests
+    replace StaticTcpServer with something better?
 
-gradle
 
-replace RequestParams with proper object orientation in client connectors
-    DefaultClientConnector should have a nextConnector constructor parameters, instead of extending BareClientConnector
-    ChunkedTransferEncodingClientConnector
-        will require "distinction between message body and transfer-encoded message body" below
-        this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector
-            not necessarily; that describes DefaultClientConnector as well
-
-expand test for default request headers, to include all of them, and also to include header values
-
-un-ignore or get rid of ignored tests
-port all unit tests
-test StaticTcpServer
 
 update docs
     new functionality has been added, needs to be documented
@@ -47,28 +28,14 @@ update docs
             StaticTcpServer
     need new logo
 
-move apache stuff to a separate folder/subpackage
-
-distinction between message body and transfer-encoded message body, between
-        the request/response and the bytes-on-the-wire
-compression (content coding)
-    will likely require changes to the object model
-
-rfc 2616 § 3.6 in BodyReader.readBody #2 --> return 501
-
-super-easy assertions on message chains, handlings, requests, and responses - for use by importers
-extract classes for handling http version 0.9, 1.0, and 1.1
-    extract client connector -> Conforming vs. Bare
-        create a new client connector or update an existing one to be fully compliant with RFC 2616
-    extract server connector -> Conforming vs. Bare
-        parseRequest and sendResponse
-        clarify handler stuff, so that we can use explicit typing of handlers
-add endpoint parameter to handler functions, so we know who handled the request ?
-    no use-case for this yet
 
 clean endpoint failure, e.g. if address already in use
     shouldn't get added to _endpoints list
     thread(s) should be shut down
+
+
+server connectors
+
 
 server-side https
     DeproxyEndpoint
@@ -82,10 +49,65 @@ server-side https
         test
 test https
 test route https
+
+
 extensive tests for uri's paths and query parameters
     consider illegal chars
     consider non-ascii chars
     consider escaping
 
+
+rfc 2616 § 3.6 in BodyReader.readBody #2 --> return 501
+
+
+all components either:
+    are 100% unconditionally compliant with RFC 2616
+    are normally unconditionally compliant with RFC 2616, but have facilities
+        for doing things that are not compliant when explicitly asked to by
+        the user
+
+---- 1.0 ---- below are in no particular order
+
+use an endpoint on a different machine, and send requests & responses back to the client machine somehow
+
+
+standard headers
+    Accept, Accept-Charset, Accept-Encoding, Accept-Language, Accept-Ranges,
+    Age, Allow, Authorization, Cache-Control, Connection, Content-Encoding,
+    Content-Language, Content-Length, Content-Location, Content-MD5,
+    Content-Range, Content-Type, Date, ETag, Expect, Expires, From, If-Match,
+    If-Modified-Since, If-None-Match, If-Range, If-Unmodified-Since,
+    Last-Modified, Location, Max-Forwards, Pragma, Proxy-Authenticate,
+    Proxy-Authorization, Range, Referer, Retry-After, Server, TE, Trailer,
+    Transfer-Encoding, Upgrade, User-Agent, Vary, Via, Warning, WWW-Authenticate
+
+gradle?
+
+replace RequestParams with proper object orientation in client connectors
+    DefaultClientConnector should have a nextConnector constructor parameters, instead of extending BareClientConnector
+    ChunkedTransferEncodingClientConnector
+        will require "distinction between message body and transfer-encoded message body" below
+        this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector
+            not necessarily; that describes DefaultClientConnector as well
+
+distinction between message body and transfer-encoded message body, between
+        the request/response and the bytes-on-the-wire
+
+compression (content coding)
+    will likely require changes to the object model
+
 better logging
     option whether or not to log request/response bodies - off by default
+
+move apache stuff to a separate folder/subpackage
+
+super-easy assertions on message chains, handlings, requests, and responses - for use by importers
+extract classes for handling http version 0.9, 1.0, and 1.1
+    extract client connector -> Conforming vs. Bare
+        create a new client connector or update an existing one to be fully compliant with RFC 2616
+    extract server connector -> Conforming vs. Bare
+        parseRequest and sendResponse
+        clarify handler stuff, so that we can use explicit typing of handlers
+
+add endpoint parameter to handler functions, so we know who handled the request ?
+

@@ -1,4 +1,3 @@
-
 .. include:: global.rst.inc
 
 .. _Handlers:
@@ -179,7 +178,7 @@ additional handlers.
 
 - `Delay(timeout, nextHandler)`_
     This is actually a factory function that returns a handler. Give it a
-    time-out in seconds and a second handler function, and it will return a
+    timeout in milliseconds and a second handler function, and it will return a
     handler that will wait the desired amount of time before calling the second
     handler. ::
 

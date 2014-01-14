@@ -1,7 +1,3 @@
-bugs
-in DeproxyEndpoint.parseRequest, after calling BodyReader.readBody,
-    if body is null, it should be reported in the log as null, instead of length 4
-
 servlet endpoint
 
 Clean up code

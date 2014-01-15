@@ -169,9 +169,28 @@ class DeproxyEndpoint {
                 def close = false
                 while (!close) {
 
-                    log.debug "about to handle one request"
+                    log.debug "calling parseRequest"
+                    def ret = parseRequest(inStream, outStream)
+                    log.debug "returned from parseRequest"
 
-                    close = handleOneRequest(inStream, outStream, connectionName)
+                    if (!ret) {
+                        break
+                    }
+
+                    def (Request request, boolean persistConnection) = ret
+
+                    if (persistConnection &&
+                            request.headers.contains('Connection')) {
+
+                        request.headers.findAll('Connection').each {
+                            if (it == "close") {
+                                persistConnection = false
+                            }
+                        }
+                    }
+
+                    log.debug "about to handle one request"
+                    close = handleOneRequest(inStream, outStream, connectionName, request, persistConnection)
                     log.debug "handled one request"
                 }
 
@@ -213,37 +232,12 @@ class DeproxyEndpoint {
         return serverSocket != null && !serverSocket.isClosed()
     }
 
-    boolean handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName) {
+    boolean handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName, Request request, boolean persistConnection) {
 
         log.debug "Begin handleOneRequest"
-        def closeConnection = false
+        def closeConnection = !persistConnection
 
         try {
-            log.debug "calling parseRequest"
-            def ret = parseRequest(inStream, outStream)
-            log.debug "returned from parseRequest"
-
-            if (!ret) {
-                return true
-            }
-
-            def (Request request, boolean persistConnection) = ret
-
-            if (persistConnection) {
-
-                closeConnection = false
-
-                if (request.headers.contains('Connection')) {
-                    request.headers.findAll('Connection').each {
-                        if (it == "close") {
-                            closeConnection = true
-                        }
-                    }
-                }
-            } else {
-
-                closeConnection = true
-            }
 
             MessageChain messageChain = null
 

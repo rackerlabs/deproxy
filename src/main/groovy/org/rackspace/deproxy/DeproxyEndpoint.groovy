@@ -191,7 +191,7 @@ class DeproxyEndpoint {
                     }
 
                     log.debug "about to handle one request"
-                    ResponseWithContext rwc = handleOneRequest(inStream, outStream, connectionName, request, persistConnection)
+                    ResponseWithContext rwc = handleOneRequest(request, connectionName)
                     log.debug "handled one request"
 
 
@@ -252,10 +252,9 @@ class DeproxyEndpoint {
         HandlerContext context
     }
 
-    ResponseWithContext handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName, Request request, boolean persistConnection) {
+    ResponseWithContext handleOneRequest(Request request, String connectionName) {
 
         log.debug "Begin handleOneRequest"
-        def closeConnection = !persistConnection
 
         try {
 

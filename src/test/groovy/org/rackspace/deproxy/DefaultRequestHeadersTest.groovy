@@ -18,8 +18,7 @@ class DefaultRequestHeadersTest {
 
     @Before
     void setUp() {
-        PortFinder pf = new PortFinder()
-        _port = pf.getNextOpenPort()
+        _port = PortFinder.Singleton.getNextOpenPort()
         _deproxy = new Deproxy()
         _endpoint = _deproxy.addEndpoint(_port)
         _url = String.format("http://localhost:%d/", _port)

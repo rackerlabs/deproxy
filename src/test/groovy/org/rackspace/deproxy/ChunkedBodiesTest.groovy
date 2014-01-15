@@ -141,8 +141,7 @@ This is the next paragraph.
         // setup - create canned request; setup deproxy and endpoint
 
         deproxy = new Deproxy();
-        PortFinder pf = new PortFinder();
-        int port = pf.getNextOpenPort();
+        int port = PortFinder.Singleton.getNextOpenPort();
         String url = "http://localhost:${port}/";
         DeproxyEndpoint endpoint = deproxy.addEndpoint(port);
 
@@ -319,8 +318,7 @@ This is the next paragraph.
         // setup deproxy and endpoint
 
         deproxy = new Deproxy();
-        PortFinder pf = new PortFinder();
-        int port = pf.getNextOpenPort();
+        int port = PortFinder.Singleton.getNextOpenPort();
         String url = "http://localhost:${port}/";
         def handler = { request, HandlerContext context ->
             context.usedChunkedTransferEncoding = true

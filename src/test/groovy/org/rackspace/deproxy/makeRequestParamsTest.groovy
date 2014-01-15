@@ -10,8 +10,6 @@ import spock.lang.Unroll
  */
 class makeRequestParamsTest extends Specification {
 
-    static PortFinder pf = new PortFinder()
-
     Deproxy deproxy;
     int port;
     String urlbase;
@@ -19,7 +17,7 @@ class makeRequestParamsTest extends Specification {
     def setup() {
 
         this.deproxy = new Deproxy();
-        this.port = pf.getNextOpenPort();
+        this.port = PortFinder.Singleton.getNextOpenPort();
         this.urlbase = "http://localhost:${this.port}";
         this.deproxy.addEndpoint(this.port);
     }

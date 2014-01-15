@@ -12,7 +12,7 @@ class LocalSocketPair {
         if (port == null || port instanceof PortFinder) {
             PortFinder pf
             if (port == null) {
-                pf = new PortFinder()
+                pf = PortFinder.Singleton
             } else {
                 pf = port as PortFinder
             }

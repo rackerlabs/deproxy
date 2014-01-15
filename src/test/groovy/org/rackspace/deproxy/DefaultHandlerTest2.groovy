@@ -7,8 +7,7 @@ class DefaultHandlerTest2 extends Specification {
     def "when request is handled, should return 200 OK response"() {
 
         given:
-        def pf = new PortFinder()
-        def deproxyPort = pf.getNextOpenPort()
+        def deproxyPort = PortFinder.Singleton.getNextOpenPort()
         def deproxy = new Deproxy()
         def endpoint = deproxy.addEndpoint(deproxyPort)
 

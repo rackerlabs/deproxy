@@ -27,8 +27,7 @@ public class DefaultHandlerTest {
         _deproxy = new Deproxy();
 
         log.debug "getting a port"
-        def finder = new PortFinder()
-        _port = finder.getNextOpenPort();
+        _port = PortFinder.Singleton.getNextOpenPort();
 
         log.debug "creating the endpoint"
         _endpoint = _deproxy.addEndpoint(_port);

@@ -25,9 +25,8 @@ class DeproxyShutdownTest {
          *
          */
 
-        def pf = new PortFinder();
-        def port1 = pf.getNextOpenPort();
-        def port2 = pf.getNextOpenPort();
+        def port1 = PortFinder.Singleton.getNextOpenPort();
+        def port2 = PortFinder.Singleton.getNextOpenPort();
 
         deproxy = new Deproxy();
 

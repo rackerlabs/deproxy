@@ -10,8 +10,7 @@ class RouteHandlerTest extends Specification {
     int port
 
     def setup() {
-        PortFinder pf = new PortFinder()
-        port = pf.getNextOpenPort()
+        port = PortFinder.Singleton.getNextOpenPort()
 
         deproxy = new Deproxy()
         deproxy.addEndpoint(port, "server", "localhost", this.&handler)

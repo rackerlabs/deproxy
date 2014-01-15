@@ -24,8 +24,7 @@ class OrphanedHandlingsTest {
     @Before
     void setup() {
         this.deproxy = new Deproxy()
-        PortFinder pf = new PortFinder()
-        this.endpoint = this.deproxy.addEndpoint(pf.getNextOpenPort())
+        this.endpoint = this.deproxy.addEndpoint(PortFinder.Singleton.getNextOpenPort())
         this.otherClient = new Deproxy()
     }
 

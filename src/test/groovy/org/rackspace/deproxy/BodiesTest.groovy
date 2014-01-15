@@ -21,8 +21,7 @@ class BodiesTest {
     @Before
     void setUp() {
         this.deproxy = new Deproxy();
-        PortFinder pf = new PortFinder();
-        this.port = pf.getNextOpenPort();
+        this.port = PortFinder.Singleton.getNextOpenPort();
         this.url = "http://localhost:${this.port}/";
         this.deproxy.addEndpoint(this.port);
     }

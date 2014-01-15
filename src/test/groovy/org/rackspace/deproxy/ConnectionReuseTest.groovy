@@ -27,8 +27,7 @@ class ConnectionReuseTest {
 
         this.deproxy = new Deproxy(null, client);
 
-        PortFinder pf = new PortFinder();
-        this.port = pf.getNextOpenPort();
+        this.port = PortFinder.Singleton.getNextOpenPort();
         this.url = "http://localhost:${this.port}/";
 
         this.deproxy.addEndpoint(this.port);

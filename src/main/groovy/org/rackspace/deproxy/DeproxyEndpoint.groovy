@@ -166,8 +166,8 @@ class DeproxyEndpoint {
             try {
 
                 log.debug "starting loop"
-                def close = false
-                while (!close) {
+                boolean persistConnection = true
+                while (persistConnection) {
 
                     log.debug "calling parseRequest"
                     def ret = parseRequest(inStream, outStream)
@@ -177,7 +177,8 @@ class DeproxyEndpoint {
                         break
                     }
 
-                    def (Request request, boolean persistConnection) = ret
+                    Request request
+                    (request, persistConnection) = ret
 
                     if (persistConnection &&
                             request.headers.contains('Connection')) {
@@ -190,8 +191,22 @@ class DeproxyEndpoint {
                     }
 
                     log.debug "about to handle one request"
-                    close = handleOneRequest(inStream, outStream, connectionName, request, persistConnection)
+                    ResponseWithContext rwc = handleOneRequest(inStream, outStream, connectionName, request, persistConnection)
                     log.debug "handled one request"
+
+
+                    log.debug "send the response"
+                    sendResponse(outStream, rwc.response, rwc.context)
+
+                    if (persistConnection &&
+                            rwc.response.headers.contains('Connection')) {
+
+                        rwc.response.headers.findAll('Connection').each {
+                            if (it == "close") {
+                                persistConnection = false
+                            }
+                        }
+                    }
                 }
 
                 log.debug "ending loop"
@@ -232,7 +247,12 @@ class DeproxyEndpoint {
         return serverSocket != null && !serverSocket.isClosed()
     }
 
-    boolean handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName, Request request, boolean persistConnection) {
+    class ResponseWithContext {
+        Response response
+        HandlerContext context
+    }
+
+    ResponseWithContext handleOneRequest(InputStream inStream, OutputStream outStream, String connectionName, Request request, boolean persistConnection) {
 
         log.debug "Begin handleOneRequest"
         def closeConnection = !persistConnection
@@ -380,23 +400,11 @@ class DeproxyEndpoint {
                 this.deproxy.addOrphanedHandling(handling)
             }
 
-            sendResponse(outStream, response, context)
-
-            if (persistConnection && !closeConnection) {
-                if (request.headers.contains('Connection')) {
-                    request.headers.findAll('Connection').each {
-                        if (it == "close") {
-                            closeConnection = true
-                        }
-                    }
-                }
-            }
+            return new ResponseWithContext(response: response, context:context)
 
         } finally {
 
         }
-
-        return closeConnection
     }
 
     def parseRequest(InputStream inStream, OutputStream outStream) {

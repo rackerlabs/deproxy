@@ -1,10 +1,21 @@
 package org.rackspace.deproxy
 
-import org.rackspace.deproxy.HostHeader
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class HostHeaderTest extends Specification {
+
+    def testBasicUsage() {
+
+        when:
+        def hh = new HostHeader("localhost", 8080)
+
+        then:
+        hh.host == "localhost"
+        hh.port == 8080
+        hh.name == "Host"
+        hh.value == "localhost:8080"
+    }
 
     @Unroll("when we call CreateHostHeaderValue with #host, #port, and https=#https, we should get #expectedValue")
     def testHostHeader() {

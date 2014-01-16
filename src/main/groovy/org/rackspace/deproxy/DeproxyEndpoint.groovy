@@ -15,17 +15,18 @@ import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForC
 @Log4j
 class DeproxyEndpoint {
 
-    String name;
-    int port;
-    String hostname;
-    def defaultHandler;
+    String name
+    String hostname
+    Closure defaultHandler
+    ServerConnector serverConnector
 
     protected Deproxy deproxy;
     protected SocketServerConnector serverConnector;
 
     public DeproxyEndpoint(Deproxy deproxy, Integer port=null,
                            String name="Endpoint-${System.currentTimeMillis()}",
-                           String hostname="localhost", def defaultHandler=null) {
+                           String hostname="localhost", Closure defaultHandler=null,
+                           ServerConnector serverConnector=null) {
         //        """
         //Initialize a DeproxyEndpoint
         //
@@ -45,10 +46,15 @@ class DeproxyEndpoint {
 
         this.deproxy = deproxy
         this.name = name
-        this.port = port
         this.hostname = hostname
         this.defaultHandler = defaultHandler
-        serverConnector = new SocketServerConnector(this, port, name)
+
+        if (serverConnector) {
+            this.serverConnector = serverConnector;
+        } else {
+            this.serverConnector = new SocketServerConnector(name, port)
+        }
+        this.serverConnector.setEndpoint(this)
     }
 
     void shutdown() {

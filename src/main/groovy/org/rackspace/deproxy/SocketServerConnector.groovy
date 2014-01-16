@@ -9,13 +9,10 @@ class SocketServerConnector implements ServerConnector {
     ServerSocket serverSocket
     DeproxyEndpoint endpoint
     int port
-    def name
+    String name
 
-    public SocketServerConnector(DeproxyEndpoint endpoint, port, name) {
+    public SocketServerConnector(String name, int port) {
 
-        if (endpoint == null) { throw new IllegalArgumentException("endpoint") }
-
-        this.endpoint = endpoint
         this.port = port
         this.name = name
 

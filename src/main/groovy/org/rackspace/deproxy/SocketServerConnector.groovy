@@ -154,7 +154,7 @@ class SocketServerConnector {
                     }
 
                     log.debug "about to handle one request"
-                    ResponseWithContext rwc = endpoint.handleOneRequest(request, connectionName)
+                    ResponseWithContext rwc = endpoint.handleRequest(request, connectionName)
                     log.debug "handled one request"
 
 

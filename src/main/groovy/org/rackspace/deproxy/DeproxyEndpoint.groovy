@@ -56,9 +56,9 @@ class DeproxyEndpoint {
         log.debug("Finished shutting down ${this.name}")
     }
 
-    ResponseWithContext handleOneRequest(Request request, String connectionName) {
+    ResponseWithContext handleRequest(Request request, String connectionName) {
 
-        log.debug "Begin handleOneRequest"
+        log.debug "Begin handleRequest"
 
         try {
 

@@ -149,11 +149,9 @@ class Deproxy {
     Endpoint addEndpoint(Integer port=null, String name=null, String hostname=null,
                          Closure defaultHandler=null, Closure<ServerConnector> connectorFactory=null) {
 
-        def endpoint = null
-
         synchronized (this.endpointLock) {
 
-            endpoint = new Endpoint(this, port, name, hostname, defaultHandler)
+            Endpoint endpoint = new Endpoint(this, port, name, hostname, defaultHandler, connectorFactory)
 
             this.endpoints.add(endpoint)
 

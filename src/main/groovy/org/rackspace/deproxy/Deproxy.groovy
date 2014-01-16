@@ -146,7 +146,8 @@ class Deproxy {
         return messageChain
     }
 
-    Endpoint addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
+    Endpoint addEndpoint(Integer port=null, String name=null, String hostname=null,
+                         Closure defaultHandler=null, Closure<ServerConnector> connectorFactory=null) {
 
         def endpoint = null
 

@@ -146,12 +146,28 @@ class Deproxy {
         return messageChain
     }
 
+    Endpoint addEndpoint(Map params) {
+        return addEndpoint(
+                params?.port as Integer,
+                params?.name as String,
+                params?.hostname as String,
+                params?.defaultHandler as Closure,
+                params?.connectorFactory as Closure<ServerConnector>
+        );
+    }
     Endpoint addEndpoint(Integer port=null, String name=null, String hostname=null,
                          Closure defaultHandler=null, Closure<ServerConnector> connectorFactory=null) {
 
         synchronized (this.endpointLock) {
 
-            Endpoint endpoint = new Endpoint(this, port, name, hostname, defaultHandler, connectorFactory)
+            Endpoint endpoint =
+                new Endpoint(
+                        this,
+                        port: port,
+                        name: name,
+                        hostname: hostname,
+                        defaultHandler: defaultHandler,
+                        connectorFactory: connectorFactory)
 
             this.endpoints.add(endpoint)
 

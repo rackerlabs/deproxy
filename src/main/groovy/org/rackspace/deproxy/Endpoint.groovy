@@ -20,10 +20,25 @@ class Endpoint {
 
     protected Deproxy deproxy;
 
-    public Endpoint(Deproxy deproxy, Integer port=null,
-                           String name="Endpoint-${System.currentTimeMillis()}",
-                           String hostname="localhost", Closure defaultHandler=null,
+
+    public Endpoint(Map params, Deproxy deproxy) {
+        this(
+                deproxy,
+                params?.port as Integer,
+                params?.name as String,
+                params?.hostname as String,
+                params?.defaultHandler as Closure,
+                params?.connectorFactory as Closure<ServerConnector>
+        );
+    }
+    public Endpoint(Deproxy deproxy, Integer port=null, String name=null,
+                           String hostname=null, Closure defaultHandler=null,
                            Closure<ServerConnector> connectorFactory=null) {
+
+        if (deproxy == null) throw new IllegalArgumentException()
+
+        if (name == null) name = "Endpoint-${System.currentTimeMillis()}"
+        if (hostname == null) hostname = "localhost"
 
         this.deproxy = deproxy
         this.name = name

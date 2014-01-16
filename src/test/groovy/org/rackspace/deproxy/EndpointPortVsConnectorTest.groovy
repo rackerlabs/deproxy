@@ -33,7 +33,7 @@ class EndpointPortVsConnectorTest extends Specification {
         def factory = { endpoint, name -> connector }
 
         when:
-        def endpoint = new Endpoint(deproxy, null, null, null, null, factory)
+        def endpoint = new Endpoint(deproxy, connectorFactory: factory)
 
         then:
         endpoint.serverConnector == connector
@@ -51,7 +51,7 @@ class EndpointPortVsConnectorTest extends Specification {
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
-        def endpoint = new Endpoint(deproxy, port, null, null, null, factory)
+        def endpoint = new Endpoint(deproxy, port: port, connectorFactory: factory)
 
         then:
         endpoint.serverConnector == connector
@@ -96,7 +96,7 @@ class EndpointPortVsConnectorTest extends Specification {
         def factory = { endpoint, name -> connector }
 
         when:
-        def endpoint = deproxy.addEndpoint(null, null, null, null, factory)
+        def endpoint = deproxy.addEndpoint(connectorFactory: factory)
 
         then:
         endpoint.serverConnector == connector
@@ -114,7 +114,7 @@ class EndpointPortVsConnectorTest extends Specification {
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
-        def endpoint = deproxy.addEndpoint(port, null, null, null, factory)
+        def endpoint = deproxy.addEndpoint(port: port, connectorFactory: factory)
 
         then:
         endpoint.serverConnector == connector

@@ -23,8 +23,9 @@ class DeproxyEndpoint {
     protected Deproxy deproxy;
     protected SocketServerConnector serverConnector;
 
-    public DeproxyEndpoint(Deproxy deproxy, int port, String name,
-                           String hostname="localhost", Object defaultHandler=null) {
+    public DeproxyEndpoint(Deproxy deproxy, Integer port=null,
+                           String name="Endpoint-${System.currentTimeMillis()}",
+                           String hostname="localhost", def defaultHandler=null) {
         //        """
         //Initialize a DeproxyEndpoint
         //

@@ -152,10 +152,6 @@ class Deproxy {
 
         synchronized (this.endpointLock) {
 
-            if (name == null) {
-                name = String.format("Endpoint-%d", this.endpoints.size())
-            }
-
             endpoint = new DeproxyEndpoint(this, port, name, hostname, defaultHandler)
 
             this.endpoints.add(endpoint)

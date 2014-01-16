@@ -11,10 +11,13 @@ class SocketServerConnector implements ServerConnector {
     int port
     String name
 
-    public SocketServerConnector(String name, int port) {
+    public SocketServerConnector(DeproxyEndpoint endpoint, String name, int port) {
 
-        this.port = port
+        if (!endpoint) { throw new IllegalArgumentException("endpoint") }
+
+        this.endpoint = endpoint
         this.name = name
+        this.port = port
 
         serverSocket = new ServerSocket(port)
 

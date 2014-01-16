@@ -1,8 +1,6 @@
 package org.rackspace.deproxy
 
 import groovy.util.logging.Log4j
-import org.apache.log4j.Logger
-import org.linkedin.util.clock.SystemClock
 
 import java.text.SimpleDateFormat
 
@@ -21,40 +19,22 @@ class DeproxyEndpoint {
     ServerConnector serverConnector
 
     protected Deproxy deproxy;
-    protected SocketServerConnector serverConnector;
 
     public DeproxyEndpoint(Deproxy deproxy, Integer port=null,
                            String name="Endpoint-${System.currentTimeMillis()}",
                            String hostname="localhost", Closure defaultHandler=null,
-                           ServerConnector serverConnector=null) {
-        //        """
-        //Initialize a DeproxyEndpoint
-        //
-        //Params:
-        //deproxy - The parent Deproxy object that contains this endpoint
-        //port - The port on which this endpoint will listen
-        //name - A descriptive name for this endpoint
-        //hostname - The ``hostname`` portion of the address tuple passed to
-        //``socket.bind``. If not specified, it defaults to 'localhost'
-        //default_handler - An optional handler function to use for requests that
-        //this endpoint services, if not specified elsewhere
-        //"""
-        //
-        if (hostname == null) {
-            hostname = "localhost"
-        }
+                           Closure<ServerConnector> connectorFactory=null) {
 
         this.deproxy = deproxy
         this.name = name
         this.hostname = hostname
         this.defaultHandler = defaultHandler
 
-        if (serverConnector) {
-            this.serverConnector = serverConnector;
+        if (connectorFactory) {
+            this.serverConnector = connectorFactory(this, name);
         } else {
-            this.serverConnector = new SocketServerConnector(name, port)
+            this.serverConnector = new SocketServerConnector(this, name, port)
         }
-        this.serverConnector.setEndpoint(this)
     }
 
     void shutdown() {

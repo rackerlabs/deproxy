@@ -16,7 +16,7 @@ import static org.junit.Assert.*
 class OrphanedHandlingsTest {
 
     Deproxy deproxy
-    DeproxyEndpoint endpoint
+    Endpoint endpoint
     int port
 
     // this just acts as another HTTP client to make requests with

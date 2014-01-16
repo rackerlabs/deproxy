@@ -143,7 +143,7 @@ This is the next paragraph.
         deproxy = new Deproxy();
         int port = PortFinder.Singleton.getNextOpenPort();
         String url = "http://localhost:${port}/";
-        DeproxyEndpoint endpoint = deproxy.addEndpoint(port);
+        Endpoint endpoint = deproxy.addEndpoint(port);
 
         String body = """ This is another body\n\r\nThis is the next paragraph.\n"""
 
@@ -324,7 +324,7 @@ This is the next paragraph.
             context.usedChunkedTransferEncoding = true
             return new Response(200, "OK", null, body)
         }
-        DeproxyEndpoint endpoint = deproxy.addEndpoint(port, null, null, handler);
+        Endpoint endpoint = deproxy.addEndpoint(port, null, null, handler);
 
         // create raw connection
 

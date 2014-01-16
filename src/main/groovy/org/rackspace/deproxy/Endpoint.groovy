@@ -11,7 +11,7 @@ import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForC
  */
 
 @Log4j
-class DeproxyEndpoint {
+class Endpoint {
 
     String name
     String hostname
@@ -20,7 +20,7 @@ class DeproxyEndpoint {
 
     protected Deproxy deproxy;
 
-    public DeproxyEndpoint(Deproxy deproxy, Integer port=null,
+    public Endpoint(Deproxy deproxy, Integer port=null,
                            String name="Endpoint-${System.currentTimeMillis()}",
                            String hostname="localhost", Closure defaultHandler=null,
                            Closure<ServerConnector> connectorFactory=null) {

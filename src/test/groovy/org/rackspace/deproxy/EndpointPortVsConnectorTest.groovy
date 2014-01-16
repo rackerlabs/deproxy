@@ -16,7 +16,7 @@ class EndpointPortVsConnectorTest extends Specification {
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
-        def endpoint = new DeproxyEndpoint(deproxy, port)
+        def endpoint = new Endpoint(deproxy, port)
 
         then:
         endpoint.serverConnector instanceof SocketServerConnector
@@ -33,7 +33,7 @@ class EndpointPortVsConnectorTest extends Specification {
         def factory = { endpoint, name -> connector }
 
         when:
-        def endpoint = new DeproxyEndpoint(deproxy, null, null, null, null, factory)
+        def endpoint = new Endpoint(deproxy, null, null, null, null, factory)
 
         then:
         endpoint.serverConnector == connector
@@ -51,7 +51,7 @@ class EndpointPortVsConnectorTest extends Specification {
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
-        def endpoint = new DeproxyEndpoint(deproxy, port, null, null, null, factory)
+        def endpoint = new Endpoint(deproxy, port, null, null, null, factory)
 
         then:
         endpoint.serverConnector == connector
@@ -61,13 +61,13 @@ class EndpointPortVsConnectorTest extends Specification {
     def "when instantiating with neither port nor factory, grab an open port create a new SocketServerConnector"() {
 
         when:
-        def endpoint = new DeproxyEndpoint(deproxy)
+        def endpoint = new Endpoint(deproxy)
 
         then:
         endpoint.serverConnector instanceof SocketServerConnector
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
         // this next assertion is possibly flaky if PortFinder.Singleton.getNextOpenPort()
-        // gets called somewhere else between "new DeproxyEndpoint(deproxy)" and here
+        // gets called somewhere else between "new Endpoint(deproxy)" and here
         ssc.port == PortFinder.Singleton.currentPort - 1
         ssc.endpoint == endpoint
         ssc.name == endpoint.name

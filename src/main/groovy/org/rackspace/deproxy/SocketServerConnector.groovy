@@ -7,11 +7,11 @@ class SocketServerConnector implements ServerConnector {
 
     ListenerThread serverThread
     ServerSocket serverSocket
-    DeproxyEndpoint endpoint
+    Endpoint endpoint
     int port
     String name
 
-    public SocketServerConnector(DeproxyEndpoint endpoint, String name, int port) {
+    public SocketServerConnector(Endpoint endpoint, String name, int port) {
 
         if (!endpoint) { throw new IllegalArgumentException("endpoint") }
 

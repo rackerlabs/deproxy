@@ -20,7 +20,7 @@ class Deproxy {
     protected final def messageChainsLock = new ReentrantLock()
     protected Map<String, MessageChain> messageChains = [:]
     protected final def endpointLock = new ReentrantLock()
-    protected List<DeproxyEndpoint> endpoints = []
+    protected List<Endpoint> endpoints = []
 
     private static String getVersion() {
         def res = Deproxy.class.getResourceAsStream("version.txt")
@@ -146,13 +146,13 @@ class Deproxy {
         return messageChain
     }
 
-    DeproxyEndpoint addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
+    Endpoint addEndpoint(int port, String name=null, String hostname=null, defaultHandler=null) {
 
         def endpoint = null
 
         synchronized (this.endpointLock) {
 
-            endpoint = new DeproxyEndpoint(this, port, name, hostname, defaultHandler)
+            endpoint = new Endpoint(this, port, name, hostname, defaultHandler)
 
             this.endpoints.add(endpoint)
 
@@ -160,7 +160,7 @@ class Deproxy {
         }
     }
 
-    boolean  _removeEndpoint(DeproxyEndpoint endpoint) {
+    boolean  _removeEndpoint(Endpoint endpoint) {
 
         synchronized (this.endpointLock) {
 

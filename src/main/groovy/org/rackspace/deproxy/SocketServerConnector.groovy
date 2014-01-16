@@ -3,7 +3,7 @@ package org.rackspace.deproxy
 import groovy.util.logging.Log4j
 
 @Log4j
-class SocketServerConnector {
+class SocketServerConnector implements ServerConnector {
 
     ListenerThread serverThread
     ServerSocket serverSocket

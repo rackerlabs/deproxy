@@ -5,7 +5,7 @@ import groovy.util.logging.Log4j
 @Log4j
 class SocketServerConnector {
 
-    DeproxyEndpointListenerThread serverThread
+    ListenerThread serverThread
     ServerSocket serverSocket
     DeproxyEndpoint endpoint
     int port
@@ -21,17 +21,17 @@ class SocketServerConnector {
 
         serverSocket = new ServerSocket(port)
 
-        serverThread = new DeproxyEndpointListenerThread(this, serverSocket, "Thread-${name}");
+        serverThread = new ListenerThread(this, serverSocket, "Thread-${name}");
         serverThread.start();
     }
 
     @Log4j
-    public class DeproxyEndpointListenerThread extends Thread {
+    public class ListenerThread extends Thread {
 
         SocketServerConnector parent;
         ServerSocket socket;
 
-        public DeproxyEndpointListenerThread(SocketServerConnector parent, ServerSocket socket, String name) {
+        public ListenerThread(SocketServerConnector parent, ServerSocket socket, String name) {
 
             this.setName(name)
             this.parent = parent;
@@ -62,7 +62,7 @@ class SocketServerConnector {
 
                     String connectionName = UUID.randomUUID().toString()
 
-                    DeproxyEndpointHandlerThread handlerThread = new DeproxyEndpointHandlerThread(this.parent, socket, connectionName, this.getName() + "-connection-" + connectionName.toString());
+                    HandlerThread handlerThread = new HandlerThread(this.parent, socket, connectionName, this.getName() + "-connection-" + connectionName.toString());
 
                     log.debug("Starting the handler thread");
                     handlerThread.start();
@@ -78,13 +78,13 @@ class SocketServerConnector {
     }
 
     @Log4j
-    public class DeproxyEndpointHandlerThread extends Thread {
+    public class HandlerThread extends Thread {
 
         SocketServerConnector parent;
         Socket socket;
         String connectionName
 
-        public DeproxyEndpointHandlerThread(SocketServerConnector parent,
+        public HandlerThread(SocketServerConnector parent,
                                             Socket socket,
                                             String connectionName,
                                             String threadName) {

@@ -168,7 +168,7 @@ This is the next paragraph.
 
 
 
-        client = endpoint.createRawConnection()
+        client = endpoint.serverConnector.createRawConnection()
         client.soTimeout = 3000
 
         MessageChain mc
@@ -328,7 +328,7 @@ This is the next paragraph.
 
         // create raw connection
 
-        client = endpoint.createRawConnection()
+        client = endpoint.serverConnector.createRawConnection()
         client.soTimeout = 3000
 
         // send the data to the endpoint

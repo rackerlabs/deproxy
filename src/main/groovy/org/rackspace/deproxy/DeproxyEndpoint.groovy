@@ -33,6 +33,9 @@ class DeproxyEndpoint {
         if (connectorFactory) {
             this.serverConnector = connectorFactory(this, name);
         } else {
+            if (port == null) {
+                port = PortFinder.Singleton.getNextOpenPort()
+            }
             this.serverConnector = new SocketServerConnector(this, name, port)
         }
     }

@@ -9,19 +9,17 @@ class SocketServerConnector implements ServerConnector {
     ServerSocket serverSocket
     Endpoint endpoint
     int port
-    String name
 
-    public SocketServerConnector(Endpoint endpoint, String name, int port) {
+    public SocketServerConnector(Endpoint endpoint, int port) {
 
         if (!endpoint) { throw new IllegalArgumentException("endpoint") }
 
         this.endpoint = endpoint
-        this.name = name
         this.port = port
 
         serverSocket = new ServerSocket(port)
 
-        serverThread = new ListenerThread(this, serverSocket, "Thread-${name}");
+        serverThread = new ListenerThread(this, serverSocket, "Thread-${endpoint.name}");
         serverThread.start();
     }
 

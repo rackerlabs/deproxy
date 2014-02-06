@@ -46,12 +46,12 @@ class Endpoint {
         this.defaultHandler = defaultHandler
 
         if (connectorFactory) {
-            this.serverConnector = connectorFactory(this, name);
+            this.serverConnector = connectorFactory(this);
         } else {
             if (port == null) {
                 port = PortFinder.Singleton.getNextOpenPort()
             }
-            this.serverConnector = new SocketServerConnector(this, name, port)
+            this.serverConnector = new SocketServerConnector(this, port)
         }
     }
 

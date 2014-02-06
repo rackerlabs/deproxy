@@ -23,14 +23,13 @@ class EndpointPortVsConnectorTest extends Specification {
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
         ssc.port == port
         ssc.endpoint == endpoint
-        ssc.name == endpoint.name
     }
 
     def "when instantiating with no port but connectorFactory, use the factory"() {
 
         given:
         def connector = [ shutdown: { } ] as ServerConnector
-        def factory = { endpoint, name -> connector }
+        def factory = { endpoint -> connector }
 
         when:
         def endpoint = new Endpoint(deproxy, connectorFactory: factory)
@@ -47,7 +46,7 @@ class EndpointPortVsConnectorTest extends Specification {
                 shutdown: { }
 
         ] as ServerConnector
-        def factory = { endpoint, name -> connector }
+        def factory = { endpoint -> connector }
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
@@ -70,7 +69,6 @@ class EndpointPortVsConnectorTest extends Specification {
         // gets called somewhere else between "new Endpoint(deproxy)" and here
         ssc.port == PortFinder.Singleton.currentPort - 1
         ssc.endpoint == endpoint
-        ssc.name == endpoint.name
     }
 
     def "when calling addEndpoint with port but no connectorFactory, create a new SocketServerConnector"() {
@@ -86,14 +84,13 @@ class EndpointPortVsConnectorTest extends Specification {
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
         ssc.port == port
         ssc.endpoint == endpoint
-        ssc.name == endpoint.name
     }
 
     def "when calling addEndpoint with no port but connectorFactory, use the factory"() {
 
         given:
         def connector = [ shutdown: { } ] as ServerConnector
-        def factory = { endpoint, name -> connector }
+        def factory = { endpoint -> connector }
 
         when:
         def endpoint = deproxy.addEndpoint(connectorFactory: factory)
@@ -110,7 +107,7 @@ class EndpointPortVsConnectorTest extends Specification {
                 shutdown: { }
 
         ] as ServerConnector
-        def factory = { endpoint, name -> connector }
+        def factory = { endpoint -> connector }
         int port = PortFinder.Singleton.getNextOpenPort()
 
         when:
@@ -133,7 +130,6 @@ class EndpointPortVsConnectorTest extends Specification {
         // gets called somewhere else between "new Endpoint(deproxy)" and here
         ssc.port == PortFinder.Singleton.currentPort - 1
         ssc.endpoint == endpoint
-        ssc.name == endpoint.name
     }
 
     def cleanup() {

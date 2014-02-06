@@ -12,14 +12,14 @@ class ServletServerConnector extends HttpServlet implements ServerConnector {
 
     Endpoint endpoint
 
-    ServletServerConnector(Endpoint endpoint, String name) {
+    ServletServerConnector(Endpoint endpoint) {
 
         this.endpoint = endpoint
     }
 
-    public static ServletServerConnector Factory(Endpoint endpoint, String name) {
+    public static ServletServerConnector Factory(Endpoint endpoint) {
 
-        return new ServletServerConnector(endpoint, name)
+        return new ServletServerConnector(endpoint)
     }
 
     void shutdown() {

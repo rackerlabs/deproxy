@@ -9,7 +9,7 @@ package org.rackspace.deproxy;
  *         times with different values, and all of those values will be kept in the same
  *         order as entered.
  */
-class HeaderCollection {
+class HeaderCollection implements Iterable<Header> {
 
     List<Header> _headers = new ArrayList<Header>();
 
@@ -239,5 +239,10 @@ class HeaderCollection {
 
     public String toString() {
         return _headers.toString();
+    }
+
+    @Override
+    Iterator<Header> iterator() {
+        return _headers.iterator();
     }
 }

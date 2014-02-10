@@ -6,10 +6,7 @@ package org.rackspace.deproxy;
 
 import groovy.util.logging.Log4j;
 
-/**
- *
- * @author richard-sartor
- */
+
 @Log4j
 public class PortFinder {
 

@@ -9,10 +9,6 @@ import org.junit.Test
 
 import static junit.framework.Assert.assertEquals
 
-/**
- *
- * @author izrik
- */
 class LocalSocketPairTest {
 
     @Test

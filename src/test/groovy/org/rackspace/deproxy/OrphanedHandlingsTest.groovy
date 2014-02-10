@@ -9,10 +9,7 @@ import org.junit.*
 
 import static org.junit.Assert.*
 
-/**
- *
- * @author richard-sartor
- */
+
 class OrphanedHandlingsTest {
 
     Deproxy deproxy

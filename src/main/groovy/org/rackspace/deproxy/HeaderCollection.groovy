@@ -1,13 +1,11 @@
 package org.rackspace.deproxy;
 
 /**
- * @author izrik
  *
- *         <p/>
- *         A collection class for HTTP Headers. This class combines aspects of a list
- *         and a map. Lookup is always case-insenitive. A key can be added multiple
- *         times with different values, and all of those values will be kept in the same
- *         order as entered.
+ *  A collection class for HTTP Headers. This class combines aspects of a list
+ *  and a map. Lookup is always case-insenitive. A key can be added multiple
+ *  times with different values, and all of those values will be kept in the same
+ *  order as entered.
  */
 class HeaderCollection implements Iterable<Header> {
 

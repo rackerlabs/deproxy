@@ -8,10 +8,7 @@ package org.rackspace.deproxy
 import org.junit.*;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author richard-sartor
- */
+
 class BodiesTest {
 
     Deproxy deproxy;

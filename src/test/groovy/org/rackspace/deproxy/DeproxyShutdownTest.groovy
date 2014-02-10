@@ -7,10 +7,7 @@ package org.rackspace.deproxy
 
 import org.junit.*
 
-/**
- *
- * @author richard-sartor
- */
+
 class DeproxyShutdownTest {
 
     Deproxy deproxy

@@ -3,11 +3,7 @@ package org.rackspace.deproxy
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class makeRequestParamsTest extends Specification {
 
     Deproxy deproxy;

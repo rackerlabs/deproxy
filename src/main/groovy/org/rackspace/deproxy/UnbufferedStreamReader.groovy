@@ -2,11 +2,7 @@ package org.rackspace.deproxy
 
 import java.nio.CharBuffer
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class UnbufferedStreamReader implements Readable {
 
     InputStream inStream

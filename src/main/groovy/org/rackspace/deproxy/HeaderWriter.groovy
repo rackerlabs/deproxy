@@ -2,11 +2,7 @@ package org.rackspace.deproxy
 
 import groovy.util.logging.Log4j
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 
 @Log4j
 class HeaderWriter {

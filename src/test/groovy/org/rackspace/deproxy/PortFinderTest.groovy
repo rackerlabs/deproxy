@@ -4,11 +4,7 @@ import spock.lang.Specification
 
 import java.util.concurrent.CountDownLatch
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class PortFinderTest extends Specification {
 
     PortFinder pf

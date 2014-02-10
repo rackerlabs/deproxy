@@ -6,11 +6,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class BodyReader {
     static def readBody(InputStream inStream, headers) {
 

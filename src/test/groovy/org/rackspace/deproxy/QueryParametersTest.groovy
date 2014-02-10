@@ -5,11 +5,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class QueryParametersTest {
 
     Deproxy deproxy;

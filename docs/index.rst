@@ -20,10 +20,8 @@ Contents:
    standardHeaders
 
 
-Indices and tables
-==================
+Search
+=======
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 

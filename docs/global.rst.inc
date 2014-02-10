@@ -8,7 +8,8 @@
 
 .. _Deproxy: _static/groovydoc/org/rackspace/deproxy/Deproxy.html
 .. _makeRequest: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#makeRequest(java.lang.String,%20java.lang.String,%20def,%20java.lang.String,%20java.lang.String,%20def,%20def,%20def,%20java.util.Map,%20boolean,%20boolean,%20org.rackspace.deproxy.ClientConnector)
-.. _addEndpoint: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#addEndpoint(int,%20java.lang.String,%20java.lang.String,%20def)
+.. _addEndpoint: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#addEndpoint(java.lang.Integer,%20java.lang.String,%20java.lang.String,%20groovy.lang.Closure,%20groovy.lang.Closure)
+
 .. _shutdownDeproxy: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#shutdown()
 
 .. _Endpoint: _static/groovydoc/org/rackspace/deproxy/Endpoint.html

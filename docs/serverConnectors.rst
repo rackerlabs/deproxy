@@ -161,7 +161,7 @@ When a Deproxy_ is shutdown, all of it's Endpoint_\s are shutdown as well.
         e. Finally, if the Request_ or handler indicated that the connection should be closed (by setting the ``Connection`` header to ``close``), then the handler thread will exit the loop and close the connection. Otherwise, it will return to step ``a.`` above.
     4. When shutdown_ is called on a parent Endpoint_ object, the connector will be shutdown. Its listener thread will stop listening, and no longer receive any new connections. Any long-running handler threads will continue to run until finished or the JVM terminates, whichever comes first.
 
-.. _shutdown: shutdownDeproxy_
+.. _shutdown: shutdownEndpoint_
 
 - ServletServerConnector_ - This connector expects to be loaded into a servlet container.Therefore, it neither creates threads nor opens sockets, and its shutdown method does nothing.
 

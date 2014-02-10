@@ -163,5 +163,5 @@ When a Deproxy_ is shutdown, all of it's Endpoint_\s are shutdown as well.
 
 .. _shutdown: shutdownEndpoint_
 
-- ServletServerConnector_ - This connector expects to be loaded into a servlet container.Therefore, it neither creates threads nor opens sockets, and its shutdown method does nothing.
+- ServletServerConnector_ - This connector expects to be loaded into a servlet container. Therefore, it neither creates threads nor opens sockets, and its shutdown method does nothing.
 

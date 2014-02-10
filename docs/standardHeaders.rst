@@ -3,6 +3,8 @@
  Standard Headers
 ==================
 
+*Experimental/In-progress*
+
 Deproxy provides a number of classes that correspond to the standard headers defined in RFC 2616.
 These classes provide a useful object model to construct headers that conform to the rfc, preventing accidental mistakes like leaving an extra space or period in a Host header.
 

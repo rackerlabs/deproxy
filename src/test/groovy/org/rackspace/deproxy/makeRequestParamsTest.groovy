@@ -141,8 +141,6 @@ class makeRequestParamsTest extends Specification {
         mc.sentRequest.path == "/parampath?query=value@%"
     }
 
-    // TODO: Test for non-ascii characters, illegal characters, escaping, etc.
-
     def cleanup() {
         if (this.deproxy) {
             this.deproxy.shutdown();

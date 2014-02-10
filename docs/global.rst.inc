@@ -1,17 +1,19 @@
 
-.. _builtin-handler-simpleHandler: _static/groovydoc/org/rackspace/deproxy/Handlers.html#simpleHandler(org.rackspace.deproxy.Request)
-.. _builtin-handler-echoHandler: _static/groovydoc/org/rackspace/deproxy/Handlers.html#echoHandler(org.rackspace.deproxy.Request)
-.. _builtin-handler-Delay: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Delay(int,%20def)
-.. _builtin-handler-Route: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.deproxy.ClientConnector)
+.. _simpleHandler: _static/groovydoc/org/rackspace/deproxy/Handlers.html#simpleHandler(org.rackspace.deproxy.Request)
+.. _echoHandler: _static/groovydoc/org/rackspace/deproxy/Handlers.html#echoHandler(org.rackspace.deproxy.Request)
+.. _Delay: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Delay(int,%20def)
+.. _Route: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.deproxy.ClientConnector)
 
 .. _Route: _static/groovydoc/org/rackspace/deproxy/Handlers.html#Route(java.lang.String,%20int,%20boolean,%20org.rackspace.deproxy.ClientConnector)
 
 .. _Deproxy: _static/groovydoc/org/rackspace/deproxy/Deproxy.html
 .. _makeRequest: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#makeRequest(java.lang.String,%20java.lang.String,%20def,%20java.lang.String,%20java.lang.String,%20def,%20def,%20def,%20java.util.Map,%20boolean,%20boolean,%20org.rackspace.deproxy.ClientConnector)
 .. _addEndpoint: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#addEndpoint(int,%20java.lang.String,%20java.lang.String,%20def)
-.. _shutdown: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#shutdown()
+.. _shutdownDeproxy: _static/groovydoc/org/rackspace/deproxy/Deproxy.html#shutdown()
 
-.. _DeproxyEndpoint: _static/groovydoc/org/rackspace/deproxy/DeproxyEndpoint.html
+.. _Endpoint: _static/groovydoc/org/rackspace/deproxy/Endpoint.html
+.. _handleRequest: _static/groovydoc/org/rackspace/deproxy/Endpoint.html#handleRequest(org.rackspace.deproxy.Request,%20java.lang.String)
+.. _shutdownEndpoint: _static/groovydoc/org/rackspace/deproxy/Endpoint.html#shutdown()
 
 .. _Request: _static/groovydoc/org/rackspace/deproxy/Request.html
 
@@ -38,3 +40,7 @@
 .. _sendDefaultResponseHeaders: _static/groovydoc/org/rackspace/deproxy/HandlerContext.html#sendDefaultResponseHeaders
 .. _usedChunkedTransferEncoding_resp: _static/groovydoc/org/rackspace/deproxy/HandlerContext.html#usedChunkedTransferEncoding
 
+.. _ServerConnector: _static/groovydoc/org/rackspace/deproxy/ServerConnector.html
+.. _SocketServerConnector: _static/groovydoc/org/rackspace/deproxy/SocketServerConnector.html
+.. _shutdownSocketServerConnector: _static/groovydoc/org/rackspace/deproxy/SocketServerConnector.html#shutdown()
+.. _ServletServerConnector: _static/groovydoc/org/rackspace/deproxy/ServletServerConnector.html

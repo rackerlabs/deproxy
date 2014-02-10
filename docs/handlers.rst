@@ -154,8 +154,6 @@ additional handlers.
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
         // ]
 
-.. _simpleHandler: builtin-handler-simpleHandler_
-
 - `echoHandler`_
     Returns a response with a 200 status code, and copies the request body and
     request headers.::
@@ -173,8 +171,6 @@ additional handlers.
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0
         // ]
-
-.. _echoHandler: builtin-handler-echoHandler_
 
 - `Delay(timeout, nextHandler)`_
     This is actually a factory function that returns a handler. Give it a
@@ -206,7 +202,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-.. _Delay(timeout, nextHandler): builtin-handler-Delay_
+.. _Delay(timeout, nextHandler): Delay_
 
 - `Route(scheme, host, deproxy)`_
     This is actually a factory function that returns a handler. The handler
@@ -231,7 +227,7 @@ additional handlers.
         //  Deproxy-Request-ID: 6c5b0741-87dc-456b-ae2f-87201efcf6e3
         // ]
 
-.. _Route(scheme, host, deproxy): builtin-handler-Route_
+.. _Route(scheme, host, deproxy): Route_
 
 Custom Handlers
 ===============

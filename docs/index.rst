@@ -15,7 +15,8 @@ Contents:
    makeRequest
    endpoints
    handlers
-   connectors
+   clientConnectors
+   serverConnectors
    standardHeaders
 
 

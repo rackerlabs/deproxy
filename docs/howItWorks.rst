@@ -85,7 +85,7 @@ Now things are getting interesting.
 If our goal is to test the behavior of the proxy and the modifications it
 makes to requests, responses, or both, then we have to keep track of more
 information. Not only that, we need to distinguish between two
-Request/Response exchanges. We can create a DeproxyEndpoint_ to represent the
+Request/Response exchanges. We can create an Endpoint_ to represent the
 server, and make requests to the proxy using the makeRequest_ method.
 When the endpoint receives a request from the proxy, it will return a
 response. We say that it "handles" the request. Both the request the endpoint
@@ -152,7 +152,7 @@ Ultimately, what we need is a comprehensive record of everything that happens as
 We call that a MessageChain_.
 Everything from the client to the proxy to the auxiliary services to the end server and back again is stored in a single, easy-to-assert object.
 
-We can simulate the auxiliary service using a second DeproxyEndpoint_ in addition to the first.
+We can simulate the auxiliary service using a second Endpoint_ in addition to the first.
 That endpoint can be made to return canned responses to the proxy's authentication requests.
 All handlings from both endpoints will be stored in a single MessageChain_ object, which makeRequest_ returns back to its caller.
 

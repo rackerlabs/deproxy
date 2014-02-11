@@ -19,7 +19,7 @@ public class DefaultHandlerTest {
 
     int _port;
     Deproxy _deproxy;
-    DeproxyEndpoint _endpoint;
+    Endpoint _endpoint;
 
     @Before
     public void setUp() {

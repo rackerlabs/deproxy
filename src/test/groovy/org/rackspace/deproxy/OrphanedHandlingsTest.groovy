@@ -16,7 +16,8 @@ import static org.junit.Assert.*
 class OrphanedHandlingsTest {
 
     Deproxy deproxy
-    DeproxyEndpoint endpoint
+    Endpoint endpoint
+    int port
 
     // this just acts as another HTTP client to make requests with
     Deproxy otherClient
@@ -24,7 +25,8 @@ class OrphanedHandlingsTest {
     @Before
     void setup() {
         this.deproxy = new Deproxy()
-        this.endpoint = this.deproxy.addEndpoint(PortFinder.Singleton.getNextOpenPort())
+        this.port = PortFinder.Singleton.getNextOpenPort()
+        this.endpoint = this.deproxy.addEndpoint(port)
         this.otherClient = new Deproxy()
     }
 
@@ -35,7 +37,7 @@ class OrphanedHandlingsTest {
 
         MessageChain mc
         def t = Thread.start {
-            mc = this.deproxy.makeRequest(url: "http://localhost:${this.endpoint.port}/",
+            mc = this.deproxy.makeRequest(url: "http://localhost:${this.port}/",
                                           defaultHandler: handler)
         }
 
@@ -47,7 +49,7 @@ class OrphanedHandlingsTest {
 
         MessageChain otherClientMc
         otherClientMc = this.otherClient.makeRequest(
-                "http://localhost:${this.endpoint.port}/")
+                "http://localhost:${this.port}/")
 
         t.join()
 

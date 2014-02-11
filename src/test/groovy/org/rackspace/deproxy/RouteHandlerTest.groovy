@@ -30,7 +30,7 @@ class RouteHandlerTest extends Specification {
         when: "sending the request via the router"
         Response response = router(request)
 
-        then: "the request is served by the DeproxyEndpoint and handler"
+        then: "the request is served by the endpoint and handler"
         response.code == "606"
         response.message == "Spoiler"
         response.body == "Snape Kills Dumbledore!"
@@ -92,7 +92,7 @@ class RouteHandlerTest extends Specification {
 
     @Ignore
     def testRouteHttps() {
-        // DeproxyEndpoint doesn't yet support HTTPS
+        // Endpoint doesn't yet support HTTPS
     }
 
     def testRouteConnector() {
@@ -120,7 +120,7 @@ class RouteHandlerTest extends Specification {
         when: "sending the request via the router"
         Response response = router(request)
 
-        then: "the request is served by the DeproxyEndpoint and handler"
+        then: "the request is served by the endpoint and handler"
         response.code == "606"
         response.message == "Spoiler"
         response.body == "Snape Kills Dumbledore!"

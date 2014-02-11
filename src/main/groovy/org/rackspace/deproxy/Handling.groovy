@@ -6,12 +6,12 @@ package org.rackspace.deproxy
  */
 class Handling {
 
-    DeproxyEndpoint endpoint
+    Endpoint endpoint
     Request request
     Response response
     String connection
 
-    public Handling(DeproxyEndpoint endpoint, Request request, Response response, String connection) {
+    public Handling(Endpoint endpoint, Request request, Response response, String connection) {
         this.endpoint = endpoint;
         this.request = request;
         this.response = response;

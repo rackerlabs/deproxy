@@ -13,7 +13,7 @@ class CustomHandlersTest {
     int port;
     String url;
     Deproxy deproxy;
-    DeproxyEndpoint endpoint;
+    Endpoint endpoint;
 
     @Before
     public void setUp() {

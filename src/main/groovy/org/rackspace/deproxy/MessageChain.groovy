@@ -3,7 +3,7 @@ package org.rackspace.deproxy
 /**
  *  An object containing the initial request sent via the make_request method,
  *  and all request/response pairs (Handling objects) processed by
- *  DeproxyEndpoint objects.
+ *  Endpoint objects.
  */
 
 class MessageChain {

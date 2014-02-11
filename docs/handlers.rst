@@ -154,8 +154,6 @@ additional handlers.
         //  Deproxy-Request-ID: 398bbcf7-d342-4457-8e8e-0b7e8f8ca826
         // ]
 
-.. _simpleHandler: builtin-handler-simpleHandler_
-
 - `echoHandler`_
     Returns a response with a 200 status code, and copies the request body and
     request headers.::
@@ -173,8 +171,6 @@ additional handlers.
         //  Date: Wed, 04 Sep 2013 16:45:44 GMT,
         //  Content-Length: 0
         // ]
-
-.. _echoHandler: builtin-handler-echoHandler_
 
 - `Delay(timeout, nextHandler)`_
     This is actually a factory function that returns a handler. Give it a
@@ -206,7 +202,7 @@ additional handlers.
         //  Content-Length: 0
         // ]
 
-.. _Delay(timeout, nextHandler): builtin-handler-Delay_
+.. _Delay(timeout, nextHandler): Delay_
 
 - `Route(scheme, host, deproxy)`_
     This is actually a factory function that returns a handler. The handler
@@ -231,7 +227,7 @@ additional handlers.
         //  Deproxy-Request-ID: 6c5b0741-87dc-456b-ae2f-87201efcf6e3
         // ]
 
-.. _Route(scheme, host, deproxy): builtin-handler-Route_
+.. _Route(scheme, host, deproxy): Route_
 
 Custom Handlers
 ===============
@@ -321,50 +317,4 @@ Additionally, you can set the usedChunkedTransferEncoding field to true, to
 tell the endpoint to use chunked transfer coding to send the body to the
 recipient in chunks.
 
-
-Default Response Headers
-========================
-
-By default, an endpoint will add a number of headers on all out-bound
-responses. This behavior can be turned off in custom handlers by setting the
-HandlerContext's sendDefaultResponseHeaders field to false (it is true by
-default). This can be useful for testing how a proxy responds to a
-misbehaving origin server. Each of the following headers is added if it has
-not already been explicitly added by the handler, and subject to certain
-conditions (e.g., presence of a response body):
-
-- Server
-    The identifying information of the server software, "deproxy" followed
-    by the version number.
-
-- Date
-    The date and time at which the response was returned by the handler, in
-    RFC 1123 format.
-
-- Content-Type
-    If the response contains a body, then the endpoint will try to guess. If
-    the body is of type String, then it will add a Content-Type header with a
-    value of "text/plain". If the body is of type byte[], it will use a value
-    of "application/octet-stream". If the response does not contain a body,
-    then this header will not be added.
-
-- Transfer-Encoding
-    If the response has a body, and the usedChunkedTransferEncoding field is
-    true, this header will have a value of "chunked". If it has a body but
-    usedChunkedTransferEncoding is false, the header will have a value of
-    "identity". If there is no body, then this header will not be added.
-
-- Content-Length
-    If the response has a body, and the usedChunkedTransferEncoding field is
-    false, then this header will have a value equal to the decimal count of
-    octets in the body. If the body is a String, then the length is the number
-    of bytes after encoding as ASCII. If the body is of type byte[], then the
-    length is just the number of bytes in the array. If the response has a
-    body, but usedChunkedTransferEncoding is true, then this field is not
-    added. If the response does not have a body, then this header will be
-    added with a value of "0".
-
-Note: If the response has a body, and sendDefaultResponseHeaders is set to
-false, and the handler doesn't explicitly set the Transfer-Encoding header or
-the Content-Length header, then the client/proxy may not be able to correctly
-read the response body.
+.. include:: defaultResponseHeaders.rst.inc

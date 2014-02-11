@@ -15,14 +15,13 @@ Contents:
    makeRequest
    endpoints
    handlers
-   connectors
+   clientConnectors
+   serverConnectors
    standardHeaders
 
 
-Indices and tables
-==================
+Search
+=======
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 

@@ -6,6 +6,11 @@ History
 0.18 (in progress)
 ++++++++++++++++++
 
+- Renamed DeproxyEndpoint to Endpoint.
+- Separated the part of an endpoint that manages sockets and threads into a
+  SocketServerConnector class.
+- Created a ServletServerConnector that can be used to embed an endpoint into
+  a servlet container like Tomcat.
 
 0.17 (2013-11-07)
 ++++++++++++++++++

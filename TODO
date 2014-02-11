@@ -1,4 +1,3 @@
-servlet endpoint
 
 Clean up code
     rename setUp to setup and tearDown to cleanup in spock unit tests
@@ -31,7 +30,6 @@ clean endpoint failure, e.g. if address already in use
     thread(s) should be shut down
 
 
-server connectors
 
 
 server-side https

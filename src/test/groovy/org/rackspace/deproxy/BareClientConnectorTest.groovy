@@ -10,11 +10,6 @@ import java.nio.charset.Charset
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
 @Log4j
 class BareClientConnectorTest {
 

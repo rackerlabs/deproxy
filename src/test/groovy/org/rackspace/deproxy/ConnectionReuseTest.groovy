@@ -6,11 +6,7 @@ import org.junit.Test
 
 import static org.junit.Assert.*
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class ConnectionReuseTest {
 
     Deproxy deproxy;

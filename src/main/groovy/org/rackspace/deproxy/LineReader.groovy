@@ -1,10 +1,6 @@
 package org.rackspace.deproxy
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class LineReader {
 
     // utility method to be used by all parts of the system for reading from

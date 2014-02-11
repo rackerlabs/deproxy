@@ -5,8 +5,6 @@ import groovy.util.logging.Log4j
 import javax.net.ssl.SSLSocketFactory
 
 /**
- * Created with IntelliJ IDEA.
- * User: izrik
  *
  * Send requests by writing bytes directly to the socket
  *

@@ -3,11 +3,7 @@ package org.rackspace.deproxy
 import spock.lang.Specification
 import spock.lang.Unroll
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class makeRequestParamsTest extends Specification {
 
     Deproxy deproxy;
@@ -144,8 +140,6 @@ class makeRequestParamsTest extends Specification {
         then: "the path in the sent request should be that of the path param"
         mc.sentRequest.path == "/parampath?query=value@%"
     }
-
-    // TODO: Test for non-ascii characters, illegal characters, escaping, etc.
 
     def cleanup() {
         if (this.deproxy) {

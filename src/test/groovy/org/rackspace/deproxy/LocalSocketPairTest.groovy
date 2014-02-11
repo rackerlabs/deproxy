@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.rackspace.deproxy
 
@@ -9,10 +5,6 @@ import org.junit.Test
 
 import static junit.framework.Assert.assertEquals
 
-/**
- *
- * @author izrik
- */
 class LocalSocketPairTest {
 
     @Test

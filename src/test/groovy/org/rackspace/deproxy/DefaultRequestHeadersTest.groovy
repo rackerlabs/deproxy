@@ -1,10 +1,6 @@
 
 package org.rackspace.deproxy
 
-/**
- *
- * @author richard-sartor
- */
 
 import org.junit.*;
 import static org.junit.Assert.*;

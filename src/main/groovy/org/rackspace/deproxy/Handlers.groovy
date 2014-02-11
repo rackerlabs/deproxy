@@ -1,10 +1,6 @@
 package org.rackspace.deproxy
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 
 class Handlers {
 

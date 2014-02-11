@@ -6,10 +6,6 @@ import org.junit.*
 
 import static org.junit.Assert.*;
 
-/**
- *
- * @author izrik
- */
 @Log4j
 public class ChunkedBodiesTest {
 	

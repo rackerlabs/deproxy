@@ -8,8 +8,6 @@ import org.apache.http.protocol.RequestContent
 import org.apache.http.util.EntityUtils
 
 /**
- * Created with IntelliJ IDEA.
- * User: izrik
  *
  * Send requests using the Apache HttpComponents library
  *

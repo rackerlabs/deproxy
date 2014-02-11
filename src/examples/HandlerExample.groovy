@@ -6,11 +6,6 @@ import org.rackspace.deproxy.MessageChain
 import org.rackspace.deproxy.Response
 import spock.lang.Specification
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
 class HandlerExample extends Specification {
 
     def handlers() {

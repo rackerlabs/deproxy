@@ -4,11 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.Charset
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 class StaticTcpServer {
 
     static String handleOneRequest(Socket socket, String responseString, int requestLength) {

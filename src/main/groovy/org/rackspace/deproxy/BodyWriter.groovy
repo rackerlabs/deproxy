@@ -8,11 +8,7 @@ import java.nio.charset.Charset
 import java.nio.charset.CharsetEncoder
 import java.nio.charset.CodingErrorAction
 
-/**
- * Created with IntelliJ IDEA.
- * User: izrik
- *
- */
+
 @Log4j
 class BodyWriter {
     def static void writeBody(body, OutputStream outStream, boolean chunked=false) {

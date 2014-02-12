@@ -11,6 +11,7 @@ History
   SocketServerConnector class.
 - Created a ServletServerConnector that can be used to embed an endpoint into
   a servlet container like Tomcat.
+- Misc. bug fixes and code clean up.
 
 0.17 (2013-11-07)
 ++++++++++++++++++

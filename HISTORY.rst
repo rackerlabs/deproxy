@@ -3,7 +3,7 @@
 History
 -------
 
-0.18 (in progress)
+0.18 (2014-02-13)
 ++++++++++++++++++
 
 - Renamed DeproxyEndpoint to Endpoint.

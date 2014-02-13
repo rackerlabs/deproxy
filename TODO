@@ -1,7 +1,5 @@
 
 Clean up code
-    rename DeproxyEndpoint to just Endpoint
-    remove unused Handler interface
     expand test for default request headers, to include all of them, and also to include header values
     replace StaticTcpServer with something better?
 

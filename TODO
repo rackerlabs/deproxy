@@ -1,3 +1,4 @@
+Publish releases to maven central
 
 Clean up code
     expand test for default request headers, to include all of them, and also to include header values

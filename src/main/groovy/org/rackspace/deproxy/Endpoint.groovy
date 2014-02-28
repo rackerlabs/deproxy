@@ -4,8 +4,6 @@ import groovy.util.logging.Log4j
 
 import java.text.SimpleDateFormat
 
-import static org.linkedin.groovy.util.concurrent.GroovyConcurrentUtils.waitForCondition
-
 /**
  * A class that acts as a mock HTTP server.
  */

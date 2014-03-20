@@ -6,7 +6,7 @@ deproxy (or "Deproxy") is a tool for performing high-level, black-box, functiona
 
 See the documentation_ or build with 
 
-  `$ sphinx-build -b html docs/ _build/ `
+  $ sphinx-build -b html docs/ _build/
 
 Testing normal client/server interaction is relatively straight-forward: Use a specialized test client to send requests to the server, and compare the response that the server returns to what it ought to return.::
 

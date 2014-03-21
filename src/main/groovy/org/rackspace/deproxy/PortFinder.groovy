@@ -26,7 +26,13 @@ public class PortFinder {
         // There's still a possibility of a race condition if two devices reserve the port at the same time
         // I'll try to mitigate this
         Config cfg = new Config()
-        cfg.setInstanceName("PortFinderCluster")
+
+        //Use a UUID for the port finder name too
+        def uuid = UUID.randomUUID().toString()
+        cfg.setInstanceName("PortFinderCluster-${uuid}")
+
+        // Configure it to use the log4j stuff
+        cfg.setProperty("hazelcast.logging.type", "log4j")
 
         NetworkConfig network = cfg.getNetworkConfig();
         network.setPort(5990)
@@ -121,9 +127,10 @@ public class PortFinder {
                 }
 
                 Thread.sleep(sleepTime)
-
-                currentPort++
+                currentPort ++
             }
+
+
 
             throw new RuntimeException("Ran out of ports")
         }

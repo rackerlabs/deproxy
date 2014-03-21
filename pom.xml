@@ -86,6 +86,13 @@
             <version>7.0.50</version>
         </dependency>
 
+        <!-- adding hazelcast to take advantage of auto-clustering goodies -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>3.1.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>

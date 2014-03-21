@@ -10,7 +10,7 @@ class PortFinderTest extends Specification {
     PortFinder pf
 
     def setup() {
-        pf = new PortFinder()
+        pf = PortFinder.Singleton
     }
 
     def "when a port number is not in use, return it"() {
@@ -39,31 +39,6 @@ class PortFinderTest extends Specification {
 
         then:
         port == 12346
-
-        cleanup:
-        stop = true
-        t.interrupt()
-        t.join(1000)
-    }
-
-    def "when a port number is already in use, increment the skips count"() {
-
-        given:
-        // create the listener socket
-        def listener = new ServerSocket(23456)
-        boolean stop = false
-        def t = Thread.startDaemon("get-socket") {
-            while (!stop) {
-                listener.accept()
-            }
-        }
-
-        when:
-        int port = pf.getNextOpenPort(23456)
-
-        then:
-        port == 23457
-        pf.skips == 1
 
         cleanup:
         stop = true
@@ -115,7 +90,8 @@ class PortFinderTest extends Specification {
         }
 
         expect:
-        PortFinder.Singleton.currentPort == prevCurrentPort + threads.size() + PortFinder.Singleton.skips
-        ports.unique().size() == threads.size()
+        //All the port numbers should be unique, don't need to verify what they actually are
+        // If we have any duplications, it's over!
+        ports.sort().unique().size() == threads.size()
     }
 }

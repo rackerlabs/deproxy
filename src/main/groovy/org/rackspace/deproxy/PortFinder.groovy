@@ -34,6 +34,12 @@ public class PortFinder {
         // Configure it to use the log4j stuff
         cfg.setProperty("hazelcast.logging.type", "log4j")
 
+        //Going to disable some hazelcast things that we won't need here
+        //Hopefully to make startup time faster
+        cfg.setProperty("hazelcast.memcache.enabled", "false");
+        cfg.setProperty("hazelcast.rest.enabled", "false");
+        cfg.setProperty("hazelcast.version.check.enabled", "false")
+
         NetworkConfig network = cfg.getNetworkConfig();
         network.setPort(5990)
         network.setPortAutoIncrement(true) //Many will have to crawl up once we consume one of these I think

@@ -4,10 +4,6 @@ deproxy
 
 deproxy (or "Deproxy") is a tool for performing high-level, black-box, functional/regression testing of proxies, and other HTTP intermediaries. It is written in Groovy (ported from python). It is meant to be incorporated into unit tests for functional testing.
 
-See the documentation_ or build with 
-
-  $ sphinx-build -b html docs/ _build/
-
 Testing normal client/server interaction is relatively straight-forward: Use a specialized test client to send requests to the server, and compare the response that the server returns to what it ought to return.::
 
   ________                     ________
@@ -57,5 +53,3 @@ A call to a deproxy's makeRequest method will return the request that the client
 
 But this is just scratching the surface. The `org.rackspace.deproxy` package contains additional tools and utilities for custom server responses, mocking, testing multiple endpoints, and more.
 
-
-.. _documentation: http://deproxy.readthedocs.org/en/latest/

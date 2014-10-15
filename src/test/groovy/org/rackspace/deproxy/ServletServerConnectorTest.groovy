@@ -1,7 +1,9 @@
 package org.rackspace.deproxy
 
 import org.apache.catalina.Context
+import org.apache.catalina.Globals
 import org.apache.catalina.startup.Tomcat
+import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
 import javax.servlet.Servlet
@@ -45,6 +47,15 @@ class ServletServerConnectorTest extends Specification {
         cleanup:
         if (tomcat) {
             tomcat.stop()
+
+            // kludge: there's no good way currently to get the basedir field
+            // on tomcat. instead, we take advantage of the fact that
+            // initBaseDir sets CATALINA_BASE_PROP at the end. Ideally, we
+            // could do something like
+            //      FileUtils.deleteQuietly(tomcat.getBaseDir())
+            // but until then, this will have to do.
+            def basedir = new File(System.getProperty(Globals.CATALINA_BASE_PROP))
+            FileUtils.deleteQuietly(basedir)
         }
         if (deproxy) {
             deproxy.shutdown()

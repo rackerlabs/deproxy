@@ -5,6 +5,7 @@ import org.apache.log4j.Logger
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
+import java.util.zip.GZIPInputStream
 
 
 class BodyReader {
@@ -92,6 +93,30 @@ class BodyReader {
         if (bindata == null) {
             log.debug("Returning null");
             return null;
+        }
+
+        if (headers.contains("Content-Encoding") &&
+            headers["Content-Encoding"] != "identity") {
+
+            // decompress the data
+            def contentEncoding = headers["Content-Encoding"]
+
+            if (contentEncoding == "gzip" || contentEncoding == "x-gzip") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def gzip = new GZIPInputStream(compressedStream)
+
+                while (true) {
+                    def b = gzip.read()
+                    if (b < 0) break;
+                    bytes.add(b as byte)
+                }
+
+                bindata = bytes as byte[]
+            } else {
+                throw new UnsupportedOperationException("Unknown content encoding: ${contentEncoding}")
+            }
         }
 
         // TODO: switch this to true, and always try to read chardata unless

@@ -467,6 +467,45 @@ This is the next paragraph.
         assertArrayEquals(body.getBytes("US-ASCII"), bytesRead)
     }
 
+    @Test
+    void testChunkedBodyInBodyReaderWithPartialReads() {
+
+        // The "inStream.read( ... )" call in readChunkedBody can sometimes
+        // return only a portion of the given chunk, so it has to be called in
+        // a loop, until the entire chunk is read. By splitting the body into
+        // two parts, and using a SequenceInputStream, we trigger this
+        // behavior, so that inStream.read( ... ) will have to be called two
+        // times in the loop.
+
+        // given:
+        String body1 = """ This is another body\n\r\n"""
+        String body2 = """ This is the next paragraph.\n"""
+        String length = Integer.toHexString(body1.length() + body2.length());
+        byte[] chunkedBodySegment1 = (
+                "${length}\r\n" + // chunk-size, with no chunk-extension
+                        "${body1}"  // chunk-data
+        ).getBytes("US-ASCII")
+        def stream1 = new ByteArrayInputStream(chunkedBodySegment1)
+
+        byte[] chunkedBodySegment2 = (
+                        "${body2}\r\n" + // more chunk-data
+                        "0\r\n" + // last-chunk, with no chunk-extension
+                        "\r\n" // end of chunked body, no trailer
+        ).getBytes("US-ASCII")
+        def stream2 = new ByteArrayInputStream(chunkedBodySegment2)
+
+        def inStream = new SequenceInputStream(stream1, stream2)
+        HeaderCollection headers = new HeaderCollection(['Transfer-Encoding': 'chunked'])
+
+
+        // when:
+        byte[] bytesRead = BodyReader.readBody(inStream, headers)
+
+
+        // then:
+        assertArrayEquals((body1+body2).getBytes("US-ASCII"), bytesRead)
+    }
+
     @After
     void tearDown() {
         if (this.deproxy) {

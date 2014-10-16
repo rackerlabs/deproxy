@@ -193,7 +193,12 @@ class BodyReader {
 
             // chunk-data CRLF
             byte[] chunkData = new byte[length]
-            inStream.read(chunkData)
+            int totalBytesRead = 0;
+            int numBytesRead = 0;
+            while (totalBytesRead < length) {
+                numBytesRead = inStream.read(chunkData, totalBytesRead, length - totalBytesRead)
+                totalBytesRead += numBytesRead
+            }
             LineReader.readLine(inStream)
 
             chunks.add(chunkData)

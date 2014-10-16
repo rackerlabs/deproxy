@@ -24,7 +24,8 @@ class LineReader {
             value = reader.read()
         }
 
-        return sb.toString()
+        def line = sb.toString()
+        return line
     }
 
     static String readLine(InputStream inStream) {

@@ -1,3 +1,8 @@
+
+content coding (esp. compression)
+    distinction between message body and transfer-encoded message body, between
+        the request/response and the bytes-on-the-wire
+
 Publish releases to maven central
 
 Clean up code
@@ -81,11 +86,6 @@ replace RequestParams with proper object orientation in client connectors
         this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector
             not necessarily; that describes DefaultClientConnector as well
 
-distinction between message body and transfer-encoded message body, between
-        the request/response and the bytes-on-the-wire
-
-compression (content coding)
-    will likely require changes to the object model
 
 better logging
     option whether or not to log request/response bodies - off by default

@@ -3,9 +3,10 @@
 History
 -------
 
-0.19 (in progress)
+0.19 (2014-10-16)
 ++++++++++++++++++
-
+- New logo!
+- Fixed a bug in reading of chunked bodies
 
 0.18 (2014-02-13)
 ++++++++++++++++++

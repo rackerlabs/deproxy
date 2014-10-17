@@ -1,5 +1,12 @@
 
 content coding (esp. compression)
+    reading
+        deflate
+        compress
+    writing
+        gzip
+        deflate
+        compress
     distinction between message body and transfer-encoded message body, between
         the request/response and the bytes-on-the-wire
 

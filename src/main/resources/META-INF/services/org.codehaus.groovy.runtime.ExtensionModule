@@ -1,0 +1,4 @@
+moduleName=Test module for specifications
+moduleVersion=1.0-test
+extensionClasses=org.rackspace.deproxy.util.StringExtension,org.rackspace.deproxy.util.InputStreamExtension
+#staticExtensionClasses=

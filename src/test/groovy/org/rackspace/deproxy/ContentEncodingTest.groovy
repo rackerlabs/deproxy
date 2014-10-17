@@ -47,7 +47,26 @@ class ContentEncodingTest {
 
         // then the result should be the original string
         assertEquals(content, body)
-
     }
 
+    @Test
+    void testReadingDeflate() {
+
+        // given an input string, and the compressed byte sequence for it
+        String content = "This is a string"
+        byte[] compressedContent = content.toDeflate("US-ASCII")
+        def stream = new ByteArrayInputStream(compressedContent)
+        //  and appropriate headers describing the body and encodings
+        def headers = new HeaderCollection([
+                'Content-Encoding': 'deflate',
+                'Content-Length': compressedContent.length,
+                'Transfer-Encoding': 'identity'
+        ])
+
+        // when we read the compressed data
+        def body = BodyReader.readBody(stream, headers)
+
+        // then the result should be the original string
+        assertEquals(content, body)
+    }
 }

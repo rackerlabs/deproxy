@@ -1,7 +1,6 @@
 
 content coding (esp. compression)
     reading
-        deflate
         compress
     writing
         gzip

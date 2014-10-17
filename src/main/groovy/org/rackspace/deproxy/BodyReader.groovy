@@ -6,6 +6,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
 import java.util.zip.GZIPInputStream
+import java.util.zip.InflaterInputStream
 
 
 class BodyReader {
@@ -105,15 +106,18 @@ class BodyReader {
 
                 List<Byte> bytes = []
                 def compressedStream = new ByteArrayInputStream(bindata)
-                def gzip = new GZIPInputStream(compressedStream)
+                def uncompressedStream = new GZIPInputStream(compressedStream)
 
-                while (true) {
-                    def b = gzip.read()
-                    if (b < 0) break;
-                    bytes.add(b as byte)
-                }
+                bindata = uncompressedStream.getBytes()
 
-                bindata = bytes as byte[]
+            } else if (contentEncoding == "deflate") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def uncompressedStream = new InflaterInputStream(compressedStream)
+
+                bindata = uncompressedStream.getBytes()
+
             } else {
                 throw new UnsupportedOperationException("Unknown content encoding: ${contentEncoding}")
             }

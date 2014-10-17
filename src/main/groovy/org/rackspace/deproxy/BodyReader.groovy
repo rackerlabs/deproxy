@@ -1,5 +1,6 @@
 package org.rackspace.deproxy
 
+import by.dev.madhead.lzwj.compress.LZW
 import org.apache.log4j.Logger
 
 import java.nio.ByteBuffer
@@ -100,7 +101,8 @@ class BodyReader {
             headers["Content-Encoding"] != "identity") {
 
             // decompress the data
-            def contentEncoding = headers["Content-Encoding"]
+
+            def contentEncoding = headers["Content-Encoding"].toLowerCase()
 
             if (contentEncoding == "gzip" || contentEncoding == "x-gzip") {
 
@@ -117,6 +119,17 @@ class BodyReader {
                 def uncompressedStream = new InflaterInputStream(compressedStream)
 
                 bindata = uncompressedStream.getBytes()
+
+            } else if (contentEncoding == "compress" || contentEncoding == "x-compress") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def uncompressedStream = new ByteArrayOutputStream()
+                LZW lzw = new LZW()
+                lzw.decompress(compressedStream, uncompressedStream)
+                bindata = uncompressedStream.toByteArray()
+                compressedStream.close()
+                uncompressedStream.close()
 
             } else {
                 throw new UnsupportedOperationException("Unknown content encoding: ${contentEncoding}")

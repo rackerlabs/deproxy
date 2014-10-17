@@ -1,13 +1,13 @@
 
 content coding (esp. compression)
-    reading
-        compress
     writing
         gzip
         deflate
         compress
-    distinction between message body and transfer-encoded message body, between
-        the request/response and the bytes-on-the-wire
+    clarified object model
+        un-encoded message body (the actual data)
+        content-encoded message body (e.g. compressed)
+        transfer-encoded message body (bytes on the wire)
 
 Publish releases to maven central
 

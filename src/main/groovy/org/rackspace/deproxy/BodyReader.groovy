@@ -1,10 +1,13 @@
 package org.rackspace.deproxy
 
+import by.dev.madhead.lzwj.compress.LZW
 import org.apache.log4j.Logger
 
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
+import java.util.zip.GZIPInputStream
+import java.util.zip.InflaterInputStream
 
 
 class BodyReader {
@@ -92,6 +95,45 @@ class BodyReader {
         if (bindata == null) {
             log.debug("Returning null");
             return null;
+        }
+
+        if (headers.contains("Content-Encoding") &&
+            headers["Content-Encoding"] != "identity") {
+
+            // decompress the data
+
+            def contentEncoding = headers["Content-Encoding"].toLowerCase()
+
+            if (contentEncoding == "gzip" || contentEncoding == "x-gzip") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def uncompressedStream = new GZIPInputStream(compressedStream)
+
+                bindata = uncompressedStream.getBytes()
+
+            } else if (contentEncoding == "deflate") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def uncompressedStream = new InflaterInputStream(compressedStream)
+
+                bindata = uncompressedStream.getBytes()
+
+            } else if (contentEncoding == "compress" || contentEncoding == "x-compress") {
+
+                List<Byte> bytes = []
+                def compressedStream = new ByteArrayInputStream(bindata)
+                def uncompressedStream = new ByteArrayOutputStream()
+                LZW lzw = new LZW()
+                lzw.decompress(compressedStream, uncompressedStream)
+                bindata = uncompressedStream.toByteArray()
+                compressedStream.close()
+                uncompressedStream.close()
+
+            } else {
+                throw new UnsupportedOperationException("Unknown content encoding: ${contentEncoding}")
+            }
         }
 
         // TODO: switch this to true, and always try to read chardata unless

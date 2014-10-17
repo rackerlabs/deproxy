@@ -5,6 +5,7 @@ History
 
 0.20 (in progress)
 ++++++++++++++++++
+- Read content-encoded message bodies
 
 
 0.19 (2014-10-16)

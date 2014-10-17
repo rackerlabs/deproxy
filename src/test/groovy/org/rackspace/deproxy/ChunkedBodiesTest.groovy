@@ -89,7 +89,7 @@ This is the next paragraph.
                 "Transfer-Encoding: chunked\r\n" +
                 "Host: localhost${port}\r\n" +
                 "Accept: */*\r\n" +
-                "Accept-Encoding: identity\r\n" +
+                "Accept-Encoding: identity, gzip, compress, deflate, *;q=0\r\n" +
                 "User-Agent: ${Deproxy.VERSION_STRING}\r\n" +
                 "\r\n" +
                 "${length}\r\n" + // chunk-size, with no chunk-extension

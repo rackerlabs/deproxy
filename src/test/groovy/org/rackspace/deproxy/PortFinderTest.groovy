@@ -10,65 +10,60 @@ class PortFinderTest extends Specification {
     PortFinder pf
 
     def setup() {
-        pf = new PortFinder()
+        pf = PortFinder.Singleton
     }
 
-    def "when a port number is not in use, return it"() {
-
+    def "port finder always gives you a free port"() {
         when:
-        int port = pf.getNextOpenPort(12345)
+        int port = pf.getNextOpenPort()
 
         then:
-        port == 12345
+        PortFinder.available(port)
     }
 
-    def "when a port number is already in use, return the next port number"() {
-
+    def "port finder will not give you ports that are consumed"() {
         given:
-        // create the listener socket
-        def listener = new ServerSocket(12345)
-        boolean stop = false
-        def t = Thread.startDaemon("get-socket") {
-            while (!stop) {
-                listener.accept()
-            }
+        def servers = []
+        //Use up like 10 more ports here -- Probably reasonably safe in this test environment
+        10.times { x ->
+            def server = new ServerSocket(54000 + x)
+            server.setReuseAddress(true)
+            servers << server
         }
 
         when:
-        int port = pf.getNextOpenPort(12345)
+        int port = pf.reservePort(54000)
 
         then:
-        port == 12346
+        PortFinder.available(port)
+
+        port != 54000
+        port != 54001
+        port != 54002
+        port != 54003
+        port != 54004
+        port != 54005
+        port != 54006
+        port != 54007
+        port != 54008
+        port != 54009
+
+        !PortFinder.available(54000)
+        !PortFinder.available(54001)
+        !PortFinder.available(54002)
+        !PortFinder.available(54003)
+        !PortFinder.available(54004)
+        !PortFinder.available(54005)
+        !PortFinder.available(54006)
+        !PortFinder.available(54007)
+        !PortFinder.available(54008)
+        !PortFinder.available(54009)
+
 
         cleanup:
-        stop = true
-        t.interrupt()
-        t.join(1000)
-    }
-
-    def "when a port number is already in use, increment the skips count"() {
-
-        given:
-        // create the listener socket
-        def listener = new ServerSocket(23456)
-        boolean stop = false
-        def t = Thread.startDaemon("get-socket") {
-            while (!stop) {
-                listener.accept()
-            }
+        servers.each { s ->
+            s.close()
         }
-
-        when:
-        int port = pf.getNextOpenPort(23456)
-
-        then:
-        port == 23457
-        pf.skips == 1
-
-        cleanup:
-        stop = true
-        t.interrupt()
-        t.join(1000)
     }
 
     def "when instantiating without parameter, should have the default"() {
@@ -115,7 +110,8 @@ class PortFinderTest extends Specification {
         }
 
         expect:
-        PortFinder.Singleton.currentPort == prevCurrentPort + threads.size() + PortFinder.Singleton.skips
-        ports.unique().size() == threads.size()
+        //All the port numbers should be unique, don't need to verify what they actually are
+        // If we have any duplications, it's over!
+        ports.sort().unique().size() == threads.size()
     }
 }

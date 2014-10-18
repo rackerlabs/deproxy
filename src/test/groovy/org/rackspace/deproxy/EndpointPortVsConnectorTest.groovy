@@ -67,7 +67,7 @@ class EndpointPortVsConnectorTest extends Specification {
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
         // this next assertion is possibly flaky if PortFinder.Singleton.getNextOpenPort()
         // gets called somewhere else between "new Endpoint(deproxy)" and here
-        ssc.port == PortFinder.Singleton.currentPort - 1
+        ssc.port == PortFinder.Singleton.currentPort
         ssc.endpoint == endpoint
     }
 
@@ -128,7 +128,7 @@ class EndpointPortVsConnectorTest extends Specification {
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
         // this next assertion is possibly flaky if PortFinder.Singleton.getNextOpenPort()
         // gets called somewhere else between "new Endpoint(deproxy)" and here
-        ssc.port == PortFinder.Singleton.currentPort - 1
+        ssc.port == PortFinder.Singleton.currentPort
         ssc.endpoint == endpoint
     }
 

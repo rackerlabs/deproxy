@@ -3,7 +3,11 @@
 History
 -------
 
-0.20 (in progress)
+0.21 (in progress)
+++++++++++++++++++
+
+
+0.20 (2014-10-20)
 ++++++++++++++++++
 - Read content-encoded message bodies
 

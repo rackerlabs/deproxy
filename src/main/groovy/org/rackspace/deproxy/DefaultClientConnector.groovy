@@ -61,7 +61,7 @@ class DefaultClientConnector extends BareClientConnector {
                 request.headers.add("Accept", "*/*")
             }
             if (!request.headers.contains("Accept-Encoding")){
-                request.headers.add("Accept-Encoding", "identity")
+                request.headers.add("Accept-Encoding", "identity, gzip, compress, deflate, *;q=0")
             }
             if (!request.headers.contains("User-Agent")){
                 request.headers.add("User-Agent", Deproxy.VERSION_STRING)

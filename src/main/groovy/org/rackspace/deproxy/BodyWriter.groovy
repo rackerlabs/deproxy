@@ -25,9 +25,9 @@ class BodyWriter {
                 log.debug("sending string body, length ${body.length()}")
                 log.debug(body)
                 if (body.length() > 0) {
-                    PrintWriter writer = new PrintWriter(outStream, true);
-                    writer.write(body)
-                    writer.flush()
+                    def bytes = body.getBytes("US-ASCII")
+                    outStream.write(bytes)
+                    outStream.flush()
                 }
 
             } else if (body instanceof byte[]) {

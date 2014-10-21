@@ -52,6 +52,9 @@ server-side https
 test https
 test route https
 
+handle non-ascii character strings in message bodies
+    convert to byte sequence correctly
+    calculate Content-Length correctly
 
 extensive tests for uri's paths and query parameters
     consider illegal chars

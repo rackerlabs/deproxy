@@ -5,6 +5,7 @@ History
 
 0.21 (in progress)
 ++++++++++++++++++
+- Fix a bug when calculating Content-Length for non-ascii strings in message bodies.
 
 
 0.20 (2014-10-20)
@@ -16,6 +17,7 @@ History
 ++++++++++++++++++
 - New logo!
 - Fixed a bug in reading of chunked bodies
+
 
 0.18 (2014-02-13)
 ++++++++++++++++++

@@ -29,7 +29,7 @@ class DefaultClientConnector extends BareClientConnector {
                     def length
                     String contentType
                     if (request.body instanceof String) {
-                        length = request.body.getBytes("US-ASCII").length()
+                        length = request.body.getBytes("US-ASCII").length
                         contentType = "text/plain"
                     } else if (request.body instanceof byte[]) {
                         length = request.body.length

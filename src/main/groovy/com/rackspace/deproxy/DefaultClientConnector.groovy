@@ -1,14 +1,18 @@
 package com.rackspace.deproxy
 
 
-class DefaultClientConnector extends BareClientConnector {
+class DefaultClientConnector implements ClientConnector {
 
-    public DefaultClientConnector() {
-        this(null)
+    public DefaultClientConnector(ClientConnector nextConnector=null) {
+
+        if (nextConnector == null) {
+            nextConnector = new BareClientConnector()
+        }
+
+        this.nextConnector = nextConnector
     }
-    public DefaultClientConnector(Socket socket) {
-        super(socket)
-    }
+
+    ClientConnector nextConnector
 
     @Override
     Response sendRequest(Request request, boolean https, host, port, RequestParams params) {
@@ -68,6 +72,6 @@ class DefaultClientConnector extends BareClientConnector {
             }
         }
 
-        return super.sendRequest(request, https, host, port, params)
+        return nextConnector.sendRequest(request, https, host, port, params)
     }
 }

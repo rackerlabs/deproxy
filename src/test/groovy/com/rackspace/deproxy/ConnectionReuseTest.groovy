@@ -25,7 +25,7 @@ class ConnectionReuseTest {
         def endpoint = this.deproxy.addEndpoint(this.port);
 
         def socket = (endpoint.serverConnector as SocketServerConnector).createRawConnection()
-        client = new DefaultClientConnector(socket)
+        client = new DefaultClientConnector(new BareClientConnector(socket))
 
     }
 

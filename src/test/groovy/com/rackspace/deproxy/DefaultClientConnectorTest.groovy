@@ -18,7 +18,9 @@ class DefaultClientConnectorTest extends Specification {
         server.soTimeout = 2000
 
         and: "a DefaultClientConnector using the provided client socket"
-        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+        DefaultClientConnector clientConnector =
+                new DefaultClientConnector(
+                        new BareClientConnector(client))
 
         and: "a simple request"
         Request request = new Request("GET", "/", ['Content-Length': "0"])
@@ -60,7 +62,9 @@ class DefaultClientConnectorTest extends Specification {
         server.soTimeout = 2000
 
         and: "a DefaultClientConnector using the provided client socket"
-        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+        DefaultClientConnector clientConnector =
+                new DefaultClientConnector(
+                        new BareClientConnector(client))
 
         and: "a simple request and basic request params"
         Request request = new Request("GET", "/")

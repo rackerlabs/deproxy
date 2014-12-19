@@ -3,6 +3,10 @@
 History
 -------
 
+0.22 (in progress)
+++++++++++++++++++
+
+
 0.21 (2014-10-21)
 ++++++++++++++++++
 - Fix a bug when calculating Content-Length for non-ascii strings in message bodies.

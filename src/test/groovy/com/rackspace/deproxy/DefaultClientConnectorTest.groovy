@@ -6,7 +6,7 @@ import spock.lang.Unroll
 
 class DefaultClientConnectorTest extends Specification {
 
-    void testConstructorWithSocketParameter() {
+    void "when we call sendRequest, we should get the standard default request headers"() {
 
         given: "a DefaultClientConnector using a dummy nextConnector"
         Request capturedRequest = null
@@ -42,8 +42,8 @@ class DefaultClientConnectorTest extends Specification {
         response.code == "200"
     }
 
-    @Unroll("when we call sendRequest with https=#https, #host, and #port, we should get Host: #expectedValue")
-    void testHostHeader() {
+    @Unroll
+    void "when we call sendRequest with https=#https, #host, and #port, we should get Host: #expectedValue"() {
 
         given: "a DefaultClientConnector using a dummy nextConnector"
         Request capturedRequest = null

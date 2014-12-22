@@ -55,7 +55,6 @@ class BareClientConnectorTest {
         BareClientConnector clientConnector = new BareClientConnector(client)
         Request request = new Request("GET", "/", ['Content-Length': '0'])
         RequestParams params = new RequestParams()
-        params.sendDefaultRequestHeaders = false
 
         Response response = clientConnector.sendRequest(request, false, "localhost", server.port, params)
 

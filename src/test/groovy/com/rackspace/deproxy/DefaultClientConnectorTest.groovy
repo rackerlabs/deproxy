@@ -18,21 +18,26 @@ class DefaultClientConnectorTest extends Specification {
                         }] as ClientConnector)
 
         and: "a simple request"
-        Request request = new Request("GET", "/", ['Content-Length': "0"])
+        Request request = new Request("GET", "/")
 
-        and: "request params that don't involve adding default headers"
-        RequestParams params = [sendDefaultRequestHeaders : false] as RequestParams
 
 
         when: "we send the request through the connector"
+        RequestParams params = new RequestParams()
         Response response = clientConnector.sendRequest(request, false, "localhost", 80, params)
 
-        then: "it formats the request correctly and only has the header we specified"
+        then: "it formats the request correctly and includes the standard default request parameters"
         capturedRequest.method == 'GET'
         capturedRequest.path == '/'
-        capturedRequest.headers.size() == 1
-        capturedRequest.headers.contains("Content-Length")
-        capturedRequest.headers["Content-Length"] == "0"
+        capturedRequest.headers.size() == 4
+        capturedRequest.headers.contains("Host")
+        capturedRequest.headers["Host"] == "localhost"
+        capturedRequest.headers.contains("Accept")
+        capturedRequest.headers["Accept"] == "*/*"
+        capturedRequest.headers.contains("Accept-Encoding")
+        capturedRequest.headers["Accept-Encoding"] == "identity, gzip, compress, deflate, *;q=0"
+        capturedRequest.headers.contains("User-Agent")
+        capturedRequest.headers["User-Agent"] == Deproxy.VERSION_STRING
         capturedRequest.body == "" || capturedRequest.body == null
         response.code == "200"
     }
@@ -51,11 +56,11 @@ class DefaultClientConnectorTest extends Specification {
 
         and: "a simple request and basic request params"
         Request request = new Request("GET", "/")
-        RequestParams params = [sendDefaultRequestHeaders : true] as RequestParams
 
 
 
         when: "we send the request through the connector"
+        def params = new RequestParams()
         Response response = clientConnector.sendRequest(request, https, host, port, params)
 
         then: "it formats the request correctly and has a Host header with the right value"

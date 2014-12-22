@@ -47,18 +47,18 @@ class Deproxy {
 
     public MessageChain makeRequest(Map params) {
         return makeRequest(
-                params?.url,
-                params?.host ?: "",
+                params?.url as String,
+                (params?.host ?: "") as String,
                 params?.port,
-                params?.method ?: "GET",
-                params?.path ?: "",
+                (params?.method ?: "GET") as String,
+                (params?.path ?: "") as String,
                 params?.headers,
                 params?.requestBody ?: "",
                 params?.defaultHandler,
-                params?.handlers,
-                (params?.addDefaultHeaders == null ? true : params?.addDefaultHeaders),
-                (params?.chunked ? true : false),
-                params?.clientConnector ?: null
+                params?.handlers as Map,
+                (params?.addDefaultHeaders == null ? true : params?.addDefaultHeaders) as boolean,
+                (params?.chunked ? true : false) as boolean,
+                (params?.clientConnector ?: null) as ClientConnector
         );
     }
 

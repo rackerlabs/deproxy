@@ -10,6 +10,8 @@ content coding (esp. compression)
         transfer-encoded message body (bytes on the wire)
 
 Publish releases to maven central
+    change package names and group id to 'com.rackspace'
+
 
 Clean up code
     expand test for default request headers, to include all of them, and also to include header values

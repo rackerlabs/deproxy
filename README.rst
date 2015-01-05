@@ -51,5 +51,5 @@ A deproxy acts as both the client and the server, and the proxy it is testing wi
 Any requests received by the server side are matched up with the requests that started them.
 A call to a deproxy's makeRequest method will return the request that the client side sent, the request that the server side received, the response that the server side sent, and the response that the client side received. In this way, we can conclusively prove whether or not the proxy modified requests and responses correctly. We can even conclusively show when no request makes it to the server in the first place, because the receivedRequest and sentResponse fields will be null.
 
-But this is just scratching the surface. The `org.rackspace.deproxy` package contains additional tools and utilities for custom server responses, mocking, testing multiple endpoints, and more.
+But this is just scratching the surface. The `com.rackspace.deproxy` package contains additional tools and utilities for custom server responses, mocking, testing multiple endpoints, and more.
 

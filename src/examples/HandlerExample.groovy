@@ -1,9 +1,9 @@
-package org.rackspace.deproxy.examples
+package com.rackspace.deproxy.examples
 
-import org.rackspace.deproxy.Deproxy
-import org.rackspace.deproxy.Handlers
-import org.rackspace.deproxy.MessageChain
-import org.rackspace.deproxy.Response
+import com.rackspace.deproxy.Deproxy
+import com.rackspace.deproxy.Handlers
+import com.rackspace.deproxy.MessageChain
+import com.rackspace.deproxy.Response
 import spock.lang.Specification
 
 class HandlerExample extends Specification {

@@ -12,14 +12,14 @@ To use deproxy in your unit tests:
 Here's a code example of a unit test that tests the fictional theProxy library::
 
     import org.theProxy.*
-    import org.rackspace.deproxy.*
+    import com.rackspace.deproxy.*
     import org.junit.*
     import static org.junit.Assert.*
 
     class TestTheProxy {
 
         Deproxy deproxy
-        DeproxyEndpoint endpoint
+        Endpoint endpoint
         TheProxy theProxy
 
         @Before

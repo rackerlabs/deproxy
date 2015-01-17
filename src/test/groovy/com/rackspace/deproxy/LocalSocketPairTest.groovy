@@ -83,10 +83,8 @@ class LocalSocketPairTest {
 
         def (Socket client, Socket server) = LocalSocketPair.createLocalSocketPair(pf)
 
-        assertEquals(pf.currentPort - 1, client.port)
-        assertEquals(pf.currentPort - 1, server.localPort)
-
-
+        //Since the port finder is deprecated, and unreliable, this still uses the built in java socket stuff.
+        //The acceptance of a PortFinder just ensures that use of it doesn't break just yet.
 
         PrintWriter writer = new PrintWriter(client.outputStream)
         UnbufferedStreamReader reader = new UnbufferedStreamReader(server.inputStream)

@@ -10,6 +10,10 @@ class SocketServerConnector implements ServerConnector {
     Endpoint endpoint
     int port
 
+    int port() {
+        port
+    }
+
     public SocketServerConnector(Endpoint endpoint, Integer port) {
 
         if (!endpoint) { throw new IllegalArgumentException("endpoint") }

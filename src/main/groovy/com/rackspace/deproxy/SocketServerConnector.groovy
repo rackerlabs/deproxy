@@ -22,11 +22,10 @@ class SocketServerConnector implements ServerConnector {
 
         if(port == null) {
             serverSocket = new ServerSocket(0)
-            this.port = serverSocket.getLocalPort()
         } else {
             serverSocket = new ServerSocket(port)
-            this.port = port
         }
+        this.port = serverSocket.getLocalPort()
 
         serverThread = new ListenerThread(this, serverSocket, "Thread-${endpoint.name}");
         serverThread.start();

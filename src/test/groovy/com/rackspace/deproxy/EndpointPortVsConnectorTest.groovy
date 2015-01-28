@@ -66,7 +66,7 @@ class EndpointPortVsConnectorTest extends Specification {
         endpoint.serverConnector instanceof SocketServerConnector
         SocketServerConnector ssc = (SocketServerConnector)(endpoint.serverConnector)
 
-        //Just need to verify that it didn't throw any exceptions and that the port is not null
+        notThrown(Exception)
         ssc.port != null
         ssc.port != 0
         ssc.endpoint == endpoint

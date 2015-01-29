@@ -6,18 +6,12 @@ class LocalSocketPair {
     public static List<Socket> createLocalSocketPair(port=null) {
 
         if (port == null || port instanceof PortFinder) {
-            PortFinder pf
-            if (port == null) {
-                pf = PortFinder.Singleton
-            } else {
-                pf = port as PortFinder
-            }
-
-            port = pf.getNextOpenPort()
+            port = 0
         }
 
         // create the listener socket
         def listener = new ServerSocket(port)
+        def localPort = listener.getLocalPort()
         def server
 
         // start listening on a separate thread
@@ -26,7 +20,7 @@ class LocalSocketPair {
         }
 
         // create the client socket and connect
-        def client = new Socket("localhost", port)
+        def client = new Socket("localhost", localPort)
 
         t.join()
 

@@ -26,6 +26,10 @@ class ServletServerConnector extends HttpServlet implements ServerConnector {
 
     }
 
+    int port() {
+        throw new UnsupportedOperationException("Servlet Server connector doesn't support a port!")
+    }
+
     @Override
     protected void service(HttpServletRequest request,
                            HttpServletResponse response) throws ServletException, IOException {

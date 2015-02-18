@@ -9,6 +9,12 @@ content coding (esp. compression)
         content-encoded message body (e.g. compressed)
         transfer-encoded message body (bytes on the wire)
 
+replace RequestParams with proper object orientation in client connectors
+    ChunkedTransferEncodingClientConnector
+        will require "clarified object model" above
+        this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector?
+            not necessarily; that describes DefaultClientConnector as well
+
 Publish releases to maven central
     change package names and group id to 'com.rackspace'
 
@@ -90,12 +96,6 @@ standard headers
 
 gradle?
 
-replace RequestParams with proper object orientation in client connectors
-    DefaultClientConnector should have a nextConnector constructor parameters, instead of extending BareClientConnector
-    ChunkedTransferEncodingClientConnector
-        will require "distinction between message body and transfer-encoded message body" below
-        this is a modification of the request, and doesn't directly concern the connection - should this be something other than a ClientConnector
-            not necessarily; that describes DefaultClientConnector as well
 
 
 better logging

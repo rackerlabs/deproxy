@@ -12,7 +12,7 @@ class ConnectionReuseTest {
     Deproxy deproxy;
     int port;
     String url;
-    DefaultClientConnector client;
+    ClientConnector client;
 
     @Before
     void setUp() {
@@ -25,17 +25,17 @@ class ConnectionReuseTest {
         def endpoint = this.deproxy.addEndpoint(this.port);
 
         def socket = (endpoint.serverConnector as SocketServerConnector).createRawConnection()
-        client = new DefaultClientConnector(socket)
+        client = new BareClientConnector(socket)
 
     }
 
     @Test
     void testServerSideConnectionReuse() {
 
-        def mc1 = deproxy.makeRequest(url: url, clientConnector: client)
+        def mc1 = deproxy.makeRequest(url: url, clientConnector: client, headers: ['Content-length': '0'])
         assertEquals(1, mc1.handlings.size())
 
-        def mc2 = deproxy.makeRequest(url: url, clientConnector: client)
+        def mc2 = deproxy.makeRequest(url: url, clientConnector: client, headers: ['Content-length': '0'])
         assertEquals(1, mc2.handlings.size())
 
         assertEquals(mc1.handlings[0].connection, mc2.handlings[0].connection)

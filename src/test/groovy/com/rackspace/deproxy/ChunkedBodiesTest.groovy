@@ -113,7 +113,9 @@ This is the next paragraph.
         RequestParams params = new RequestParams()
         params.usedChunkedTransferEncoding = true
 
-        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+        DefaultClientConnector clientConnector =
+                new DefaultClientConnector(
+                        new BareClientConnector(client))
 
         Response response = clientConnector.sendRequest(request, false,
                 "localhost", server.localPort, params)
@@ -265,7 +267,9 @@ This is the next paragraph.
         Request request = new Request("GET", "/",
                 ["Transfer-Encoding": "chunked"], body)
 
-        DefaultClientConnector clientConnector = new DefaultClientConnector(client)
+        DefaultClientConnector clientConnector =
+                new DefaultClientConnector(
+                        new BareClientConnector(client))
 
 
 

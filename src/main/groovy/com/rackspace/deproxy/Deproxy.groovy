@@ -15,7 +15,8 @@ class Deproxy {
     public static final String VERSION_STRING = String.format("deproxy %s", VERSION);
 
     public def defaultHandler = null
-    public def defaultClientConnector
+    public DefaultClientConnector defaultClientConnector
+    public BareClientConnector bareClientConnector
 
     protected final def messageChainsLock = new ReentrantLock()
     protected Map<String, MessageChain> messageChains = [:]
@@ -35,30 +36,27 @@ class Deproxy {
         return new String(bytes as byte[], "UTF-8")
     }
 
-    Deproxy(defaultHandler=null, ClientConnector defaultClientConnector=null) {
+    Deproxy(defaultHandler=null) {
 
-        if (defaultClientConnector == null) {
-            defaultClientConnector = new DefaultClientConnector()
-        }
-
-        this.defaultHandler = defaultHandler;
-        this.defaultClientConnector = defaultClientConnector
+        this.defaultHandler = defaultHandler
+        this.bareClientConnector = new BareClientConnector()
+        this.defaultClientConnector = new DefaultClientConnector(this.bareClientConnector)
     }
 
     public MessageChain makeRequest(Map params) {
         return makeRequest(
-                params?.url,
-                params?.host ?: "",
+                params?.url as String,
+                (params?.host ?: "") as String,
                 params?.port,
-                params?.method ?: "GET",
-                params?.path ?: "",
+                (params?.method ?: "GET") as String,
+                (params?.path ?: "") as String,
                 params?.headers,
                 params?.requestBody ?: "",
                 params?.defaultHandler,
-                params?.handlers,
-                (params?.addDefaultHeaders == null ? true : params?.addDefaultHeaders),
-                (params?.chunked ? true : false),
-                params?.clientConnector ?: null
+                params?.handlers as Map,
+                (params?.addDefaultHeaders == null ? true : params?.addDefaultHeaders) as boolean,
+                (params?.chunked ? true : false) as boolean,
+                (params?.clientConnector ?: null) as ClientConnector
         );
     }
 
@@ -87,7 +85,11 @@ class Deproxy {
         headers = new HeaderCollection(headers)
 
         if (!clientConnector) {
-            clientConnector = this.defaultClientConnector;
+            if (addDefaultHeaders) {
+                clientConnector = this.defaultClientConnector
+            } else {
+                clientConnector = this.bareClientConnector
+            }
         }
 
         def requestId = UUID.randomUUID().toString()
@@ -130,7 +132,6 @@ class Deproxy {
 
         RequestParams requestParams = new RequestParams()
         requestParams.usedChunkedTransferEncoding = chunked;
-        requestParams.sendDefaultRequestHeaders = addDefaultHeaders;
 
         log.debug "calling sendRequest"
         Response response = clientConnector.sendRequest(request, https, host, port, requestParams)
